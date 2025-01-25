@@ -1,0 +1,40 @@
+model.parameter,unit,name,value
+an,--,stoichiometric ratio N:C phytoplankton,6.625
+ap,--,stoichiometric ratio P:C phytoplankton,106
+asi,--,stoichiometric ratio Si:C diatoms,7.06666666666667
+amc,mmol N m-3,critical concentration NH4 uptake,0.71
+DLo1,d,optimal daylenght for ALG1 growth,0.5
+DLo2,d,optimal daylenght for ALG2 growth,0.58
+ea,m2 mmol C-1,specific light extinction coeff. Algae,0.0012
+ep,m2 mmol C-1,specific light extinction coeff. POC,0.0012
+es,m2 g-1,spec. light extinction coeff. background,0.03
+etb,m-1,partial extinction coeff. Background,0.08
+fdec12,--,factor decomposition POC1 to POC2,0.5
+fdec13,--,factor decomposition POC1 to DOC,0.5
+fdec23,--,factor decomposition POC2 to DOC,1
+fgr,--,growht respiration factor algae,0.065
+fra,--,fraction released by autolysis,0.5
+Io201,W m-2,optimal light intensity for ALG1,25
+Io202,W m-2,optimal light intensity for ALG2,30
+kdiss,m3 mmol Si-1 d-1,OPAL dissolution reaction rate constant,0.000003
+kmin1,d-1,mineralization rate constant POC1 at 20deg,0.4
+kmin2,d-1,mineralization rate constant POC2 at 20deg,0.05
+kmin3,d-1,mineralization rate constant DOC at 20deg,0.15
+kmr1,d-1,ALG1 maintenance respiration rate constant at 20deg,0.036
+kmr2,d-1,ALG2 maintenance respiration rate constant at 20deg,0.045
+kmrt,d-1,mortality rate constant phytoplankton at 20deg,0.5
+knit,mmol N m-3 d-1,nitrification rate constant at 20deg,28.6
+kpp,d-1,potential max. production rate constant ALGi,1.2
+Ksam,mmol N m-3,half saturation NH4 limitation in nitrification,36
+Ksni,mmol N m-3,half saturation NO3 in denitrification,36
+Ksn,mmol N m-3,half saturation N concentration in nPP,0.36
+Ksox,mmol O2 m-3,half saturation DO in nitrification,31.3
+Ksoxi,mmol O2 m-3,half saturation DO inhibition in denitrification,94
+Ksoxc,mmol O2 m-3,half saturation DO consumption in minerals,63
+Ksp,mmol P m-3,half saturation P in nPP,0.03
+Kssi,mmol Si m-3,half saturation silicate in nPP,1
+sieq,mmol Si m-3,equilibrium concentration Si,357
+SPMI,g m-3,inorganic suspended particular matter concentration,47
+sv,m d-1,settling velocity POC,0.5
+svALG,m d-1,settling velocity phytoplankton,0.1
+tc,N m-2,critical bottom shear stress for settling,0.1

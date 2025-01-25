@@ -1,0 +1,69 @@
+variable,unit,name,equation
+MIN11,mmol C m-3 d-1,mineralization rate,kmin1*1.2_rk**(temp-20.0_rk)*POC1
+MIN12,mmol C m-3 d-1,mineralization rate,kmin2*1.2_rk**(temp-20.0_rk)*POC2
+MIN13,mmol C m-3 d-1,mineralization rate,kmin3*1.2_rk**(temp-20.0_rk)*DOC
+MIN21,mmol N m-3 d-1,mineralization rate,kmin1*1.2_rk**(temp-20.0_rk)*PON1
+MIN22,mmol N m-3 d-1,mineralization rate,kmin2*1.2_rk**(temp-20.0_rk)*PON2
+MIN23,mmol N m-3 d-1,mineralization rate,kmin3*1.2_rk**(temp-20.0_rk)*DON
+MIN31,mmol P m-3 d-1,mineralization rate,kmin1*1.2_rk**(temp-20.0_rk)*POP1
+MIN32,mmol P m-3 d-1,mineralization rate,kmin2*1.2_rk**(temp-20.0_rk)*POP2
+MIN33,mmol P m-3 d-1,mineralization rate,kmin3*1.2_rk**(temp-20.0_rk)*DOP
+DEC112,mmol C m-3 d-1,decomposition rate fast to slow,fdec12*MIN11
+DEC113,mmol C m-3 d-1,decomposition rate fast to slow,fdec13*MIN12
+DEC123,mmol C m-3 d-1,decomposition rate fast to slow,fdec23*MIN13
+DEC212,mmol N m-3 d-1,decomposition rate fast to slow,fdec12*MIN21
+DEC213,mmol N m-3 d-1,decomposition rate fast to slow,fdec13*MIN22
+DEC223,mmol N m-3 d-1,decomposition rate fast to slow,fdec23*MIN23
+DEC312,mmol P m-3 d-1,decomposition rate fast to slow,fdec12*MIN31
+DEC313,mmol P m-3 d-1,decomposition rate fast to slow,fdec13*MIN32
+DEC323,mmol P m-3 d-1,decomposition rate fast to slow,fdec23*MIN33
+fmn,--,contribution nitrate in mineral,NO3/(Ksni + NO3) * (1 - DOxy/(Ksoxi + DOxy)) * 1.12_rk**(temp-20.0_rk)
+fmo,--,contribution oxygen in mineral,DOxy/(Ksoxc + DOxy) * 1.07**(temp-20.0_rk)
+frmn,--,rel. frac. Nitrate in mineral,fmn*(fmo+fmn)
+frmo,--,rel. frac. oxygen in mineral,1.0_rk-frmn
+fn,--,nitrogen limitation,(NH4+NO3)/(NH4+NO3+Ksn)
+fp,--,phosphorus limitation,PO4/(PO4+Ksp)
+fsi,--,si limitation function,Si/(Si+Kssi)
+fnut,--,nutrient limitation function,"MIN(fn,fp,fsi)"
+MINoxy1,mmol O2 m-3 d-1,mineral oxygen consumption,frmo*(MIN11+MIN12+MIN13)
+MINoxy2,mmol O2 m-3 d-1,mineral oxygen consumption,frmo*(MIN21+MIN22+MIN23)
+MINoxy3,mmol O2 m-3 d-1,mineral oxygen consumption,frmo*(MIN31+MIN32+MIN33)
+MINnit1,mmol N m-3 d-1,mineral denitrification,frmn*(MIN11+MIN12+MIN13)
+MINnit2,mmol N m-3 d-1,mineral denitrification,frmn*(MIN21+MIN22+MIN23)
+MINnit3,mmol N m-3 d-1,mineral denitrification,frmn*(MIN31+MIN32+MIN33)
+MORT1,mmol C m-3 d-1,mortality rate algae,1.07_rk**(temp-20.0_rk)*kmrt*ALG1
+MORT2,mmol C m-3 d-1,mortality rate algae,1.07_rk**(temp-20.0_rk)*kmrt*ALG2
+NIT,mmol N m-3 d-1,nitrification rate,knit*1.07_rk**(temp-20.0_rk)*(NH4/(Ksam+NH4))*(DOxy/(Ksox+DOxy))
+Io1,W m-2,optimal light intensity,1.04_rk**(temp-20.0_rk)*Io201
+Io2,W m-2,optimal light intensity,1.04_rk**(temp-20.0_rk)*Io202
+frad1,--,light limitation ,(par/Io1)*(1.0_rk - exp(-ea*par))
+frad2,--,light limitation ,(par/Io2)*(1.0_rk - exp(-ea*par))
+# fdl1,--,daylenght limitation,"1.0_rk !MIN(DL,DLo1)/DLo1"
+# fdl2,--,daylenght limitation,"1.0_rk !MIN(DL,DLo2)/DLo2"
+kgp1,mmol C m-3 d-1,gross pp rate of algae,frad1*fnut*1.4**(temp-20.0_rk)*kpp
+kgp2,mmol C m-3 d-1,gross pp rate of algae,frad2*fnut*1.4**(temp-20.0_rk)*kpp
+krsp1,mmol C m-3 d-1,total respiration rate of algae,fgr*kgp1+(1.0_rk-fgr)*1.07**(temp-20.0_rk)*kmr1
+krsp2,mmol C m-3 d-1,total respiration rate of algae,fgr*kgp2+(1.0_rk-fgr)*1.07**(temp-20.0_rk)*kmr2
+klrear20,m d-1,oxygen transfer coefficient,0.24_rk * exp(0.92_rk +0.237_rk*wind) ! 3.863_rk*(5.0_rk/depth)**(0.5_rk)+0.065_rk*wind**2.0_rk !CHECK THE EQUATIONS
+klrear,m d-1,oxygen transfer coefficient,klrear20*0.95**(temp-20.0_rk)
+fram,--,fraction N consumed as NH4,1.0_rk+0.5_rk*(1.0_rk+TANH(5.0_rk*(NH4-amc)))*(NH4/(NO3+NH4)-1.0_rk)
+DISS,mmol Si m-3 d-1,Opal dissolution rate,kdiss*OPAL*(sieq-Si)
+nPP1,mmol C m-3 d-1,net primary production rate,(kgp1-krsp1)*ALG1
+nPP2,mmol C m-3 d-1,net primary production rate,(kgp2-krsp2)*ALG2
+RAM,mmol N m-3 d-1,release of NH4 by autolysis,fra*an*(MORT1+MORT2)
+RAP,mmol P m-3 d-1,release of PO4 by autolysis,fra*ap*(MORT1+MORT2)
+RAS,mmol Si m-3 d-1,release of Si by autolysis,fra*asi*(MORT1+MORT2)
+abs_temp,Kelvin,absolute temperature in Kelvin,temp + 273.15_rk
+OSAT,ln(ml(STP)/L),oxigen saturation in accordingly to Weiss 1970,"-173.4292_rk + 249.6339_rk * (100._rk/abs_temp) + 143.3483_rk * log(abs_temp/100._rk) &
+                -21.8492_rk * (abs_temp/100._rk) &
+                + salinity * ( -0.033096_rk + 0.014259_rk * (abs_temp/100._rk) -0.0017_rk * ((abs_temp/100._rk)**2))"
+SOXY,mmol O2 m-3,oxygen saturation,exp(OSAT) * 1000._rk / ( (8.3145_rk * 298.15_rk / 101325_rk) *1000._rk)
+REAR,mmol O2 m-3 d-1,Reaeration rate,klrear*(SOXY-Doxy)/depth
+UPH1,mmol P m-3 d-1,phosphorus uptake rate,ap*nPP1
+UPH2,mmol P m-3 d-1,phosphorus uptake rate,ap*nPP2
+UAM1,mmol N m-3 d-1,ammonia uptake rate,fram*an*nPP1
+UAM2,mmol N m-3 d-1,ammonia uptake rate,fram*an*nPP2
+UNI1,mmol N m-3 d-1,nitrate uptake rate,(1.0_rk-fram)*an*nPP1
+UNI2,mmol N m-3 d-1,nitrate uptake rate,(1.0_rk-fram)*an*nPP2
+USI,mmol Si m-3 d-1,Si uptake rate,asi*nPP1
+#et,m-1,light exticntion coefficient,etb + es*SPMI+ea*(ALG1+ALG2)+ep*(POC1+POC2)
