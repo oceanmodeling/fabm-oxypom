@@ -25,8 +25,8 @@ Just soft link the files `./testcase/rivers.u_020e-2.bgc.nc` as `rives.nc` and `
 
 ## To do
 
-[ ] Is the `meteo.nc` file available.
-[ ] Are the boundary files properly formatted (`bdy*.nc`)?
+- [ ] Is the `meteo.nc` file available.
+- [ ] Are the boundary files properly formatted (`bdy*.nc`)?
 
 
 ## License
