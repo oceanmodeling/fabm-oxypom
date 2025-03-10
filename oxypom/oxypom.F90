@@ -5,19 +5,15 @@
 !! FABM implementation for biogeochemical model described in:
 !! Holzwarth and Wirtz (2018) https://doi.org/10.1016/j.ecss.2018.01.020
 
-!! This files has been produced by parsero.py and can be overwritten.
-!! Editions made in this file may be deleted. 
-!! Be careful while running parsero.py!!
-
 
 #include "fabm_driver.h"
 
-module dobgcp
+module dobgcp_oxypom
     use fabm_types
     implicit none
     private
 
-    type, extends(type_base_model), public :: type_dobgcp
+    type, extends(type_base_model), public :: type_dobgcp_oxypom
         ! External dependencies
         type (type_dependency_id) :: id_temp
         type (type_dependency_id) :: id_par
@@ -25,6 +21,8 @@ module dobgcp
         type (type_dependency_id) :: id_salinity
         type (type_surface_dependency_id) :: id_wind
         type (type_surface_dependency_id) :: id_I0
+		type (type_diagnostic_variable_id) :: id_dPAR
+
         ! Variable identifiers
 		type (type_state_variable_id) :: id_ALG1
 		type (type_state_variable_id) :: id_ALG2
@@ -48,8 +46,6 @@ module dobgcp
 		real(rk) :: ap
 		real(rk) :: asi
 		real(rk) :: amc
-		real(rk) :: DLo1
-		real(rk) :: DLo2
 		real(rk) :: ea
 		real(rk) :: ep
 		real(rk) :: es
@@ -93,7 +89,7 @@ module dobgcp
 contains
 
     subroutine initialize(self, configunit)
-        class (type_dobgcp), intent(inout), target :: self
+        class (type_dobgcp_oxypom), intent(inout), target :: self
         integer, intent(in) :: configunit
         
         real(rk), parameter :: d_per_s = 1.0_rk/86400.0_rk
@@ -104,18 +100,16 @@ contains
 		call self%get_parameter(self%ap, 'ap', '--', 'stoichiometric ratio P:C phytoplankton', default=106.0_rk)
 		call self%get_parameter(self%asi, 'asi', '--', 'stoichiometric ratio Si:C diatoms', default=7.06666666666667_rk)
 		call self%get_parameter(self%amc, 'amc', 'mmol N m-3', 'critical concentration NH4 uptake', default=0.71_rk)
-		call self%get_parameter(self%DLo1, 'DLo1', 'd', 'optimal daylenght for ALG1 growth', default=0.5_rk)
-		call self%get_parameter(self%DLo2, 'DLo2', 'd', 'optimal daylenght for ALG2 growth', default=0.58_rk)
 		call self%get_parameter(self%ea, 'ea', 'm2 mmol C-1', 'specific light extinction coeff. Algae', default=0.0012_rk)
 		call self%get_parameter(self%ep, 'ep', 'm2 mmol C-1', 'specific light extinction coeff. POC', default=0.0012_rk)
 		call self%get_parameter(self%es, 'es', 'm2 g-1', 'spec. light extinction coeff. background', default=0.03_rk)
-		call self%get_parameter(self%etb, 'etb', 'm-1', 'partial extinction coeff. Background', default=0.08_rk)
+		call self%get_parameter(self%etb, 'etb', 'm-1', 'partial extinction coeff. Background', default=0.0_rk)
 		call self%get_parameter(self%fdec12, 'fdec12', '--', 'factor decomposition POC1 to POC2', default=0.5_rk)
 		call self%get_parameter(self%fdec13, 'fdec13', '--', 'factor decomposition POC1 to DOC', default=0.5_rk)
 		call self%get_parameter(self%fdec23, 'fdec23', '--', 'factor decomposition POC2 to DOC', default=1.0_rk)
 		call self%get_parameter(self%fgr, 'fgr', '--', 'growht respiration factor algae', default=0.065_rk)
 		call self%get_parameter(self%fra, 'fra', '--', 'fraction released by autolysis', default=0.5_rk)
-		call self%get_parameter(self%Io201, 'Io201', 'W m-2', 'optimal light intensity for ALG1', default=25.0_rk)
+		call self%get_parameter(self%Io201, 'Io201', 'W m-2', 'optimal light intensity for ALG1', default=20.0_rk)
 		call self%get_parameter(self%Io202, 'Io202', 'W m-2', 'optimal light intensity for ALG2', default=30.0_rk)
 		call self%get_parameter(self%kdiss, 'kdiss', 'm3 mmol Si-1 d-1', 'OPAL dissolution reaction rate constant', default=3e-06_rk)
 		call self%get_parameter(self%kmin1, 'kmin1', 'd-1', 'mineralization rate constant POC1 at 20deg', default=0.4_rk)
@@ -136,12 +130,12 @@ contains
 		call self%get_parameter(self%Kssi, 'Kssi', 'mmol Si m-3', 'half saturation silicate in nPP', default=1.0_rk)
 		call self%get_parameter(self%sieq, 'sieq', 'mmol Si m-3', 'equilibrium concentration Si', default=357.0_rk)
 		call self%get_parameter(self%SPMI, 'SPMI', 'g m-3', 'inorganic suspended particular matter concentration', default=47.0_rk)
-		call self%get_parameter(self%sv, 'sv', 'm d-1', 'settling velocity POC', default=0.5_rk)
-		call self%get_parameter(self%svALG, 'svALG', 'm d-1', 'settling velocity phytoplankton', default=0.1_rk)
+		call self%get_parameter(self%sv, 'sv', 'm d-1', 'settling velocity POC', default=-0.5_rk)
+		call self%get_parameter(self%svALG, 'svALG', 'm d-1', 'settling velocity phytoplankton', default=-0.5_rk)
 		call self%get_parameter(self%tc, 'tc', 'N m-2', 'critical bottom shear stress for settling', default=0.1_rk)
 		! Register state variables
-		call self%register_state_variable(self%id_ALG1, 'ALG1', 'mmol C m-3', 'diatom', 10.0_rk, minimum=0.0_rk, maximum=1000.0_rk, vertical_movement=self%svALG*d_per_s)
-		call self%register_state_variable(self%id_ALG2, 'ALG2', 'mmol C m-3', 'non-diatom', 1.0_rk, minimum=0.0_rk, maximum=1000.0_rk, vertical_movement=self%svALG*d_per_s)
+		call self%register_state_variable(self%id_ALG1, 'ALG1', 'mmol C m-3', 'diatom', 1.0_rk, minimum=0.0_rk, maximum=1000.0_rk, vertical_movement=self%svALG*d_per_s)
+		call self%register_state_variable(self%id_ALG2, 'ALG2', 'mmol C m-3', 'non-diatom', 0.20_rk, minimum=0.0_rk, maximum=1000.0_rk, vertical_movement=self%svALG*d_per_s)
 		call self%register_state_variable(self%id_POC1, 'POC1', 'mmol C m-3', 'POC1 ', 2.0_rk, minimum=0.0_rk, maximum=1000.0_rk, vertical_movement=self%sv*d_per_s)
 		call self%register_state_variable(self%id_POC2, 'POC2', 'mmol C m-3', 'POC2 ', 3.0_rk, minimum=0.0_rk, maximum=1000.0_rk, vertical_movement=self%sv*d_per_s)
 		call self%register_state_variable(self%id_DOC, 'DOC', 'mmol C m-3', 'DOC', 500.0_rk, minimum=0.0_rk, maximum=1000.0_rk, vertical_movement=0.0_rk*d_per_s)
@@ -162,7 +156,7 @@ contains
         !call self%add_to_aggregate_variable(standard_variables%total_nitrogen, self%id_m)
 
         ! Register diagnostic variables
-        !call self%register_diagnostic_variable(self%id_dPAR, 'PAR', 'W m-2',        'photosynthetically active radiation')
+        call self%register_diagnostic_variable(self%id_dPAR, 'PAR', 'W m-2', 'photosynthetically active radiation')
 
         ! Register environmental dependencies
         call self%register_dependency(self%id_temp, standard_variables%temperature)
@@ -170,7 +164,7 @@ contains
         call self%register_dependency(self%id_depth, standard_variables%bottom_depth)
         call self%register_dependency(self%id_salinity, standard_variables%practical_salinity)
         call self%register_dependency(self%id_wind, standard_variables%wind_speed)
-        call self%register_dependency(self%id_I0, standard_variables%surface_downwelling_photosynthetic_radiative_flux)
+        call self%register_dependency(self%id_I0, standard_variables%surface_downwelling_shortwave_flux)
 
         ! Contribute to light attenuation
         call self%add_to_aggregate_variable(standard_variables%attenuation_coefficient_of_photosynthetic_radiative_flux, self%etb + self%es*self%SPMI)
@@ -184,7 +178,7 @@ contains
     end subroutine initialize
 
     subroutine do(self, _ARGUMENTS_DO_)
-    class (type_dobgcp), intent(in) :: self
+    class (type_dobgcp_oxypom), intent(in) :: self
         _DECLARE_ARGUMENTS_DO_
         real(rk), parameter :: d_per_s = 1.0_rk/86400.0_rk
 
@@ -239,7 +233,8 @@ contains
 		real(rk) :: fn
 		real(rk) :: fp
 		real(rk) :: fsi
-		real(rk) :: fnut
+		real(rk) :: fnut1
+		real(rk) :: fnut2
 		real(rk) :: MINoxy1
 		real(rk) :: MINoxy2
 		real(rk) :: MINoxy3
@@ -346,7 +341,8 @@ contains
 		fn = (NH4+NO3)/(NH4+NO3+self%Ksn) 	! nitrogen limitation
 		fp = PO4/(PO4+self%Ksp) 	! phosphorus limitation
 		fsi = Si/(Si+self%Kssi) 	! si limitation function
-		fnut = MIN(fn,fp,fsi) 	! nutrient limitation function
+		fnut1 = MIN(fn,fp,fsi) 	! nutrient limitation function
+		fnut2 = MIN(fn,fp) 	! nutrient limitation function
 		MINoxy1 = frmo*(MIN11+MIN12+MIN13) 	! mineral oxygen consumption
 		MINoxy2 = frmo*(MIN21+MIN22+MIN23) 	! mineral oxygen consumption
 		MINoxy3 = frmo*(MIN31+MIN32+MIN33) 	! mineral oxygen consumption
@@ -358,10 +354,10 @@ contains
 		NIT = self%knit*1.07_rk**(temp-20.0_rk)*(NH4/(self%Ksam+NH4))*(DOxy/(self%Ksox+DOxy)) 	! nitrification rate
 		Io1 = 1.04_rk**(temp-20.0_rk)*self%Io201 	! optimal light intensity
 		Io2 = 1.04_rk**(temp-20.0_rk)*self%Io202 	! optimal light intensity
-		frad1 = (par/Io1)*(1.0_rk - exp(-self%ea*par)) 	! light limitation 
-		frad2 = (par/Io2)*(1.0_rk - exp(-self%ea*par)) 	! light limitation 
-		kgp1 = frad1*fnut*1.4**(temp-20.0_rk)*self%kpp 	! gross pp rate of algae
-		kgp2 = frad2*fnut*1.4**(temp-20.0_rk)*self%kpp 	! gross pp rate of algae
+		frad1 = (1.0_rk - exp(-par/Io1)) 	! light limitation 
+		frad2 = (1.0_rk - exp(-par/Io2)) 	! light limitation 
+		kgp1 = frad1*fnut1*1.4**(temp-20.0_rk)*self%kpp 	! gross pp rate of algae
+		kgp2 = frad2*fnut2*1.4**(temp-20.0_rk)*self%kpp 	! gross pp rate of algae
 		krsp1 = self%fgr*kgp1+(1.0_rk-self%fgr)*1.07**(temp-20.0_rk)*self%kmr1 	! total respiration rate of algae
 		krsp2 = self%fgr*kgp2+(1.0_rk-self%fgr)*1.07**(temp-20.0_rk)*self%kmr2 	! total respiration rate of algae
 		fram = 1.0_rk+0.5_rk*(1.0_rk+TANH(5.0_rk*(NH4-self%amc)))*(NH4/(NO3+NH4)-1.0_rk) 	! fraction N consumed as NH4
@@ -370,7 +366,7 @@ contains
 		nPP2 = (kgp2-krsp2)*ALG2 	! net primary production rate
 		RAM = self%fra*self%an*(MORT1+MORT2) 	! release of NH4 by autolysis
 		RAP = self%fra*self%ap*(MORT1+MORT2) 	! release of PO4 by autolysis
-		RAS = self%fra*self%asi*(MORT1+MORT2) 	! release of Si by autolysis
+		RAS = self%fra*self%asi*(MORT1) 	! release of Si by autolysis
 		UPH1 = self%ap*nPP1 	! phosphorus uptake rate
 		UPH2 = self%ap*nPP2 	! phosphorus uptake rate
 		UAM1 = fram*self%an*nPP1 	! ammonia uptake rate
@@ -395,7 +391,7 @@ contains
 		d_DOP = DEC313+DEC323-MIN33 	! DOP
 		d_Si = RAS+DISS-USI 	! Silicate
 		d_OPAL = (1.0_rk-self%fra)*self%asi*MORT1-DISS 	! opal
-		d_DOxy = nPP1+nPP2-MINoxy1-MINoxy2-MINoxy3-2*NIT 	! dissolved oxygen
+		d_DOxy = nPP1+nPP2-MINoxy1-MINoxy2-MINoxy3-2.0_rk*NIT 	! dissolved oxygen
 		! Add sources
 		_ADD_SOURCE_(self%id_ALG1,d_ALG1*d_per_s)
 		_ADD_SOURCE_(self%id_ALG2,d_ALG2*d_per_s)
@@ -415,12 +411,14 @@ contains
 		_ADD_SOURCE_(self%id_OPAL,d_OPAL*d_per_s)
 		_ADD_SOURCE_(self%id_DOxy,d_DOxy*d_per_s)
 
+		_SET_DIAGNOSTIC_(self%id_dPAR,par)
+
         ! Leave spatial loops (if any)
         _LOOP_END_
     end subroutine do
 
     subroutine do_surface(self,_ARGUMENTS_DO_SURFACE_)
-      class (type_dobgcp), intent(in) :: self
+      class (type_dobgcp_oxypom), intent(in) :: self
       	_DECLARE_ARGUMENTS_DO_SURFACE_
         real(rk), parameter :: d_per_s = 1.0_rk/86400.0_rk
       	real(rk) :: temp 
@@ -437,7 +435,6 @@ contains
 	        _GET_(self%id_salinity,salinity)
 	        _GET_SURFACE_(self%id_wind,wind)
 
-
 	        ! As in ERSEM, taken from WEISS 1970 DEEP SEA RES 17, 721-735.
 			abs_temp = temp + 273.15_rk 	! absolute temperature in Kelvin
 			OSAT = -173.4292_rk + 249.6339_rk * (100._rk/abs_temp) + 143.3483_rk * log(abs_temp/100._rk) &
@@ -445,7 +442,7 @@ contains
                 + salinity * ( -0.033096_rk + 0.014259_rk * (abs_temp/100._rk) -0.0017_rk * ((abs_temp/100._rk)**2)) 	! oxigen saturation in accordingly to Weiss 1970
 			SOXY = EXP(OSAT) * 1000._rk / ( (8.3145_rk * 298.15_rk / 101325_rk) *1000._rk) 	! oxygen saturation
 
-         	if (wind.lt.0._rk) wind=0._rk
+         	if (wind.lt.0._rk) wind = 0._rk
 
          	if (wind.gt.11._rk) then
             klrear = SQRT((1953.4_rk-128._rk*temp+3.9918_rk*temp**2-  &
@@ -462,5 +459,5 @@ contains
 
       _HORIZONTAL_LOOP_END_
    end subroutine
-end module dobgcp
+end module dobgcp_oxypom
 

@@ -1,4 +1,0 @@
-#DataThief /home/og/tools/dobgcp/forcing/nitrogen.png Monday 20-Jan-2025 6:13:21 PM
-1.1517, 1.2583
-103.8737, 0.7273
-364.9958, 0.6353
