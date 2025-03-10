@@ -2,3 +2,5 @@
 **/build
 **/*.nc
 **/gotm
+**/.RData
+**/.Rhistory
