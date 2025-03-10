@@ -8,7 +8,7 @@ library(scales)
 conv.fact = 12
 is.oxypom_ = T
 
-setwd('/home/og/tools/dobgcp-surface/testcases/estuary/')
+setwd('/home/og/tools/dobgcp/testcases/estuary/')
 
 par(las=1,family='carlito')
 
@@ -123,7 +123,7 @@ bottom = 1
 
 col.sim='tomato'
 col.obs='black'
-col.obs2='darkblue'
+col.obs2='black'
 
 par(mfrow=c(2,1),mai=c(0.42,0.42,0.21,0.21),oma=2*c(1,1,0.5,0.5))
 
@@ -137,9 +137,10 @@ title('temperature at the surface degC',adj=0,line=0.1,cex=0.5,font.main=1)
 lines(x,temp[,surface],lty=1,col=alpha(col.sim,1),lwd=2)
 points(as.Date(temp.w.1$V1),temp.w.1$V2,col=alpha(col.obs,0.5),pch=20,cex=1.)
 #points(as.Date(temp.w.2$V1),temp.w.2$V2,col=alpha(col.obs2,0.5),pch=20,cex=1.)
+lines(as.Date(temp.w.3$V1),temp.w.3$V2,col=alpha(col.obs2,0.5),pch=20,cex=1.)
 
 plot(x,rowMeans(oxy[,1:2]),type='n',
-     col=alpha(col.obs),ylim=c(00,500),log='',lwd=0.5,
+     col=alpha(col.obs),ylim=c(100,500),log='',lwd=0.5,
      ylab='',
      xlab='days',
      )
