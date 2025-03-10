@@ -1,6 +1,0 @@
-instances:
-  bgc:
-    long_name: bgc
-    model: dobgcp/dobgcp
-
-  

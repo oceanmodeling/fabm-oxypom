@@ -4,7 +4,8 @@
 
 add_library(fabm_models_dobgcp OBJECT
             dobgcp_model_library.F90
-            dobgcp.F90
+            oxypom/oxypom.F90
+            diamo/diamo.F90
            )
 
 add_dependencies(fabm_models_dobgcp fabm_base)

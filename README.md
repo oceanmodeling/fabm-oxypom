@@ -1,22 +1,20 @@
+!! SPDX-FileCopyrightText: 2025 Helmholtz-Zentrum hereon GmbH
+!! SPDX-License-Identifier: CC0-1.0
+!! SPDX-FileContributor Ovidio Garcia-Oliva <ovidio.garcia@hereon.de>
+
 # DO+BGC (Dissolved Oxygen and BioGeoChemistry)
 
-***DO+BGC*** is a `FABM` model for Dissolved Oxygen Dynamics plus simple biogeochemistry.
+**DO+BGC** is a family of models for Dissolved Oxygen Dynamics plus simple biogeochemistry implemented in `FABM`.
 
 ## Description
-This model simulates Dissolved Oxygen dynamics plus a simplified biogeochemistry pelagic model based on [Holzwarth and Wirtz, 2018](https://doi.org/10.1016/j.ecss.2018.01.020), replacing depth-averaged formulations by depth-explicit processes.
-Specifically, reaeration rates is changed to surface flow formulation similar to the used in `ERSEM`. 
+**DO+BGC** includes:
 
-This model includes:
-
-* Dissolved Oxygen.
-* Three nutrient species (nitrogen, phosphorus, and silicon).
-* Two algal species, one depending on silicon.
-* Two types of Particular Organic Matter.
-* One type of Dissolved Organic Matter.
-* Inorganic silicon.
+* `OxyPOM` (**Oxygen + Particulate Organic Matter**): Simulates oxygen consumption and production in river based on [Holzwarth and Wirtz, 2018](https://doi.org/10.1016/j.ecss.2018.01.020). 
+* `DiaMo` (**Diagnostic Model**): Simulates oxygen consumption and production Using a statistical inspired model. 
 
 ## Installation and usage
-
+* Requires the last version of `FABM` and the last version of `GOTM`.
+* you can run the testcases by running the installation scripts `gotm-installation.sh`   
 * Remember to add this repository in the compilation flags (the `cmake`) in the `Makefile`. 
 
 ## Testcase
