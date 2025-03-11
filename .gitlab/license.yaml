@@ -2,19 +2,20 @@
 # SPDX-License-Identifier: CC0-1.0
 # SPDX-FileContributor: Carsten Lemmen <carsten.lemmen@hereon.de>
 
-license-compliance:
-  image: python:3.12
-  stage: lint
-  before_script:
-    - pip install --upgrade pip
-    - pip install poetry
-    - poetry install
-  script:
-    - poetry run reuse lint
-  allow_failure: false
-  needs: []
+# license-compliance:
+#   image: python:3.12
+#   stage: lint
+#   before_script:
+#     - pip install --upgrade pip
+#     - pip install poetry
+#     - poetry install
+#   script:
+#     - poetry run reuse lint
+#   allow_failure: false
+#   needs: []
 
 reuse:
+  stage: lint
   image:
     name: fsfe/reuse:latest
     entrypoint: [""]
