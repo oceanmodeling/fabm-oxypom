@@ -4,7 +4,7 @@
 
 export GOTMDIR=$HOME/tools/gotm/code
 export FABMDIR=$HOME/tools/fabm/fabm
-export DOBGCPDIR=$HOME/tools/dobgcp
+export DOBGCPDIR=$HOME/tools/dobgcp/src
 
 mkdir -p ./build/gotm
 cd ./build/gotm
@@ -14,4 +14,4 @@ make install
 
 cd ../../
 
-ln ./build/gotm/gotm ./estuary/gotm
+ln -f ./build/gotm/gotm ./estuary/gotm
