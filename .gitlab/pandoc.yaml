@@ -1,0 +1,44 @@
+# GitLab CI configuration file for providing a pandoc
+# docker for document generation
+#
+# SPDX-FileCopyrightText: 2023-2025 Helmholtz-Zentrum hereon GmbH
+# SPDX-License-Identifier: CC0-1.0
+# SPDX-FileContributor Carsten Lemmen <carsten.lemmen@hereon.de
+
+.base-pandoc-docker:
+  image: docker
+  tags: ["docker", "dind"]
+  services:
+    - docker:dind
+  stage: deploy
+  variables:
+    CONTAINER_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE/pandoc:${PANDOC_VERSION}
+  parallel:
+    matrix:
+      - PANDOC_VERSION: ["3.1.6.2", "3.1.12.2"]
+  allow_failure: false
+  interruptible: true
+  rules:
+    - if: $CI_COMMIT_BRANCH == "docker"
+  needs: []
+
+build-pandoc-docker:
+  extends: .base-pandoc-docker
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+  script:
+    - "docker build -t ${CONTAINER_REGISTRY_IMAGE}
+      --build-arg PANDOC_VERSION=${PANDOC_VERSION}
+      -f .docker/Dockerfile-pandoc ."
+    - docker push ${CONTAINER_REGISTRY_IMAGE}
+
+test-pandoc-docker:
+  extends: .base-pandoc-docker
+  stage: deploy
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+  script:
+    - docker pull ${CONTAINER_REGISTRY_IMAGE}
+    - docker run ${CONTAINER_REGISTRY_IMAGE}  pandoc -h
+  needs:
+    - build-pandoc-docker
