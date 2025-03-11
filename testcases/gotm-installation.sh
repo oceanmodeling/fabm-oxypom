@@ -15,6 +15,3 @@ make install
 cd ../../
 
 ln ./build/gotm/gotm ./estuary/gotm
-ln ./build/gotm/gotm ./river/gotm
-
-
