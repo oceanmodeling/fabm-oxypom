@@ -49,7 +49,8 @@ The downloaded files are used under license [DL-DE->Zero-2.0](https://www.govdat
 * Run the model with `./gotm`. It generates the files `output.nc` and `restart.nc`.
 
 * The script `plot_output.R` analyses the model output.
-Several figures should be produced, describing: vertical profiles of some simulated variables, and comparison of simulation and data.
+If everything is correct, the figure `estuary_validation.png` should be produced.
+It displays a comparison of simulation and data for temperature and dissolved oxygen values.
 
 
 The total procedure is:
