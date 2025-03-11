@@ -35,3 +35,21 @@ test-fabm-docker:
     - docker run ${CONTAINER_REGISTRY_IMAGE} gotm -v
   needs:
     - build-fabm-docker
+
+# Todo run only the gotm exectuable from the docker
+# run-fabm-docker:
+#   extends: .base-fabm-docker
+#   stage: deploy
+#   before_script:
+#     - cd $CI_PROJECT_DIR/testcases
+#     - bash get_data.sh 
+#     - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+#   script:
+#     - docker pull ${CONTAINER_REGISTRY_IMAGE}
+#     - docker run ${CONTAINER_REGISTRY_IMAGE} gotm
+#     - Rscript plot_output.R
+#   needs:
+#     - build-fabm-docker
+#   articfacts:
+#     paths:
+#       - testcases/output.nc
