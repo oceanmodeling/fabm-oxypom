@@ -11,6 +11,8 @@ It includes:
 * configuration files
 * external data acquisition and management
 
+If successful, the figure `estuary_validation.png` should be produced.
+
 Typically, no editing is needed to any file.
 The model to test can be changed by modifying the `use:` variable to each model instance in `fabm.yaml`.
 
@@ -18,27 +20,29 @@ The model to test can be changed by modifying the `use:` variable to each model 
 
 Three configuration files are required to set-up the simulation:
 
-* `gotm.yaml`: physical configuration (coordinate) forcing files origin.
+* `gotm.yaml`: physical configuration (coordinates, tidal components, depth, etc.) and location of forcing files.
 
-* `fabm.yaml`: configuration for **DO+BGC** models
+* `fabm.yaml`: configuration (parameterization and initial conditions) for **DO+BGC** models.
 
-* `output.yaml`: configuration for model output
+* `output.yaml`: configuration for model output.
 
 ## External data acquisition and management
 
-Three scripts are required to set-up the simulation, two of them download and prepare the data for modelling, and the third plot a validation figure. 
+Three scripts are required to set-up the simulation.
+To download and prepare the data for modelling the scripts are:
 
 * `get_data.sh`: download and unzip the forcing and validation data from [kuestendaten.de](https://www.kuestendaten.de) in a newly created directory `.\data`.
 The downloaded files are used under license [DL-DE->Zero-2.0](https://www.govdata.de/dl-de/zero-2-0).
 
 * `setup_data.R`: format the data to be read by `GOTM`. It generates the file `.\data\meteofile.csv`.
 
-* `plot_output.R` analyses the model output. 
-If everything is correct, the figure `estuary_validation.png` should be produced.
+Finally, to plot a validation figure the script is: 
+
+* `plot_output.R` analyses the model output.  
 It displays a comparison of simulation and data for temperature and dissolved oxygen values.
 
 ## License
-CC0-1.0
+Apache-2.0
 
 ## Project status
 This is part of the `DAM-ElbeXtreme` project.
