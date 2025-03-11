@@ -32,6 +32,6 @@ test-fabm-docker:
     - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
   script:
     - docker pull ${CONTAINER_REGISTRY_IMAGE}
-    - docker run ${CONTAINER_REGISTRY_IMAGE} gotm -h
+    - docker run ${CONTAINER_REGISTRY_IMAGE} gotm -v
   needs:
     - build-fabm-docker
