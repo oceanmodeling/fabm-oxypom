@@ -2,22 +2,19 @@
 # SPDX-License-Identifier: CC0-1.0
 # SPDX-FileContributor: Carsten Lemmen <carsten.lemmen@hereon.de>
 
-.PHONY: default push pandoc
+.PHONY: default push fabm
 
 default:
-	@echo Valid Makefile targets are pandoc and push
+	@echo Valid Makefile targets are fabm and push
 
-pandoc:
-	@docker image inspect platipodium/pandoc:3.1.6.2  > /dev/null 2>&1 || \
-	  docker build -f ./Dockerfile-pandoc -t platipodium/pandoc \
-	  --build-arg PANDOC_VERSION=3.1.6.2 ..
-	@docker image inspect platipodium/pandoc:3.1.12.2  > /dev/null 2>&1 || \#
-	  docker build -f ./Dockerfile-pandoc -t platipodium/pandoc \
-	  --build-arg PANDOC_VERSION=3.1.12.2 ..
+fabm:
+	@docker image inspect platipodium/fabm  > /dev/null 2>&1 || \
+	  docker build -f ./Dockerfile-fabm -t platipodium/fabm \
+	  ..
 
-push: pandoc
+push: fabm
 	docker login -u ${CI_REGISTRY_USER} -p ${CI_WRITE_REGISTRY_TOKEN} ${CI_REGISTRY} && \
-	@for V in "pandoc:3.1.12.2" "pandoc:3.1.6.2"; do  \
+	@for V in "fabm"; do  \
 	  IMAGEID=docker images -q platipodium/$$V && \
 	  docker tag ${IMAGEID} ${CI_REGISTRY}/dam-elbextreme/dobgcp/$$V && \
 	  docker image push ${CI_REGISTRY}/dam-elbextreme/dobgcp/$$V && \

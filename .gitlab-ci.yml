@@ -6,7 +6,6 @@ include:
 #  - ".gitlab/zenodo.yaml" # enable once we have .zenodo.json
   - ".gitlab/license.yaml"
   - ".gitlab/joss.yaml" # not needed anymore
-  - ".gitlab/pandoc.yaml"
   - template: Security/SAST.gitlab-ci.yml
   - template: Security/Secret-Detection.gitlab-ci.yml
 stages:
