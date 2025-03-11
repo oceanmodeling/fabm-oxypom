@@ -57,27 +57,37 @@ LABEL description="This is a custom Docker image for a deployment container"
 LABEL license="CC0-1.0"
 LABEL copyright="2024-2025 Helmholtz-Zentrum hereon GmbH"
 
-# Install a development toolchain based on gnu/openmpi, git and  build tools
+# Install a development toolchain based on gnu, git and netcdf dev tools
 #RUN apk add --no-cache \
-RUN apk add  \
- git \
- netcdf \
- netcdf-fortran \
- openmpi \
- shadow \
- openssh \
- bash
+RUN apk add git shadow openssh wget sed bash
+RUN apk add make cmake
+RUN apk add netcdf netcdf-fortran netcdf-dev netcdf-fortran-dev netcdf-utils
+RUN apk add R R-dev
 
-#RUN python3 -m venv /home/.pyenv && \
-#  . /home/.pyenv/bin/activate && \
-#  pip install editscenario && deactivate
+RUN R -e 'install.packages("ncdf4", "/usr/lib/R/library", repos="https://cran.uni-muenster.de/")'
 
-ENV PATH ${PATH}:/opt/bin
-ENV LD_LIBRARY_PATH ${PATH}:/opt/lib
+ENV PATH=${PATH}:/opt/bin
+ENV LD_LIBRARY_PATH=${PATH}:/opt/lib
 
 RUN groupadd -g 1009 model
 RUN useradd -d /home -s /bin/bash -m model -u 1009 -g 1009
+RUN chown -R model:model /home
 USER model
-ENV HOME /home
+ENV HOME=/home
+WORKDIR ${HOME}
+COPY ./testcases/* ${HOME}
+RUN bash ./get_data.sh
+RUN Rscript setup_data.R
+RUN gotm
+#RUN RScript plot_output.R # @todo does not work yet
+# b325f4a25932:~# Rscript plot_output.R
+# Loading required package: ncdf4
+# [1] "vobjtovarid4: error #F: I could not find the requsted var (or dimvar) in the file!"
+# [1] "var (or dimvar) name: oxypom_DOxy"
+# [1] "file name: output.nc"
+# Error in vobjtovarid4(nc, varid, verbose = verbose, allowdimvar = TRUE) :
+#   Variable not found
+# Calls: t -> ncvar_get -> vobjtovarid4
+# Execution halted
 
 CMD ["/bin/bash"]
