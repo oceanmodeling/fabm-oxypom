@@ -1,6 +1,8 @@
-!! SPDX-FileCopyrightText: 2025 Helmholtz-Zentrum hereon GmbH
-!! SPDX-License-Identifier: CC0-1.0
-!! SPDX-FileContributor Ovidio Garcia-Oliva <ovidio.garcia@hereon.de>
+<!---
+SPDX-FileCopyrightText: 2025 Helmholtz-Zentrum hereon GmbH
+SPDX-License-Identifier: CC0-1.0
+SPDX-FileContributor Ovidio Garcia-Oliva <ovidio.garcia@hereon.de>
+-->
 
 # DO+BGC (Dissolved Oxygen and BioGeoChemistry)
 
@@ -12,15 +14,15 @@
 * `OxyPOM` (**Oxygen + Particulate Organic Matter**): Simulates oxygen consumption and production in river based on [Holzwarth and Wirtz, 2018](https://doi.org/10.1016/j.ecss.2018.01.020). 
 * `DiaMo` (**Diagnostic Model**): Simulates oxygen consumption and production using a statistical inspired model (WIP). 
 
-The code of these models is located in the directory `.\src\oxypom` and `.\src\diamo`, and future developments should be here included.
+The code of these models is located in the directory `.\src\oxypom` and `.\src\diamo`, and future code developed as part of this model should be here included.
 
 ## Installation and usage
 * Requires the last version of `FABM` and the last version of `GOTM`.
 * The model is run with the script `gotm-installation.sh`   
 
-## Testcase
-Here I include a testcases using `GOTM` as physical driver in the Elbe `estuary` in 2005-2024.
-To run the testcase go to the directory `.\testcases`
+## Testcases
+Currently, we include a testcases using `GOTM` as physical driver in the Elbe `estuary` in 2005-2024.
+To run the testcase go to the directory `.\testcases`.
 
 * The last version of `GOTM` and `FABM` is required as well as a FORTRAN compiler and CMake.
 
@@ -65,11 +67,13 @@ Rscript setup_data.R
 RScript plot_output.R
 ```
 
+New testcases for this model need to be here included.
+
 ## To do
 - [ ] Create the complete script for the testcases
 - [ ] surface oxygen in DiaMo is not working well.
 - [ ] the fabm 0d is not compiling.
-- [ ] check the names of the plotted figures.
+- [x] check the names of the plotted figures.
 - [ ] check the right licensing for this code
 
 ## License

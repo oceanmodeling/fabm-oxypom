@@ -1,13 +1,18 @@
-!! SPDX-FileCopyrightText: 2025 Helmholtz-Zentrum hereon GmbH
-!! SPDX-License-Identifier: CC0-1.0
-!! SPDX-FileContributor Ovidio Garcia-Oliva <ovidio.garcia@hereon.de>
+<!---
+SPDX-FileCopyrightText: 2025 Helmholtz-Zentrum hereon GmbH
+SPDX-License-Identifier: CC0-1.0
+SPDX-FileContributor Ovidio Garcia-Oliva <ovidio.garcia@hereon.de>
+-->
 
-# ./testcases/estuary
+# Testcase Estuary `./testcases/estuary`
 
 This directory includes a testcase for validation of **DO+BGC** in a station in the Elbe estuary (Cuxhaven).
 It includes:
 * configuration files
 * external data acquisition and management
+
+Typically, no editing is needed to any file.
+The model to test can be changed by modifying the `use:` variable to each model instance in `fabm.yaml`.
 
 ## Configuration files
 
