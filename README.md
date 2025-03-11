@@ -12,10 +12,11 @@
 * `OxyPOM` (**Oxygen + Particulate Organic Matter**): Simulates oxygen consumption and production in river based on [Holzwarth and Wirtz, 2018](https://doi.org/10.1016/j.ecss.2018.01.020). 
 * `DiaMo` (**Diagnostic Model**): Simulates oxygen consumption and production using a statistical inspired model (WIP). 
 
+The code of these models is located in the directory `.\src\oxypom` and `.\src\diamo`, and future developments should be here included.
+
 ## Installation and usage
 * Requires the last version of `FABM` and the last version of `GOTM`.
-* you can run the testcases by running the installation scripts `gotm-installation.sh`   
-* Remember to add this repository in the compilation flags (the `cmake`) in the `Makefile`. 
+* The model is run with the script `gotm-installation.sh`   
 
 ## Testcase
 Here I include a testcases using `GOTM` as physical driver in the Elbe `estuary` in 2005-2024.
@@ -33,10 +34,10 @@ In this testcase they are defined as:
 ```
 export GOTMDIR=$HOME/tools/gotm/code
 export FABMDIR=$HOME/tools/fabm/fabm
-export DOBGCPDIR=$HOME/tools/dobgcp-surface
+export DOBGCPDIR=$HOME/tools/dobgcp/src
 ```
 
-* The model is build with the script `gotm-installation.sh`. T
+* The model is build with the script `gotm-installation.sh`. 
 This script creates the directory `.\build` with the building files, and a copy of `gotm` executable in the `.\estuary` directory.
 
 Now move to the directory `.\estuary`.
