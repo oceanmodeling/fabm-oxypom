@@ -1,0 +1,37 @@
+# GitLab CI configuration file for providing a gotm/fabm environment
+#
+# SPDX-FileCopyrightText: 2023-2025 Helmholtz-Zentrum hereon GmbH
+# SPDX-License-Identifier: CC0-1.0
+# SPDX-FileContributor Carsten Lemmen <carsten.lemmen@hereon.de
+
+.base-fabm-docker:
+  image: docker
+  tags: ["docker", "dind"]
+  services:
+    - docker:dind
+  stage: deploy
+  variables:
+    CONTAINER_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE/fabm
+  allow_failure: false
+  interruptible: true
+  needs: []
+
+build-fabm-docker:
+  extends: .base-fabm-docker
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+  script:
+    - "docker build -t ${CONTAINER_REGISTRY_IMAGE}
+      -f .docker/Dockerfile-fabm ."
+    - docker push ${CONTAINER_REGISTRY_IMAGE}
+
+test-fabm-docker:
+  extends: .base-fabm-docker
+  stage: deploy
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+  script:
+    - docker pull ${CONTAINER_REGISTRY_IMAGE}
+    - docker run ${CONTAINER_REGISTRY_IMAGE} gotm -v
+  needs:
+    - build-fabm-docker
