@@ -9,6 +9,7 @@ is.oxypom_ = T # True if OxyPOM is validated False if DiaMo is validated
 ## definition of local functions
 
 Get.Year = function(...) format(as.Date(..., format="%d/%m/%Y"),"%Y")
+as.POSIXct = function(...) base::as.POSIXct(...,,format="%Y-%m-%d %H:%M:%S")
 
 ################################################################################
 ## loading the results of gotm
