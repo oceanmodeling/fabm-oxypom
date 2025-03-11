@@ -3,8 +3,9 @@
 # SPDX-FileContributor Ovidio Garcia-Oliva <ovidio.garcia@hereon.de>
 
 instances:
-  # light:
-  #   model: gotm/light
+  light:
+    use: false
+    model: gotm/light
   oxypom:
     use: true
     long_name: oxypom

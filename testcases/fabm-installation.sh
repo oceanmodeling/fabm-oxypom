@@ -4,7 +4,7 @@
 
 export GOTMDIR=$HOME/tools/gotm/code
 export FABMDIR=$HOME/tools/fabm/fabm
-export DOBGCPDIR=$HOME/tools/dobgcp-surface
+export DOBGCPDIR=$HOME/tools/dobgcp/src
 
 mkdir -p ./build/fabm-0d
 cd ./build/fabm-0d
