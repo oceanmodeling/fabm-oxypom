@@ -26,7 +26,7 @@ CMD ["/bin/bash"]
 
 FROM base AS gotm
 
-ENV GOTMDIR=/home/gotm
+ENV GOTMDIR /home/gotm
 RUN git clone --depth=1 --recurse-submodules https://github.com/gotm-model/code.git $GOTMDIR
 RUN mkdir -p $GOTMDIR/build
 RUN mkdir -p /opt
@@ -72,8 +72,8 @@ RUN apk add  \
 #  . /home/.pyenv/bin/activate && \
 #  pip install editscenario && deactivate
 
-ENV PATH=${PATH}:/opt/bin
-ENV LD_LIBRARY_PATH=${PATH}:/opt/lib
+ENV PATH ${PATH}:/opt/bin
+ENV LD_LIBRARY_PATH ${PATH}:/opt/lib
 
 RUN groupadd -g 1009 model
 RUN useradd -d /home -s /bin/bash -m model -u 1009 -g 1009
