@@ -1,0 +1,83 @@
+# Dockerfile for development on Alpine linux with gfortran
+#
+# SPDX-FileContributor: Carsten Lemmen <carsten.lemmen@hereon.de>
+# SPDX-FileCopyrightText: 2024-2025 Helmholtz-Zentrum hereon GmbH
+# SPDX-License-Identifier: CC0-1.0
+#
+# Download base image alpine
+FROM python:3.11-alpine AS base
+
+LABEL maintainer="carsten.lemmen@hereon.de"
+LABEL version="0.1a"
+LABEL description="This is a custom Docker image for a development container"
+
+# Install a development toolchain based on gnu/openmpi, git and  build tools
+RUN apk add --no-cache cmake make bash 
+RUN apk add --no-cache gcc
+RUN apk add --no-cache gfortran
+RUN apk add --no-cache g++
+RUN apk add --no-cache netcdf-dev netcdf-fortran-dev
+RUN apk add --no-cache git
+
+RUN pip install editscenario
+RUN pip install matplotlib
+RUN pip install gotmgui
+CMD ["/bin/bash"]
+
+FROM base AS gotm
+
+ENV GOTMDIR /home/gotm
+RUN git clone --depth=1 --recurse-submodules https://github.com/gotm-model/code.git $GOTMDIR
+RUN mkdir -p $GOTMDIR/build
+RUN mkdir -p /opt
+RUN cmake -B $GOTMDIR/build -S $GOTMDIR -DCMAKE_INSTALL_PREFIX=/opt -DGOTM_USE_FABM=OFF
+RUN make -C $GOTMDIR/build
+RUN make -C $GOTMDIR/build install
+CMD ["/bin/bash"]
+
+FROM gotm AS gotm-fabm
+ENV GOTM_BASE=$GOTMDIR
+RUN cmake -B $GOTMDIR/build -S $GOTMDIR -DCMAKE_INSTALL_PREFIX=/opt -DGOTM_USE_FABM=ON
+RUN make -C $GOTMDIR/build
+RUN make -C $GOTMDIR/build install
+CMD ["/bin/bash"]
+
+FROM gotm-fabm AS fabm
+RUN cmake -B $GOTMDIR/build -S $GOTMDIR -DCMAKE_INSTALL_PREFIX=/opt -DGOTM_USE_FABM=ON -DFABM_DOBGCP_BASE=./src -DFABM_INSTITUTES=dobgcp
+RUN make -C $GOTMDIR/build
+RUN make -C $GOTMDIR/build install
+CMD ["/bin/bash"]
+
+FROM alpine:edge AS runtime
+COPY --from=gotm /opt /opt
+
+LABEL maintainer="carsten.lemmen@hereon.de"
+LABEL version="0.1a"
+LABEL description="This is a custom Docker image for a deployment container"
+LABEL license="CC0-1.0"
+LABEL copyright="2024-2025 Helmholtz-Zentrum hereon GmbH"
+
+# Install a development toolchain based on gnu/openmpi, git and  build tools
+#RUN apk add --no-cache \
+RUN apk add  \
+ git \
+ netcdf \
+ netcdf-fortran \
+ openmpi \
+ shadow \
+ openssh \
+ bash
+
+#RUN python3 -m venv /home/.pyenv && \
+#  . /home/.pyenv/bin/activate && \
+#  pip install editscenario && deactivate
+
+ENV PATH ${PATH}:/opt/bin
+ENV LD_LIBRARY_PATH ${PATH}:/opt/lib
+
+RUN groupadd -g 1009 model
+RUN useradd -d /home -s /bin/bash -m model -u 1009 -g 1009
+USER model
+ENV HOME /home
+
+CMD ["/bin/bash"]
