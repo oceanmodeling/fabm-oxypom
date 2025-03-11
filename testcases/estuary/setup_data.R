@@ -8,6 +8,7 @@ setwd('./data/')
 ## definition of local functions
 
 Get.Year = function(...) format(as.Date(..., format="%d/%m/%Y"),"%Y")
+as.POSIXct = function(...) base::as.POSIXct(...,,format="%Y-%m-%d %H:%M:%S")
 
 ################################################################################
 ## loading observed values for temperature (temp) wind velocity (wind) and wind
