@@ -7,21 +7,18 @@ tags:
   - ElbeXtreme
 authors:
   - name: Ovidio García-Oliva
-#    orcid: 0000-0003-3483-6036
-#    affiliation: 1
+    orcid: 0000-0001-6060-2001
     corresponding: true
   - name: Carsten Lemmen
     orcid: 0000-0003-3483-6036
-#    affiliation: 1
 affiliations:
   - name: Helmholtz-Zentrum Hereon, Institute of Coastal Systems - Modeling and Analysis, Germany, carsten.lemmen@hereon.de
-#    index: 1
 date: 12 March 2025
 year: 2025
 bibliography: paper.bib
 SPDX-FileCopyrightText: 2025 Helmholtz-Zentrum hereon GmbH
 SPDX-License-Identifier: CC-BY-4.0
-logo_path: ./logo_large.jpg
+#logo_path: ./logo_large.jpg
 ---
 
 # Summary
