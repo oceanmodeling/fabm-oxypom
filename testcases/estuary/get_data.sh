@@ -21,7 +21,7 @@ for NAME in "${NAMES[@]}"; do
     wget $URL -O $FILENAME
     unzip $FILENAME
     TXTFILE="${NAME}.txt"
-    sed -i '/^[^0-9]/ s/^/# /' "$TXTFILE" #Comment lines that are not numerical
+    sed -i'' '/^[^0-9]/ s/^/# /' "$TXTFILE" #Comment lines that are not numerical
 done
 
 cd ..
