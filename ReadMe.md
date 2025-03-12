@@ -19,8 +19,9 @@ SPDX-FileContributor Ovidio Garcia-Oliva <ovidio.garcia@hereon.de>
 --> 
 <!-- [![Prettier style](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 [![CodeFactor](https://www.codefactor.io/repository/github/platipodium/vinos/badge)](https://www.codefactor.io/repository/github/platipodium/vinos
-[![Pipeline](https://codebase.helmholtz.cloud/mussel/netlogo-northsea-species/badges/main/pipeline.svg)](https://codebase.helmholtz.cloud/mussel/netlogo-northsea-species/-/pipelines) 
 -->
+[![Pipeline](https://codebase.helmholtz.cloud/dam-elbextreme/dobgcp/badges/main/pipeline.svg)](https://codebase.helmholtz.cloud/dam-elbextreme/dobgcp/-/pipelines)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](./LICENSES/Apache-2.0.txt)
 
 # DO+BGC (Dissolved Oxygen and BioGeoChemistry)
 
@@ -32,19 +33,19 @@ Currently **DO+BGC** includes:
 * `OxyPOM` (**Oxygen + Particulate Organic Matter**): Simulates oxygen consumption and production in river based on [Holzwarth and Wirtz, 2018](https://doi.org/10.1016/j.ecss.2018.01.020). 
 * `DiaMo` (**Diagnostic Model**): Simulates oxygen consumption and production using a statistical inspired model (WIP). 
 
-The code of these models is located in the directory `.\src' (e.g., `.\src\oxypom` and `.\src\diamo`), and future code developed as part of this model should be here included.
+The code of these models is located in the directory `./src' (e.g., `./src/oxypom` and `./src/diamo`), and future code developed as part of this model should be here included.
 
 ## Requirements
 
 * This model requires:
-    - `FABM` (v1 or above) available in [fabm github](https://github.com/fabm-model/fabm/)    
+    - `FABM` (v1 or above) available in [fabm github](https://github.com/fabm-model/fabm/).
 
 The following is not required to build and run the model but it is for running the test case:
 
 * The physical driver:
-    - `GOTM` (tested with v6) available in [gotm github](https://github.com/orgs/gotm-model/repositories)
+    - `GOTM` (tested with v6.0) available in [gotm github](https://github.com/orgs/gotm-model/repositories).
 
-* The script for downloading forcing and validation data requires the following shell commands:
+* The script for downloading forcing and validation data requires the following shell utilities:
     - `wget`
     - `unzip`
     - `sed`
@@ -54,14 +55,14 @@ The following is not required to build and run the model but it is for running t
 
 ## Testcases
 
-We provide the model with a testcase in the directory `.\testcases`.
-New testcases for **DO+BGC** should be included in a single directory within `.\testcases`.
-Currently, we include the testcase estuary.
+We provide the model with a testcase in the directory `./testcases`.
+New testcases for **DO+BGC** should be included in a single directory within `./testcases`.
+Currently, we include the testcase "Estuary".
 
 ### Testcase Estuary
-This setup uses the physical driver `GOTM` to simulate the water column dynamics in the Elbe estuary in 2005-2024.
+This setup uses the physical driver (or "host", as it is called in FABM jargon) `GOTM` to simulate the water column dynamics in the Elbe estuary in 2005-2024.
 
-To run the testcase go to the directory `.\testcases`.
+To run the testcase go to the directory `./testcases`.
 
 * The model is build with the script `gotm-installation.sh`, in where these variables must be defined: 
     - `GOTMDIR` base directory of GOTM source code
@@ -76,14 +77,14 @@ export FABMDIR=$HOME/tools/fabm/fabm
 export DOBGCPDIR=$HOME/tools/dobgcp/src
 ```
 
-* The script `gotm-installation.sh` creates the directory `.\build` with the building files, and a copy of `gotm` executable in the `.\estuary` directory.
+* The script `gotm-installation.sh` creates the directory `./build` with the building files, and a copy of `gotm` executable in the `./estuary` directory.
 
-Now move to the directory `.\estuary`.
+Now move to the directory `./estuary`.
 
-* The script `get_data.sh` download and unzip the forcing and validation data from [kuestendaten.de](https://www.kuestendaten.de) in a newly created directory `.\data`.
-The downloaded files are used under license [DL-DE->Zero-2.0](https://www.govdata.de/dl-de/zero-2-0).
+* The script `get_data.sh` download and unzip the forcing and validation data from [kuestendaten.de](https://www.kuestendaten.de) in a newly created directory `./data`.
+You can use the downloaded file under the terms of the [DL-DE->Zero-2.0](https://www.govdata.de/dl-de/zero-2-0) license.
 
-* The script `setup_data.R` formatted the data to be read by `GOTM`. It generates the file `meteofile.csv`.
+* The script `setup_data.R` formatts the data to be read by `GOTM`. It generates the file `meteofile.csv`.
 
 * Run the model with `./gotm`. It generates the files `output.nc` and `restart.nc`.
 
@@ -92,7 +93,6 @@ The downloaded files are used under license [DL-DE->Zero-2.0](https://www.govdat
 If everything is correct, the figure `estuary_validation.png` should be produced.
 
 It displays a comparison of simulation and data for temperature and dissolved oxygen values.
-
 
 Summarizing, the entire procedure is:
 
