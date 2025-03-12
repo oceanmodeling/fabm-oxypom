@@ -167,6 +167,7 @@ contains
 		_ADD_SOURCE_(self%id_PHY,d_PHY*d_per_s)
 		_ADD_SOURCE_(self%id_DET,d_DET*d_per_s)
 		_ADD_SOURCE_(self%id_OXY,d_OXY*d_per_s)
+        
         _SET_DIAGNOSTIC_(self%id_dPAR,par)
 
         ! Leave spatial loops (if any)
@@ -198,7 +199,7 @@ contains
                 + salinity * ( -0.033096_rk + 0.014259_rk * (abs_temp/100._rk) -0.0017_rk * ((abs_temp/100._rk)**2))    ! oxigen saturation in accordingly to Weiss 1970
             SOXY = EXP(OSAT) * 1000._rk / ( (8.3145_rk * 298.15_rk / 101325_rk) *1000._rk)  ! oxygen saturation
 
-            if (wind.lt.0._rk) wind=0._rk
+            if (wind.lt.0._rk) wind = 0._rk
 
             if (wind.gt.11._rk) then
             klrear = SQRT((1953.4_rk-128._rk*temp+3.9918_rk*temp**2-  &
@@ -215,5 +216,4 @@ contains
 
       _HORIZONTAL_LOOP_END_
    end subroutine
-
 end module dobgcp_diamo
