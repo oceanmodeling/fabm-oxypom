@@ -213,6 +213,9 @@ contains
 		! Starting auxiliary variables
 		real(rk) :: fmin_tem
 		real(rk) :: fres_tem
+		real(rk) :: fpri_tem 
+		real(rk) :: fIoi_tem 
+		real(rk) :: fmno_tem 
 		real(rk) :: MIN11
 		real(rk) :: MIN12
 		real(rk) :: MIN13
@@ -375,7 +378,7 @@ contains
 		kgp2 = frad2*fnut2*fpri_tem*self%kpp 	! gross pp rate of algae
 		krsp1 = self%fgr*kgp1+(1.0_rk-self%fgr)*fres_tem*self%kmr1 	! total respiration rate of algae
 		krsp2 = self%fgr*kgp2+(1.0_rk-self%fgr)*fres_tem*self%kmr2 	! total respiration rate of algae
-		fram = 1.0_rk+0.5_rk*(1.0_rk+TANH(5.0_rk*(NH4-self%amc)))*(NH4/(NO3+NH4)-1.0_rk) 	! fraction N consumed as NH4
+		fram = 1.0_rk + 0.5_rk*(1.0_rk+TANH(5.0_rk*(NH4-self%amc)))*(NH4/(NO3+NH4)-1.0_rk) 	! fraction N consumed as NH4
 		DISS = self%kdiss*OPAL*(self%sieq-Si) 	! Opal dissolution rate
 		nPP1 = (kgp1-krsp1)*ALG1 	! net primary production rate
 		nPP2 = (kgp2-krsp2)*ALG2 	! net primary production rate
