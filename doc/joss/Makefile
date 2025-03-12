@@ -23,4 +23,4 @@ local-pdf:
 
 
 clean:
-	@rm -f $(PDF) $(XREF) $(HTML) CITATION.cff paper.preprint.*
+	@rm -f $(PDF) $(XREF) $(HTML) CITATION.cff paper.preprint.* *aux *bcf *.xml *.out *.log $(TEX)
