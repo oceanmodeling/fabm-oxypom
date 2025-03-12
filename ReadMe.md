@@ -40,10 +40,13 @@ The code of these models is located in the directory `./src' (e.g., `./src/oxypo
 * This model requires:
     - `FABM` (v1 or above) available in [fabm github](https://github.com/fabm-model/fabm/).
 
+It can be cloned using `git clone https://github.com/fabm-model/fabm.git fabm`.
+
 The following is not required to build and run the model but it is for running the test case:
 
 * The physical driver:
-    - `GOTM` (tested with v6.0) available in [gotm github](https://github.com/orgs/gotm-model/repositories).
+    - `GOTM` (v6.0 latest stable release) available in [gotm github](https://github.com/orgs/gotm-model/repositories).
+    It can be cloned using via `git clone --recursive https://github.com/gotm-model/code.git -b v6.0 gotm6`.
 
 * The script for downloading forcing and validation data requires the following shell utilities:
     - `wget`
@@ -65,16 +68,16 @@ This setup uses the physical driver (or "host", as it is called in FABM jargon) 
 To run the testcase go to the directory `./testcases`.
 
 * The model is build with the script `gotm-installation.sh`, in where these variables must be defined: 
-    - `GOTMDIR` base directory of GOTM source code
-    - `FABMDIR` base directory of FABM source code
-    - `DOBGCPDIR` base directory of dobgcp source code
+    - `GOTM_DIR` base directory of GOTM source code
+    - `FABM_DIR` base directory of FABM source code
+    - `DOBGCP_DIR` base directory of dobgcp source code
 
 By default they are:
 
 ```
-export GOTMDIR=$HOME/tools/gotm/code
-export FABMDIR=$HOME/tools/fabm/fabm
-export DOBGCPDIR=$HOME/tools/dobgcp/src
+export GOTM_DIR=$HOME/tools/gotm6
+export FABM_DIR=$HOME/tools/fabm/fabm
+export DOBGCP_DIR=$HOME/tools/dobgcp/src
 ```
 
 * The script `gotm-installation.sh` creates the directory `./build` with the building files, and a copy of `gotm` executable in the `./estuary` directory.
@@ -108,9 +111,9 @@ RScript plot_output.R
 ## To do
 - [ ] Create the complete script for the testcases
 - [ ] surface oxygen in DiaMo is not working well.
-- [ ] the fabm 0d is not compiling.
+- [x] the fabm 0d is not compiling.
 - [x] check the names of the plotted figures.
-- [ ] check the right licensing for this code
+- [x] check the right licensing for this code
 
 ## License
 Apache-2.0
