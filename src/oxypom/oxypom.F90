@@ -145,12 +145,12 @@ contains
 		call self%register_state_variable(self%id_PON1, 'PON1', 'mmol N m-3', 'PON1', 20.0_rk, minimum=0.0_rk, maximum=1000.0_rk, vertical_movement=self%sv*d_per_s)
 		call self%register_state_variable(self%id_PON2, 'PON2', 'mmol N m-3', 'PON2 ', 20.0_rk, minimum=0.0_rk, maximum=1000.0_rk, vertical_movement=self%sv*d_per_s)
 		call self%register_state_variable(self%id_DON, 'DON', 'mmol N m-3', 'DON', 20.0_rk, minimum=0.0_rk, maximum=1000.0_rk, vertical_movement=0.0_rk*d_per_s)
-		call self%register_state_variable(self%id_PO4, 'PO4', 'mmol P m-3', 'phosphate', 1.0_rk, minimum=0.0_rk, maximum=5.0_rk, vertical_movement=0.0_rk*d_per_s)
-		call self%register_state_variable(self%id_POP1, 'POP1', 'mmol P m-3', 'POP1 ', 0.5_rk, minimum=0.0_rk, maximum=5.0_rk, vertical_movement=self%sv*d_per_s)
-		call self%register_state_variable(self%id_POP2, 'POP2', 'mmol P m-3', 'POP2 ', 0.5_rk, minimum=0.0_rk, maximum=5.0_rk, vertical_movement=self%sv*d_per_s)
-		call self%register_state_variable(self%id_DOP, 'DOP', 'mmol P m-3', 'DOP', 0.5_rk, minimum=0.0_rk, maximum=5.0_rk, vertical_movement=0.0_rk*d_per_s)
-		call self%register_state_variable(self%id_Si, 'Si', 'mmol Si m-3', 'Silicate', 200.0_rk, minimum=0.0_rk, maximum=200.0_rk, vertical_movement=0.0_rk*d_per_s)
-		call self%register_state_variable(self%id_OPAL, 'OPAL', 'mmol Si m-3', 'opal', 10.0_rk, minimum=0.0_rk, maximum=200.0_rk, vertical_movement=self%sv*d_per_s)
+		call self%register_state_variable(self%id_PO4, 'PO4', 'mmol P m-3', 'phosphate', 1.0_rk, minimum=0.0_rk, maximum=50.0_rk, vertical_movement=0.0_rk*d_per_s)
+		call self%register_state_variable(self%id_POP1, 'POP1', 'mmol P m-3', 'POP1 ', 0.5_rk, minimum=0.0_rk, maximum=50.0_rk, vertical_movement=self%sv*d_per_s)
+		call self%register_state_variable(self%id_POP2, 'POP2', 'mmol P m-3', 'POP2 ', 0.5_rk, minimum=0.0_rk, maximum=50.0_rk, vertical_movement=self%sv*d_per_s)
+		call self%register_state_variable(self%id_DOP, 'DOP', 'mmol P m-3', 'DOP', 0.5_rk, minimum=0.0_rk, maximum=50.0_rk, vertical_movement=0.0_rk*d_per_s)
+		call self%register_state_variable(self%id_Si, 'Si', 'mmol Si m-3', 'Silicate', 200.0_rk, minimum=0.0_rk, maximum=1000.0_rk, vertical_movement=0.0_rk*d_per_s)
+		call self%register_state_variable(self%id_OPAL, 'OPAL', 'mmol Si m-3', 'opal', 10.0_rk, minimum=0.0_rk, maximum=2000.0_rk, vertical_movement=self%sv*d_per_s)
 		call self%register_state_variable(self%id_DOxy, 'DOxy', 'mmol O2 m-3', 'dissolved oxygen', 300.0_rk, minimum=0.0_rk, maximum=600.0_rk, vertical_movement=0.0_rk*d_per_s)
      
         ! Register contribution of state to global aggregate variables.
