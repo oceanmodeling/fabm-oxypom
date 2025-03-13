@@ -18,9 +18,16 @@ cff pdf: $(PDF)
     openjournals/inara \
     -o pdf,cff $(SRC)
 
+test:	
+	docker run -it -v $(PWD):/data \
+    -u $(id -u):$(id -g) \
+    openjournals/inara \
+    -o pdf,cff $(SRC) /bin/bash
+
 local-pdf:
 	pandoc --output=$(PDF) --template=joss-template.tex --bibliography=paper.bib  $(SRC)
 
 
 clean:
-	@rm -f $(PDF) $(XREF) $(HTML) CITATION.cff paper.preprint.* *aux *bcf *.xml *.out *.log $(TEX)
+	@rm -f $(PDF) $(XREF) $(HTML) CITATION.cff paper.preprint.* *aux *bcf *.xml *.out *.log $(TEX) *.html
+	@rm -rf jats
