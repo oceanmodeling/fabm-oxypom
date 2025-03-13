@@ -18,7 +18,6 @@ year: 2025
 bibliography: paper.bib
 SPDX-FileCopyrightText: 2025 Helmholtz-Zentrum hereon GmbH
 SPDX-License-Identifier: CC-BY-4.0
-#logo_path: ./logo_large.jpg
 ---
 
 # Summary
