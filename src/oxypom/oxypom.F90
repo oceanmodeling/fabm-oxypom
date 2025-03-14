@@ -79,7 +79,6 @@ module dobgcp_oxypom
 		real(rk) :: SPMI
 		real(rk) :: sv
 		real(rk) :: svALG
-		real(rk) :: tc
    
     contains
         procedure :: initialize
@@ -133,7 +132,7 @@ contains
 		call self%get_parameter(self%SPMI, 'SPMI', 'g m-3', 'inorganic suspended particular matter concentration', default=47.0_rk)
 		call self%get_parameter(self%sv, 'sv', 'm d-1', 'settling velocity POC', default=-0.5_rk)
 		call self%get_parameter(self%svALG, 'svALG', 'm d-1', 'settling velocity phytoplankton', default=-0.5_rk)
-		call self%get_parameter(self%tc, 'tc', 'N m-2', 'critical bottom shear stress for settling', default=0.1_rk)
+
 		! Register state variables
 		call self%register_state_variable(self%id_ALG1, 'ALG1', 'mmol C m-3', 'diatom', 1.0_rk, minimum=0.0_rk, maximum=1000.0_rk, vertical_movement=self%svALG*d_per_s)
 		call self%register_state_variable(self%id_ALG2, 'ALG2', 'mmol C m-3', 'non-diatom', 0.20_rk, minimum=0.0_rk, maximum=1000.0_rk, vertical_movement=self%svALG*d_per_s)
@@ -410,7 +409,7 @@ contains
 		d_DOP = DEC313+DEC323-MIN33 	! DOP
 		d_Si = RAS+DISS-USI 	! Silicate
 		d_OPAL = (1.0_rk-self%fra)*self%asi*MORT1-DISS 	! opal
-		d_DOxy = nPP1+nPP2-MINoxy1-MINoxy2-MINoxy3-2.0_rk*NIT 	! dissolved oxygen
+		d_DOxy = nPP1+nPP2 - MINoxy1-MINoxy2-MINoxy3 -2.0_rk*NIT 	! dissolved oxygen
 
 		! Add sources
 		_ADD_SOURCE_(self%id_ALG1,d_ALG1*d_per_s)
@@ -447,8 +446,9 @@ contains
       	real(rk) :: wind
       	real(rk) :: klrear
       	real(rk) :: DOxy
-      	real(rk) :: OSAT, SOXY
-      
+      	real(rk) :: OSAT
+        real(rk) :: SOXY
+
       	_HORIZONTAL_LOOP_BEGIN_
  	        _GET_(self%id_DOxy,DOxy)
 	        _GET_(self%id_temp,temp)
@@ -457,14 +457,17 @@ contains
 
 	        ! As in ERSEM, taken from WEISS 1970 DEEP SEA RES 17, 721-735.
 			abs_temp = temp + 273.15_rk 	! absolute temperature in Kelvin
+
+			! oxigen saturation in accordingly to Weiss 1970
 			OSAT = -173.4292_rk + 249.6339_rk * (100._rk/abs_temp) + 143.3483_rk * log(abs_temp/100._rk) &
             	-21.8492_rk * (abs_temp/100._rk) &
-                + salinity * ( -0.033096_rk + 0.014259_rk * (abs_temp/100._rk) -0.0017_rk * ((abs_temp/100._rk)**2)) 	! oxigen saturation in accordingly to Weiss 1970
+                + salinity * ( -0.033096_rk + 0.014259_rk * (abs_temp/100._rk) -0.0017_rk * ((abs_temp/100._rk)**2)) 	
+
 			SOXY = EXP(OSAT) * 1000._rk / ( (8.3145_rk * 298.15_rk / 101325_rk) *1000._rk) 	! oxygen saturation
 
-         	if (wind.lt.0._rk) wind = 0._rk
+         	if (wind .lt. 0._rk) wind = 0._rk
 
-         	if (wind.gt.11._rk) then
+         	if (wind .gt. 11._rk) then
             klrear = SQRT((1953.4_rk-128._rk*temp+3.9918_rk*temp**2-  &
                0.050091_rk*temp**3)/660._rk) * (0.02383_rk * wind**3)
          	else

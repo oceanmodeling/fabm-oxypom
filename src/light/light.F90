@@ -75,12 +75,11 @@ contains
       class (type_dobgcp_light), intent(in) :: self
       _DECLARE_ARGUMENTS_DO_COLUMN_
 
-      real(rk) :: swr0, dz, h, one_over_g2, swr, par, z, ext, bioext
+      real(rk) :: swr0, dz, h, one_over_g2, swr, par, z, ext
 
       _GET_SURFACE_(self%id_swr0,swr0)
       _SET_SURFACE_DIAGNOSTIC_(self%id_par0,swr0 * (1.0_rk - self%a))
       z = 0.0_rk
-      bioext = 0.0_rk
       one_over_g2 = 1.0_rk/self%g2
       par = swr0 * (1.0_rk - self%a)
       _DOWNWARD_LOOP_BEGIN_
@@ -90,7 +89,7 @@ contains
          ! center of mass of light weighted layer
          h  = dz * 0.5_rk  - 0.333_rk * (ext + one_over_g2) * dz * dz !second order approximation
          !h = -log((1-exp(-(ext + one_over_g2)*dz))/((ext + one_over_g2)*dz))/(ext + one_over_g2) ! exact solution
-         if(h .lt. (0.1_rk*dz)) h = 0.1_rk * dz 
+         if(h .lt. (0.2_rk*dz)) h = 0.2_rk * dz 
 
          ! Set depth to centre of layer
          z = z + h

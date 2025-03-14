@@ -75,7 +75,7 @@ The model is build with the script `gotm-installation.sh`, in where these variab
 
 By default they are:
 
-    ```bash
+    ``` bash
     export GOTM_DIR=$HOME/tools/gotm6
     export FABM_DIR=$HOME/tools/fabm/fabm
     export DOBGCP_DIR=$HOME/tools/dobgcp/src
@@ -109,7 +109,7 @@ Now move to the directory `.\light`.
 * The script `model_comparison.R` analyses the model output.
 
 If everything is correct, the figure `light_validation.png` should be produced.
-It displays a comparison of simulations using light implementation the default light implementation with the provided by `DO+BGC`.
+It displays a comparison of simulations using the default light implementation with the provided by `DO+BGC`.
 
 The entire procedure is included in `./testcases/run-light-testcase.sh`.
 

@@ -4,10 +4,10 @@
 
 instances:
   light:
-    use: false
-    model: gotm/light
-  oxypom:
     use: true
+    model: dobgcp/light
+  oxypom:
+    use: false
     long_name: oxypom
     model: dobgcp/oxypom
     parameters:
@@ -42,7 +42,7 @@ instances:
       OPAL: 100
      # DOxy: 330.0
   diamo:
-    use: false
+    use: true
     long_name: diamo
     model: dobgcp/diamo
     parameters:
@@ -50,8 +50,7 @@ instances:
       SIM: 47.0
       sinkingPHY: -0.1
       sinkingDET: -0.50
-      attenuationWater: 0.0
-      attenuationSIM: 0.0008
+      attenuationSIM: 0.003
       attenuationPHY: 0.0012
       attenuationDET: 0.0012
       synthesisRef: 1.5
@@ -59,12 +58,12 @@ instances:
       synthesisPar: 0.012
       respirationRef: .012
       respirationQ10: 1.7
-      aggregationRef: 0.001
+      aggregationRef: 0.01
       aggregationQ10: 1.01
-      aggregationPar: 0.0012
+      aggregationPar: 0.012
       kSIM: 0.1
-      degradationRef: 0.50
-      degradationQ10: 1.5
+      mineralizationRef: 0.50
+      mineralizationQ10: 1.5
       kOXY: 2.67
     initialization:
       PHY: 1.8

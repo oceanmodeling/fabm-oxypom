@@ -3,7 +3,6 @@
 # SPDX-FileContributor Ovidio Garcia-Oliva <ovidio.garcia@hereon.de>
 
 if (!require("ncdf4")) install.packages("ncdf4")
-is.oxypom_ = F # True if OxyPOM is validated False if DiaMo is validated
 
 ################################################################################
 ## definition of local functions
