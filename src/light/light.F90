@@ -88,7 +88,7 @@ contains
 
          ! center of mass of light weighted layer
          h  = dz * 0.5_rk - 0.33_rk * (ext + one_over_g2) * dz * dz 
-         if(h.gt.(0.5_rk*dz)) h = 0.5_rk * dz 
+         if(h.gt.dz) h = 0.5_rk * dz 
 
          ! Set depth to centre of layer
          z = z + h
