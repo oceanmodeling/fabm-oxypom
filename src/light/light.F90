@@ -75,35 +75,38 @@ contains
       class (type_dobgcp_light), intent(in) :: self
       _DECLARE_ARGUMENTS_DO_COLUMN_
 
-      real(rk) :: swr0, dz, h, swr, par, z, ext, bioext
+      real(rk) :: swr0, dz, h, one_over_g2, swr, par, z, ext, bioext
 
       _GET_SURFACE_(self%id_swr0,swr0)
       _SET_SURFACE_DIAGNOSTIC_(self%id_par0,swr0 * (1.0_rk - self%a))
       z = 0.0_rk
       bioext = 0.0_rk
       one_over_g2 = 1.0_rk/self%g2
+      par = swr0 * (1.0_rk - self%a)
       _DOWNWARD_LOOP_BEGIN_
          _GET_(self%id_dz,dz)     ! Layer height (m)
          _GET_(self%id_ext,ext)   ! PAR attenuation (m-1)
 
          ! center of mass of light weighted layer
-         h  = dz * 0.5_rk - 0.33_rk * (ext + one_over_g2) * dz * dz 
-         if(h.gt.dz) h = 0.5_rk * dz 
+         h  = dz * 0.5_rk  - 0.333_rk * (ext + one_over_g2) * dz * dz !second order approximation
+         !h = -log((1-exp(-(ext + one_over_g2)*dz))/((ext + one_over_g2)*dz))/(ext + one_over_g2) ! exact solution
+         if(h .lt. (0.1_rk*dz)) h = 0.1_rk * dz 
 
          ! Set depth to centre of layer
          z = z + h
-         bioext = bioext + ext * h
 
          ! Calculate photosynthetically active radiation (PAR), shortwave radiation, and PAR attenuation.
-         par = swr0 * (1.0_rk - self%a) * exp(-z * one_over_g2 - bioext)
+         par = par * exp(-h * (one_over_g2 + ext))
          swr = par + swr0 * self%a * exp(-z / self%g1)
 
          ! Move to bottom of layer
          z = z + dz - h
-         bioext = bioext + ext * (dz - h)
 
          _SET_DIAGNOSTIC_(self%id_swr,swr) ! Shortwave radiation at layer centre
          _SET_DIAGNOSTIC_(self%id_par,par) ! Photosynthetically active radiation at layer centre
+         
+         ! calculate par in bottom of layer/surface of next layer
+         par = par*exp(-(dz-h) * (one_over_g2 + ext))
       _DOWNWARD_LOOP_END_
    end subroutine do_column
 

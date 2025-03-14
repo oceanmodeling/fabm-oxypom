@@ -1,0 +1,44 @@
+# SPDX-FileCopyrightText: 2025 Helmholtz-Zentrum hereon GmbH
+# SPDX-License-Identifier: CC0-1.0
+# SPDX-FileContributor Ovidio Garcia-Oliva <ovidio.garcia@hereon.de>
+
+instances:  
+  light:
+    use: true
+    model: gotm/light
+  oxypom:
+    use: true
+    long_name: bgc
+    model: dobgcp/oxypom
+    parameters:
+      ea: 0.0012  # light attenuation ALG
+      ep: 0.0012  # light attenuation POM
+      es: 0.003    # light attenuation SPM
+      etb: 0.0    # light attenuation background (Should be 0)
+      sv: -.50    # sinking velocity POM
+      svALG: -0.10 # sinking velocity ALG
+      SPMI: 47.0 # inorganic suspended particular matter concentration
+      Io201: 30 # OPTIMAL LIGHT INTENSITY OF alG1 AT 20DEG
+      Io202: 40 # OPTIMAL LIGHT INTENSITY OF alG2 AT 20DEG
+      kmrt: 0.005 # ALG mortality rate at 20deg
+      fgr: 0.01 # fraction of respiration of ALG growing
+      kpp: 1.2 # maximum growth rate ALG
+    initialization:
+      # ALG1: 2.0
+      # ALG2: 2.0
+      POC1: .01
+      POC2: .1
+      DOC: 1.1
+      NH4: 10.1
+      NO3: 250.00
+      PON1: 1.1
+      PON2: 1.1
+      DON: 1.01
+      PO4: 3.3
+      POP1: .01
+      POP2: .01
+      DOP: 0.1
+      Si: 100
+      OPAL: 100
+     # DOxy: 330.0
+   
