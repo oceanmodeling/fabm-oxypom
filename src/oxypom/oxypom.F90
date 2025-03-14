@@ -168,7 +168,7 @@ contains
         call self%register_dependency(self%id_I0, standard_variables%surface_downwelling_shortwave_flux)
 
         ! Contribute to light attenuation
-        call self%add_to_aggregate_variable(standard_variables%attenuation_coefficient_of_photosynthetic_radiative_flux, self%etb + self%es*self%SPMI)
+        !call self%add_to_aggregate_variable(standard_variables%attenuation_coefficient_of_photosynthetic_radiative_flux, self%etb + self%es*self%SPMI)
         call self%add_to_aggregate_variable(standard_variables%attenuation_coefficient_of_photosynthetic_radiative_flux, self%id_ALG1, scale_factor=self%ea)
         call self%add_to_aggregate_variable(standard_variables%attenuation_coefficient_of_photosynthetic_radiative_flux, self%id_ALG2, scale_factor=self%ea)
         call self%add_to_aggregate_variable(standard_variables%attenuation_coefficient_of_photosynthetic_radiative_flux, self%id_POC1, scale_factor=self%ep)
