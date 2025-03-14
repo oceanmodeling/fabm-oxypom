@@ -1,5 +1,5 @@
 !! SPDX-FileCopyrightText: 2025 Helmholtz-Zentrum hereon GmbH
-!! SPDX-License-Identifier: GPL-2.0+
+!! SPDX-License-Identifier: GPL-2.0-only
 !! SPDX-FileContributor Ovidio Garcia-Oliva <ovidio.garcia@hereon.de>
 
 #include "fabm_driver.h"
@@ -81,12 +81,13 @@ contains
       _SET_SURFACE_DIAGNOSTIC_(self%id_par0,swr0 * (1.0_rk - self%a))
       z = 0.0_rk
       bioext = 0.0_rk
+      one_over_g2 = 1.0_rk/self%g2
       _DOWNWARD_LOOP_BEGIN_
          _GET_(self%id_dz,dz)     ! Layer height (m)
          _GET_(self%id_ext,ext)   ! PAR attenuation (m-1)
 
          ! center of mass of light weighted layer
-         h  = dz * 0.5_rk - 0.33_rk * (ext + 1.0_rk/self%g2) * dz * dz 
+         h  = dz * 0.5_rk - 0.33_rk * (ext + one_over_g2) * dz * dz 
          if(h.gt.(0.5_rk*dz)) h = 0.5_rk * dz 
 
          ! Set depth to centre of layer
@@ -94,7 +95,7 @@ contains
          bioext = bioext + ext * h
 
          ! Calculate photosynthetically active radiation (PAR), shortwave radiation, and PAR attenuation.
-         par = swr0 * (1.0_rk - self%a) * exp(-z / self%g2 - bioext)
+         par = swr0 * (1.0_rk - self%a) * exp(-z * one_over_g2 - bioext)
          swr = par + swr0 * self%a * exp(-z / self%g1)
 
          ! Move to bottom of layer
