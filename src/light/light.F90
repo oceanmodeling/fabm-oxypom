@@ -1,5 +1,5 @@
 !! SPDX-FileCopyrightText: 2025 Helmholtz-Zentrum hereon GmbH
-!! SPDX-License-Identifier: GPL-2.0
+!! SPDX-License-Identifier: GPL-2.0+
 !! SPDX-FileContributor Ovidio Garcia-Oliva <ovidio.garcia@hereon.de>
 
 #include "fabm_driver.h"
@@ -87,7 +87,7 @@ contains
 
          ! center of mass of light weighted layer
          h  = dz * 0.5_rk - 0.33_rk * (ext + 1.0_rk/self%g2) * dz * dz 
-         if(h.gt.0.5_rk*dz) h = 0.1_rk * dz 
+         if(h.gt.(0.5_rk*dz)) h = 0.5_rk * dz 
 
          ! Set depth to centre of layer
          z = z + h
