@@ -97,13 +97,13 @@ contains
         call self%register_dependency(self%id_par, standard_variables%downwelling_photosynthetic_radiative_flux)
         call self%register_dependency(self%id_depth, standard_variables%depth)
         call self%register_dependency(self%id_wind, standard_variables%wind_speed)
-        call self%register_dependency(self%id_I0, standard_variables%surface_downwelling_photosynthetic_radiative_flux)
+        call self%register_dependency(self%id_I0, standard_variables%surface_downwelling_shortwave_flux)
 
 		! Contribute to light attenuation
 		call self%add_to_aggregate_variable(standard_variables%attenuation_coefficient_of_photosynthetic_radiative_flux, self%id_PHY, scale_factor=self%attenuationPHY)
 		call self%add_to_aggregate_variable(standard_variables%attenuation_coefficient_of_photosynthetic_radiative_flux, self%id_DET, scale_factor=self%attenuationDET)
 		call self%add_to_aggregate_variable(standard_variables%attenuation_coefficient_of_photosynthetic_radiative_flux, self%id_OXY, scale_factor=0.0_rk)
-		call self%add_to_aggregate_variable(standard_variables%attenuation_coefficient_of_photosynthetic_radiative_flux, self%attenuationWater + self%attenuationSIM*self%SIM)
+		!call self%add_to_aggregate_variable(standard_variables%attenuation_coefficient_of_photosynthetic_radiative_flux, self%attenuationWater + self%attenuationSIM*self%SIM)
 
     ! Register dependencies on external state variables.
 
@@ -153,7 +153,7 @@ contains
 		_GET_(self%id_DET,DET)
 		_GET_(self%id_OXY,OXY)
 		! Starting auxiliary calculations
-		attenuationBack = self%attenuationWater + self%attenuationSIM*self%SIM 	! light extinction coefficient
+		!attenuationBack = self%attenuationWater + self%attenuationSIM*self%SIM 	! light extinction coefficient
 		synthesis = self%synthesisRef*self%synthesisQ10**(temp-self%tempRef)*(1.0_rk-exp(-self%synthesisPar*par))*PHY 	! photosynthesis rate
 		respiration = self%respirationRef*self%respirationQ10**(temp-self%tempRef)*PHY 	! respiration rate
 		aggregation = self%aggregationRef*self%aggregationQ10**(temp-self%tempRef)*PHY*(DET+self%kSIM*self%SIM*exp(-self%aggregationPar*par)) 	! aggregation rate

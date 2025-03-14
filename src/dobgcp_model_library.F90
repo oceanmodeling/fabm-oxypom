@@ -22,6 +22,7 @@ contains
    subroutine create(self, name, model)
    use dobgcp_oxypom
    use dobgcp_diamo
+   use dobgcp_light
    ! Add use statements for new models here
 
       class (type_factory), intent(in) :: self
@@ -32,6 +33,7 @@ contains
          ! Add case statements for new models here
          case ('oxypom'); allocate(type_dobgcp_oxypom::model)
          case ('diamo'); allocate(type_dobgcp_diamo::model)
+         case ('light'); allocate(type_dobgcp_light::model)
          case default
             call self%type_base_model_factory%create(name, model)
       end select
