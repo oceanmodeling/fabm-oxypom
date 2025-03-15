@@ -31,16 +31,17 @@ Additional routines for calculating the attenuation of photosynthetically active
 <!-- 2 paragraph summary -->
 The processes represented in DO+BGC makes it ideal to study DO in fresh, marine, and transitional waters.
 With this model, we include a testcase for simulating DO+BGC in the Cuxhaven station in the Elbe estuary.
-This testcase uses GOTM `[@GOTM]` to simulate vertical 1D hydrodynamics and includes realistic parameterization for tidal dynamics `[@Reese2024]` and scripts for downloading  real meteorological forcing from [kuestendaten.de](https://www.kuestendaten.de).
+This testcase uses the General Ocean Turbulence Model (GOTM) [@Burchard2002] to simulate vertical 1D hydrodynamics with realistic parameterization for tidal dynamics `[@Reese2024]` and scripts for downloading real meteorological forcing from [kuestendaten.de](https://www.kuestendaten.de).
 
 # Statement of need
 
 Dissolved oxygen (DO) is a key variable to assess water quality and general ecological state of running and standing aquatic ecosystems .
-Moreover, DO can mediate between meteorological extremes and biological effects, e.g. heatwaves in estuaries `[@Tassone2022]`.
-A model similar to OxyPOM was implemented by `@Holzwarth2018a` using Delwaq `[@Casulli2008]` and coupled to Untrim `[@Sehilli2014]` as physical driver in an idealization of the Elbe estuary.
+Moreover, DO can mediate between meteorological extremes and biological effects, e.g. heatwaves in estuaries [@Tassone2022].
+In consequence a model that resolves the biotic and abiotic drivers for DO dynamics  
+A model similar to OxyPOM was implemented by @Holzwarth2018a using Delwaq [@Blaw2009] and coupled to Untrim [@Sehili2014] as physical driver in an idealization of the Elbe estuary.
 This implementation, however, was limited to this specific application, and thus lacking portability.
-By implementing this model in the Fortran-based Framework for Aquatic Biogeochemical Models (FABM) `[@Bruggeman2014]`, OxyPOM can be used with many different physical drivers, geographical domains, and coupled with other bio-geochemical models.
-OxyPOM uses vertically-explicit formulations for re-aeration and light attenuation, which are lacking in the `@Holzwarth2018a` implementation.
+By implementing this model in the Fortran-based Framework for Aquatic Biogeochemical Models (FABM) [@Bruggeman2014], OxyPOM can be used with many different physical drivers, geographical domains, and coupled with other bio-geochemical models.
+OxyPOM uses vertically-explicit formulations for re-aeration and light attenuation, which are lacking in the @Holzwarth2018a implementation.
 Additionally, DO+BGC includes DiaMo as a simplified model for quick assessments for DO dynamics in applications where modelling a complete bio-geochemical dynamics is not required, and light a second order correction for light attenuation in water.
 
 # Key features of the model
@@ -71,9 +72,9 @@ Only ALG1 depends on free silicate, thus representing diatoms.
 
 DiaMo resolves the dynamics of DO, living and not-living organic particulate carbon (micro-algae and detritus, respectively) under the assumption that light and not nutrients are the limiting factor for primary production.
 DiaMo is thus a carbon-based implementation.
-DO is solved with the mass balance equation of OxyPOM (Eq.~\ref{eq:do}), setting nitrification to zero.
+DO is solved with the mass balance equation of OxyPOM (Eq. \autoref{eq:do}), setting nitrification to zero.
 
-As part of the vertical-implicit formulation, a key feature of DO+BGC is an alternative to the FABM implementation of the light model used by the General Ocean Turbulence Model (GOTM) [@GOTM].
+As part of the vertical-implicit formulation, a key feature of DO+BGC is an alternative to the FABM implementation of the light model used by the General Ocean Turbulence Model (GOTM) [@Burchard2002].
 While the default light model assumes that PAR in a vertical layer $z$ of thickness $\Delta z$ is located in the center of the layer, thus in $z + 0.5 \cdot \Delta z$, the light model included in DO+BGC calculate PAR in the representative depth $\bar{z}$ which satisfies the mean value theorem
 
 \begin{equation}
@@ -116,7 +117,7 @@ and the second order approximation is
 
 # Model documentation and license
 
-The model is documented in short form in the README section of the repository and a complete description of the science behind OxyPOM is in `@Holzwarth2018a`.
+The model is documented in short form in the README section of the repository and a complete description of the science behind OxyPOM is in @Holzwarth2018a.
 Data from third parties are not included with the model, scripts for their download are however included.
 Downloaded data are licensed under a multitude of open source licenses.
 The model, its results and own proprietary data are released under open source licenses, mostly Apache 2.0, GPL-2.0-only and CC-by-SA 4.0.
