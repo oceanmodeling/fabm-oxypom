@@ -32,7 +32,7 @@ It displays a comparison of the default implementation of light with the one pro
 
 ## License
 
-CC0-1.0
+Apache-2.0
 
 ## Project status
 
