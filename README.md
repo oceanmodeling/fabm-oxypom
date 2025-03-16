@@ -39,19 +39,19 @@ The code of these models is located in the directory `.\src` (e.g., `.\src\oxypo
 ## Requirements
 
 * This model requires:
-    -`FABM` (v1 or above) available in [fabm github](https://github.com/fabm-model/fabm/).
+    - `FABM` (v1 or above) available in [fabm github](https://github.com/fabm-model/fabm/).
     It can be cloned using `git clone https://github.com/fabm-model/fabm.git fabm`.
 
 * The physical driver:
-    -`GOTM` (v6.0 latest stable release) available in [gotm github](https://github.com/orgs/gotm-model/repositories).
+    - `GOTM` (v6.0 latest stable release) available in [gotm github](https://github.com/orgs/gotm-model/repositories).
     It can be cloned using via `git clone --recursive https://github.com/gotm-model/code.git -b v6.0 gotm6`.
 
 The following is not required to build and run the model but it is for running the test case:
 
 * The script for downloading forcing and validation data requires the following shell commands:
-    -`wget`
-    -`unzip`
-    -`sed`
+    - `wget`
+    - `unzip`
+    - `sed`
 
 * The scripts for generating forcing files setup and plotting routines for model validation require:
     -`R` (v4.3 or above) available in [r home](https://www.r-project.org/) with the library `ncdf4` installed.
@@ -106,7 +106,7 @@ Follow steps 1-2 of the estuary testcase.
 
 Now move to the directory `.\light`.
 
-* The script `model_comparison.R` analyses the model output.
+- The script `model_comparison.R` analyses the model output.
 
 If everything is correct, the figure `light_validation.png` should be produced.
 It displays a comparison of simulations using the default light implementation with the provided by `DO+BGC`.
