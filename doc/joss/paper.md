@@ -101,8 +101,8 @@ DO is solved with the mass balance equation of OxyPOM (\autoref{eq:do}), setting
 The complete system is represented as
 
 \begin{eqnarray}
- \frac{d \textrm{Phytoplankton}}{dt} &=& \textrm{photosynthesis} - \textrm{respiration} - \textrm{aggregation} \\
- \frac{d \textrm{Detritus}}{dt} &=& \textrm{aggregation} - \textrm{mineralization} \\
+ \frac{d \textrm{Phy}}{dt} &=& \textrm{photosynthesis} - \textrm{respiration} - \textrm{aggregation} \\
+ \frac{d \textrm{Det}}{dt} &=& \textrm{aggregation} - \textrm{mineralization} \\
  \frac{d \textrm{DO}}{dt} &=& \textrm{re-aeration} + (\textrm{photosynthesis} - \textrm{respiration}) - \textrm{mineralization}.
 \end{eqnarray}
 
