@@ -14,7 +14,7 @@ authors:
     orcid: 0000-0003-3483-6036
     affiliation: 1
 affiliations:
-  - name: Helmholtz-Zentrum Hereon, Institute of Coastal Systems - Modeling and Analysis, Germany, carsten.lemmen@hereon.de
+  - name: Helmholtz-Zentrum Hereon, Institute of Coastal Systems - Modeling and Analysis, Germany, ovidio.garcia@hereon.de
     index: 1
 date: 11 March 2025
 year: 2025
@@ -24,6 +24,7 @@ SPDX-License-Identifier: CC-BY-4.0
 ---
 
 # Summary
+
 DO+BGC (Dissolved Oxygen and BioGeoChemistry) is a collection of aquatic biogeochemical models that consider key processes for dissolved oxygen (DO) dynamics, such as re-aeration, mineralization, and primary production.
 It includes two main components: OxyPOM (Oxygen and Particulate Organic Matter) and DiaMo (Diagnostic Model).
 Both models are implemented in the Fortran-based Framework for Aquatic Biogeochemical Models (FABM), which enables their deployment in different physical drivers in realistic and idealized applications.
@@ -35,7 +36,7 @@ This testcase uses the General Ocean Turbulence Model (GOTM) [@Burchard2002] to 
 
 # Statement of need
 
-Dissolved oxygen (DO) is a key variable for water quality assessment and the study of the ecological state of running and standing aquatic ecosystems [@EC2006].
+Dissolved oxygen (DO) is a key variable for water quality assessment of the ecological state of running and standing aquatic ecosystems [@EC2006], and an intermediate step between atmospheric extremes and biological impacts [@Tassone2022].
 Models for DO in waters are thus necessary.
 Most models, however, describe DO dynamic as a side product of more or less complex biotic and abiotic dynamics.
 DO+BGC focuses on the key processes that produce or consume oxygen while removing the complexity of adjacent processes.
