@@ -15,3 +15,4 @@ make install
 cd ../../
 
 ln -f ./build/gotm/gotm ./estuary/gotm
+ln -f ./build/gotm/gotm ./light/gotm

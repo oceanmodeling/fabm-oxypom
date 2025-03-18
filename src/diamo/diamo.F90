@@ -41,8 +41,8 @@ module dobgcp_diamo
 		real(rk) :: aggregationQ10
 		real(rk) :: aggregationPar
 		real(rk) :: kSIM
-		real(rk) :: degradationRef
-		real(rk) :: degradationQ10
+		real(rk) :: mineralizationRef
+		real(rk) :: mineralizationQ10
 		real(rk) :: kOXY
    
     contains
@@ -65,7 +65,6 @@ contains
 		call self%get_parameter(self%SIM, 'SIM', 'g m-3', 'inorganic suspended particular matter concentration', default=47.0_rk)
 		call self%get_parameter(self%sinkingPHY, 'sinkingPHY', 'm d-1', 'sinking velocity of phytoplankton', default=-0.1_rk)
 		call self%get_parameter(self%sinkingDET, 'sinkingDET', 'm d-1', 'sinking velocity of detritus', default=-0.3_rk)
-		call self%get_parameter(self%attenuationWater, 'attenuationWater', 'm2 g-1', 'light extinction water', default=0.03_rk)
 		call self%get_parameter(self%attenuationSIM, 'attenuationSIM', 'm-1', 'light extinction suspended inorganic matter', default=0.08_rk)
 		call self%get_parameter(self%attenuationPHY, 'attenuationPHY', 'm2 mmol C-1', 'specific light extinction coeff. Algae', default=0.0012_rk)
 		call self%get_parameter(self%attenuationDET, 'attenuationDET', 'm2 mmol C-1', 'specific light extinction coeff. POC', default=0.0012_rk)
@@ -78,8 +77,8 @@ contains
 		call self%get_parameter(self%aggregationQ10, 'aggregationQ10', '--', 'temperature sensitivity of aggregation', default=1.04_rk)
 		call self%get_parameter(self%aggregationPar, 'aggregationPar', 'm2 W-1', 'reference value to rescaling light to particles ', default=50.0_rk)
 		call self%get_parameter(self%kSIM, 'kSIM', 'mmol C g-1', 'equivalence of SIM to carbon in aggregation for unit consistency', default=0.07_rk)
-		call self%get_parameter(self%degradationRef, 'degradationRef', 'd-1', 'reference degradation rate', default=1.0_rk)
-		call self%get_parameter(self%degradationQ10, 'degradationQ10', '--', 'temperature sensitivity of degradation', default=1.7_rk)
+		call self%get_parameter(self%mineralizationRef, 'mineralizationRef', 'd-1', 'reference mineralization rate', default=1.0_rk)
+		call self%get_parameter(self%mineralizationQ10, 'mineralizationQ10', '--', 'temperature sensitivity of mineralization', default=1.7_rk)
 		call self%get_parameter(self%kOXY, 'kOXY', 'mmol O2 mmol C-1', 'equivalence of carbon to oxygen', default=2.667_rk)
 		! Register state variables
 		call self%register_state_variable(self%id_PHY, 'PHY', 'mmol C m-3', 'phytoplankton concentration', 1.80_rk, minimum=0.0_rk, maximum=1000.0_rk, vertical_movement=self%sinkingPHY*d_per_s)
@@ -97,13 +96,13 @@ contains
         call self%register_dependency(self%id_par, standard_variables%downwelling_photosynthetic_radiative_flux)
         call self%register_dependency(self%id_depth, standard_variables%depth)
         call self%register_dependency(self%id_wind, standard_variables%wind_speed)
-        call self%register_dependency(self%id_I0, standard_variables%surface_downwelling_photosynthetic_radiative_flux)
+        call self%register_dependency(self%id_I0, standard_variables%surface_downwelling_shortwave_flux)
 
 		! Contribute to light attenuation
 		call self%add_to_aggregate_variable(standard_variables%attenuation_coefficient_of_photosynthetic_radiative_flux, self%id_PHY, scale_factor=self%attenuationPHY)
 		call self%add_to_aggregate_variable(standard_variables%attenuation_coefficient_of_photosynthetic_radiative_flux, self%id_DET, scale_factor=self%attenuationDET)
 		call self%add_to_aggregate_variable(standard_variables%attenuation_coefficient_of_photosynthetic_radiative_flux, self%id_OXY, scale_factor=0.0_rk)
-		call self%add_to_aggregate_variable(standard_variables%attenuation_coefficient_of_photosynthetic_radiative_flux, self%attenuationWater + self%attenuationSIM*self%SIM)
+		call self%add_to_aggregate_variable(standard_variables%attenuation_coefficient_of_photosynthetic_radiative_flux, self%attenuationSIM*self%SIM)
 
     ! Register dependencies on external state variables.
 
@@ -126,12 +125,10 @@ contains
 		real(rk) :: DET
 		real(rk) :: OXY
 		! Starting auxiliary variables
-		real(rk) :: attenuationBack
 		real(rk) :: synthesis
 		real(rk) :: respiration
 		real(rk) :: aggregation
-		real(rk) :: degradation
-		real(rk) :: oxygenation
+		real(rk) :: mineralization
 		! Starting derivatives state variables
 		real(rk) :: d_PHY
 		real(rk) :: d_DET
@@ -153,20 +150,19 @@ contains
 		_GET_(self%id_DET,DET)
 		_GET_(self%id_OXY,OXY)
 		! Starting auxiliary calculations
-		attenuationBack = self%attenuationWater + self%attenuationSIM*self%SIM 	! light extinction coefficient
 		synthesis = self%synthesisRef*self%synthesisQ10**(temp-self%tempRef)*(1.0_rk-exp(-self%synthesisPar*par))*PHY 	! photosynthesis rate
 		respiration = self%respirationRef*self%respirationQ10**(temp-self%tempRef)*PHY 	! respiration rate
 		aggregation = self%aggregationRef*self%aggregationQ10**(temp-self%tempRef)*PHY*(DET+self%kSIM*self%SIM*exp(-self%aggregationPar*par)) 	! aggregation rate
-		degradation = self%degradationRef*self%degradationQ10**(temp-self%tempRef)*DET 	! degradation rate
-		oxygenation = -.0_rk 	! reoxygenation rate
+		mineralization = self%mineralizationRef*self%mineralizationQ10**(temp-self%tempRef)*DET 	! mineralization rate
 		! Starting state variable derivation calculations
 		d_PHY = synthesis - respiration - aggregation 	! phytoplankton concentration
-		d_DET = aggregation - degradation 	! detritus concentration
-		d_OXY = oxygenation + self%kOXY*(synthesis - respiration - degradation) 	! oxygen concentration
+		d_DET = aggregation - mineralization 	! detritus concentration
+		d_OXY = self%kOXY*(synthesis - respiration - mineralization) 	! oxygen concentration
 		! Add sources
 		_ADD_SOURCE_(self%id_PHY,d_PHY*d_per_s)
 		_ADD_SOURCE_(self%id_DET,d_DET*d_per_s)
 		_ADD_SOURCE_(self%id_OXY,d_OXY*d_per_s)
+        
         _SET_DIAGNOSTIC_(self%id_dPAR,par)
 
         ! Leave spatial loops (if any)
@@ -183,7 +179,8 @@ contains
         real(rk) :: wind
         real(rk) :: klrear
         real(rk) :: OXY
-        real(rk) :: OSAT, SOXY
+        real(rk) :: OSAT
+        real(rk) :: SOXY
       
         _HORIZONTAL_LOOP_BEGIN_
             _GET_(self%id_OXY,OXY)
@@ -193,14 +190,17 @@ contains
 
             ! As in ERSEM, taken from WEISS 1970 DEEP SEA RES 17, 721-735.
             abs_temp = temp + 273.15_rk     ! absolute temperature in Kelvin
+
+            ! oxigen saturation in accordingly to Weiss 1970
             OSAT = -173.4292_rk + 249.6339_rk * (100._rk/abs_temp) + 143.3483_rk * log(abs_temp/100._rk) &
                 -21.8492_rk * (abs_temp/100._rk) &
-                + salinity * ( -0.033096_rk + 0.014259_rk * (abs_temp/100._rk) -0.0017_rk * ((abs_temp/100._rk)**2))    ! oxigen saturation in accordingly to Weiss 1970
+                + salinity * ( -0.033096_rk + 0.014259_rk * (abs_temp/100._rk) -0.0017_rk * ((abs_temp/100._rk)**2))   
+
             SOXY = EXP(OSAT) * 1000._rk / ( (8.3145_rk * 298.15_rk / 101325_rk) *1000._rk)  ! oxygen saturation
 
-            if (wind.lt.0._rk) wind=0._rk
+            if (wind .lt. 0._rk) wind = 0._rk
 
-            if (wind.gt.11._rk) then
+            if (wind .gt. 11._rk) then
             klrear = SQRT((1953.4_rk-128._rk*temp+3.9918_rk*temp**2-  &
                0.050091_rk*temp**3)/660._rk) * (0.02383_rk * wind**3)
             else
@@ -215,5 +215,4 @@ contains
 
       _HORIZONTAL_LOOP_END_
    end subroutine
-
 end module dobgcp_diamo
