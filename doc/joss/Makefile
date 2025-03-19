@@ -9,6 +9,9 @@ PDF=$(SRC:.md=.pdf)
 XREF=$(SRC:.md=.crossref)
 HTML=$(SRC:.md=.html)
 
+.PHONY: all cff test pdf local-pdf clean
+.FORCE: pdf
+
 all:
 cff pdf: $(PDF)
 
