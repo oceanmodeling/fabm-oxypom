@@ -1,10 +1,14 @@
 ---
-title: "DO+BGC (Dissolved Oxygen and BioGeoChemistry)"
+title: "FABM OxyPOM and DiaMO: simple models for dissolved oxygen and biogeochemistry"
 tags:
   - FABM
   - Biogeochemistry
   - Oxygen
   - ElbeXtreme
+  - OxyPOM
+  - DiaMO
+  - Fortran
+  - Water quality
 authors:
   - name: Ovidio García-Oliva
     orcid: 0000-0001-6060-2001
@@ -12,8 +16,8 @@ authors:
   - name: Carsten Lemmen
     orcid: 0000-0003-3483-6036
 affiliations:
-  - name: Helmholtz-Zentrum Hereon, Institute of Coastal Systems - Modeling and Analysis, Germany, carsten.lemmen@hereon.de
-date: 12 March 2025
+  - name: Helmholtz-Zentrum Hereon, Institute of Coastal Systems - Modeling and Analysis, Germany, ovidio.garcia@hereon.de
+date: 19 March 2025
 year: 2025
 bibliography: paper.bib
 SPDX-FileCopyrightText: 2025 Helmholtz-Zentrum hereon GmbH
@@ -21,26 +25,23 @@ SPDX-License-Identifier: CC-BY-4.0
 ---
 
 # Summary
-DO+BGC (Dissolved Oxygen and BioGeoChemistry) is a collection of aquatic biogeochemical models that consider key processes for dissolved oxygen (DO) dynamics, such as re-aeration, mineralization, and primary production.
-It includes two main components: OxyPOM (Oxygen and Particulate Organic Matter) and DiaMo (Diagnostic Model).
-Both models are implemented in the Fortran-based Framework for Aquatic Biogeochemical Models (FABM), which enables their deployment in different physical drivers in realistic and idealized applications.
+
+OxyPOM (Oxygen and Particulate Organic Matter) and DiaMO (Diagnostic Model for Oxygen) are aquatic biogeochemical models that consider key processes for dissolved oxygen (DO) dynamics, such as re-aeration, mineralization, and primary production.
+Both models are implemented in the Fortran-based Framework for Aquatic Biogeochemical Models [FABM, @Bruggeman2014], which enables their deployment in different physical drivers in realistic and idealized applications.
 Additional routines for calculating the attenuation of photosynthetically active radiation are included.
-<!-- 2 paragraph summary -->
-The processes represented in DO+BGC enable studying DO in fresh, marine, and transitional waters.
+The processes represented in OxyPOM and DiaMO enable studying DO in fresh, marine, and transitional waters.
 With this model, we include a testcase for simulating DO in Cuxhaven Station in the Elbe estuary from 2005 to 2024.
 This testcase uses the General Ocean Turbulence Model (GOTM) [@Burchard2002] to simulate vertical 1D hydrodynamics with realistic parameterization for tidal dynamics [@Reese2024] and scripts for downloading real meteorological forcing from [kuestendaten.de](https://www.kuestendaten.de).
 
 # Statement of need
 
-Dissolved oxygen (DO) is a key variable for water quality assessment and the study of the ecological state of running and standing aquatic ecosystems [@EC2006].
-Models for DO in waters are thus necessary.
-Most models, however, describe DO dynamic as a side product of more or less complex biotic and abiotic dynamics.
-DO+BGC focuses on the key processes that produce or consume oxygen while removing the complexity of adjacent processes.
-OxyPOM was implemented by @Holzwarth2018 using Delwaq [@Blaw2009] and coupled with Untrim [@Sehili2014] as the physical driver in an idealization of the Elbe estuary.
+Dissolved oxygen (DO) is a key variable for water quality assessment of the ecological state of running and standing aquatic ecosystems [@EC2006], and an intermediate step between atmospheric extremes and biological impacts [@Tassone2022].
+Models for DO in waters are thus necessary; most existing models, however, describe DO dynamic as a side product of more or less complex biotic and abiotic dynamics. These new models OxyPOM and DiaMO focus on the key processes that produce or consume oxygen while removing the complexity of adjacent processes.
+OxyPOM was implemented by @Holzwarth2018 using DELWAQ [@Blaw2009] and coupled with UnTRIM [@Sehili2014] as the physical driver in an idealization of the Elbe estuary.
 This implementation, however, was limited to this specific application and thus lacked portability.
 Implementing this model in the Fortran-based Framework for Aquatic Biogeochemical Models (FABM) [@Bruggeman2014], OxyPOM can be used with many physical drivers; in different geographical domains; and coupled with other biogeochemical models.
 OxyPOM uses vertically explicit formulations for re-aeration, primary production, and light attenuation, which are lacking in the @Holzwarth2018 implementation.
-Additionally, DO+BGC includes DiaMo as a simplified model for quick assessments for DO dynamics in applications where modelling complete bio-geochemical dynamics is not needed, and a model for light with a second-order correction for attenuation of photosynthetically active radiation in water.
+DiaMO is a simplified model for quick assessments for DO dynamics in applications where modelling complete bio-geochemical dynamics is not needed, and a model for light with a second-order correction for attenuation of photosynthetically active radiation in water.
 
 
 ## OxyPOM: Oxygen and Particulate Organic Matter
@@ -85,14 +86,14 @@ While the full description of the processes in OxyPOM is available in @Holzwarth
 
   3. Settling velocities are set constant, and vertical redistribution of matter is carried out by the physical driver.
 
-We validate DO+BGC models in the Cuxhaven station in the Elbe estuary, where OxyPOM shows high skill by reproducing surface DO.
+We validate both models in the Cuxhaven station in the Elbe estuary, where OxyPOM shows high skill by reproducing surface DO.
 
 ![Validation of OxyPOM model with the testcase estuary.](figure1.png){ width=99% }\
 
-## DiaMo: Diagnostic model
+## DiaMO: Diagnostic model for Oxygen
 
-DiaMo resolves the dynamics of DO, living and non-living organic particulate carbon forms (phytoplankton and detritus, respectively) under the assumption that light, not nutrients, is the limiting factor for primary production.
-DiaMo is thus a carbon-based implementation.
+DiaMO resolves the dynamics of DO, living and non-living organic particulate carbon forms (phytoplankton and detritus, respectively) under the assumption that light, not nutrients, is the limiting factor for primary production.
+DiaMO is thus a carbon-based implementation.
 DO is solved with the mass balance equation of OxyPOM (\autoref{eq:do}), setting nitrification to zero.
 The complete system is represented as
 
@@ -102,11 +103,11 @@ The complete system is represented as
  \frac{d \textrm{DO}}{dt} &=& \textrm{re-aeration} + (\textrm{photosynthesis} - \textrm{respiration}) - \textrm{mineralization}.
 \end{eqnarray}
 
-In DiaMo, aggregation rate is a mortality term for phytoplankton [@Maerz2009].
+In DiaMO, aggregation rate is a mortality term for phytoplankton [@Maerz2009].
 As in OxyPOM, all rates in DiaMO are temperature-dependent.
 
 ## Light
-
+<!-- this paragraph needs rewriting as light is its own model -->
 As part of the vertical-explicit formulation, a key feature of DO+BGC is an alternative to the FABM implementation of the light model used by GOTM [@Burchard2002].
 While the default light model assumes that the photosynthetically active radiation (PAR) in a vertical layer $z$ of thickness $\Delta z$ is in the centre of the layer, the light model included in DO+BGC calculates PAR in the representative depth $\bar{z}$, which satisfies the mean value theorem.
 PAR evaluated at $\bar{z}$ is thus the mean PAR intensity on the layer.
@@ -122,15 +123,13 @@ where $\alpha$ is the light extinction coefficient for the layer, accounting for
 
 # Model documentation and license
 
-The model is documented in short form in the README section of the repository and a complete description of the science behind OxyPOM is in @Holzwarth2018.
-Data from third parties are not included with the model, scripts for their download are however included.
-Downloaded data are licensed under a multitude of open source licenses.
-The model, its results and own proprietary data are released under open source licenses, mostly Apache 2.0, GPL-2.0-only and CC-by-SA 4.0.
-A comprehensive documentation of all licenses is provided via REUSE Software.
+The models are documented in short form in the `ReadMe.md` section of the repository and a complete description of the science behind OxyPOM is in @Holzwarth2018.
+Open access data from third parties are not included with the model, scripts for their download are however included.
+Our own models, scripts and documentations are are released under open source licenses, mostly Apache 2.0, CC0-1.0, and CC-BY-SA-4.0, and where required upstream GPL-2.0-only. A comprehensive documentation of all licenses is provided via REUSE Software.
 
 # Acknowledgements
 
-The development of this model was made possible by the grant no. 03F0954D of the BMBF as part of the DAM mission ‘mareXtreme’, project ElbeXtreme.
+The development of this model was made possible by the grant no. 03F0954D of the BMBF as part of the DAM mission ‘mareXtreme’, project ElbeXtreme. 
 <!-- We are grateful for the open source community that facilitated this research, amongst them the developers of and contributors to FABM, GOTM, Python, R, pandoc, and LaTeX. -->
 
 # References
