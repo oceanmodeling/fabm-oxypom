@@ -9,6 +9,9 @@ PDF=$(SRC:.md=.pdf)
 XREF=$(SRC:.md=.crossref)
 HTML=$(SRC:.md=.html)
 
+.PHONY: all cff test pdf local-pdf clean
+.FORCE: pdf
+
 all:
 cff pdf: $(PDF)
 
@@ -18,5 +21,15 @@ cff pdf: $(PDF)
     openjournals/inara \
     -o pdf,cff $(SRC)
 
+test:	
+	docker run -it -v $(PWD):/data \
+    -u $(id -u):$(id -g) \
+    openjournals/inara \
+    -o pdf,cff $(SRC) /bin/bash
+
+local-pdf:
+	pandoc --output=$(PDF) --template=joss-template.tex --bibliography=paper.bib  $(SRC)
+
 clean:
-	@rm -f $(PDF) $(XREF) $(HTML) CITATION.cff paper.preprint.*
+	@rm -f $(PDF) $(XREF) $(HTML) CITATION.cff paper.preprint.* *aux *bcf *.xml *.out *.log $(TEX) *.html
+	@rm -rf jats

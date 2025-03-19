@@ -19,8 +19,9 @@ SPDX-FileContributor Ovidio Garcia-Oliva <ovidio.garcia@hereon.de>
 -->
 <!-- [![Prettier style](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 [![CodeFactor](https://www.codefactor.io/repository/github/platipodium/vinos/badge)](https://www.codefactor.io/repository/github/platipodium/vinos
-[![Pipeline](https://codebase.helmholtz.cloud/mussel/netlogo-northsea-species/badges/main/pipeline.svg)](https://codebase.helmholtz.cloud/mussel/netlogo-northsea-species/-/pipelines) 
 -->
+[![Pipeline](https://codebase.helmholtz.cloud/dam-elbextreme/oxypom/badges/main/pipeline.svg)](https://codebase.helmholtz.cloud/dam-elbextreme/oxypom/-/pipelines)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](./LICENSES/Apache-2.0.txt)
 
 # DO+BGC (Dissolved Oxygen and BioGeoChemistry)
 
@@ -34,7 +35,7 @@ Currently **DO+BGC** includes:
 * `DiaMo` (**Diagnostic Model**): Simulates oxygen consumption and production using a statistical inspired model.
 * `light`: Second order correction for the calculation of photosynthetically active radiation depth profiles.
 
-The code of these models is located in the directory `.\src` (e.g., `.\src\oxypom` for `OxyPOM`), and future code developed as part of this model should be here included.
+The code of these models is located in the directory `./src' (e.g., `./src/oxypom` and `./src/diamo`), and future code developed as part of this model should be here included.
 
 ## Requirements
 
@@ -58,9 +59,9 @@ The following is not required to build and run the model but it is for running t
 
 ## Testcases
 
-We provide the model with a testcase in the directory `.\testcases`.
-New testcases for **DO+BGC** should be included in a single directory within `.\testcases`.
-Currently, we include the testcase estuary.
+We provide the model with a testcase in the directory `./testcases`.
+New testcases for **DO+BGC** should be included in a single directory within `./testcases`.
+Currently, we include the testcase "Estuary".
 
 ### Testcase Estuary
 
