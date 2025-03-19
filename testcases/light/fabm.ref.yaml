@@ -9,7 +9,7 @@ instances:
   oxypom:
     use: true
     long_name: bgc
-    model: dobgcp/oxypom
+    model: oxypom/oxypom
     parameters:
       ea: 0.0012  # light attenuation ALG
       ep: 0.0012  # light attenuation POM
