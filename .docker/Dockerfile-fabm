@@ -85,7 +85,7 @@ COPY ./testcases/* ${HOME}
 RUN bash ./get_data.sh
 RUN Rscript setup_data.R
 RUN gotm
-#RUN RScript plot_output.R
+# RUN RScript plot_output.R
 # b325f4a25932:~# Rscript plot_output.R
 # Loading required package: ncdf4
 # [1] "vobjtovarid4: error #F: I could not find the requsted var (or dimvar) in the file!"

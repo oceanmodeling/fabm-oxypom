@@ -12,7 +12,6 @@ tags:
 authors:
   - name: Ovidio García-Oliva
     orcid: 0000-0001-6060-2001
-    corresponding: true
   - name: Carsten Lemmen
     orcid: 0000-0003-3483-6036
 affiliations:
