@@ -47,8 +47,8 @@ RUN make -C $GOTMDIR/build install
 CMD ["/bin/bash"]
 
 FROM gotm-fabm AS fabm
-ENV DOBGCP_BASE=/home/dobgcp
-RUN git clone --depth=1 --recurse-submodules https://codebase.helmholtz.cloud/dam-elbextreme/dobgcp.git ${DOBGCP_BASE}
+ENV oxypom_BASE=/home/dobgcp
+RUN git clone --depth=1 --recurse-submodules https://codebase.helmholtz.cloud/dam-elbextreme/oxypom.git ${DOBGCP_BASE}
 RUN cmake -B $GOTMDIR/build -S $GOTMDIR -DCMAKE_INSTALL_PREFIX=/opt -DGOTM_USE_FABM=ON -DFABM_USE_IEEE_ARITHMETIC=OFF -DFABM_DOBGCP_BASE=${DOBGCP_BASE}/src -DFABM_INSTITUTES=dobgcp
 RUN make -C $GOTMDIR/build
 RUN make -C $GOTMDIR/build install

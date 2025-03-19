@@ -1,7 +1,7 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: Dissolved oxygen and BioGeoChemistry
 Upstream-Contact: Ovidio Garcia-Oliva <ovidoi.garcia@hereon.de>
-Source: https://codebase.helmholtz.cloud/dam-elbextreme/dobgcp
+Source: https://codebase.helmholtz.cloud/dam-elbextreme/oxypom
 
 # Sample paragraph, commented out:
 #

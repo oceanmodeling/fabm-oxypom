@@ -20,7 +20,7 @@ SPDX-FileContributor Ovidio Garcia-Oliva <ovidio.garcia@hereon.de>
 <!-- [![Prettier style](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 [![CodeFactor](https://www.codefactor.io/repository/github/platipodium/vinos/badge)](https://www.codefactor.io/repository/github/platipodium/vinos
 -->
-[![Pipeline](https://codebase.helmholtz.cloud/dam-elbextreme/dobgcp/badges/main/pipeline.svg)](https://codebase.helmholtz.cloud/dam-elbextreme/dobgcp/-/pipelines)
+[![Pipeline](https://codebase.helmholtz.cloud/dam-elbextreme/oxypom/badges/main/pipeline.svg)](https://codebase.helmholtz.cloud/dam-elbextreme/oxypom/-/pipelines)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](./LICENSES/Apache-2.0.txt)
 
 # DO+BGC (Dissolved Oxygen and BioGeoChemistry)

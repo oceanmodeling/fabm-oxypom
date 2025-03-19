@@ -16,6 +16,6 @@ push: fabm
 	docker login -u ${CI_REGISTRY_USER} -p ${CI_WRITE_REGISTRY_TOKEN} ${CI_REGISTRY} && \
 	@for V in "fabm"; do  \
 	  IMAGEID=docker images -q platipodium/$$V && \
-	  docker tag ${IMAGEID} ${CI_REGISTRY}/dam-elbextreme/dobgcp/$$V && \
-	  docker image push ${CI_REGISTRY}/dam-elbextreme/dobgcp/$$V && \
+	  docker tag ${IMAGEID} ${CI_REGISTRY}/dam-elbextreme/oxypom/$$V && \
+	  docker image push ${CI_REGISTRY}/dam-elbextreme/oxypom/$$V && \
 	done

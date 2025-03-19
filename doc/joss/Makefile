@@ -30,7 +30,6 @@ test:
 local-pdf:
 	pandoc --output=$(PDF) --template=joss-template.tex --bibliography=paper.bib  $(SRC)
 
-
 clean:
 	@rm -f $(PDF) $(XREF) $(HTML) CITATION.cff paper.preprint.* *aux *bcf *.xml *.out *.log $(TEX) *.html
 	@rm -rf jats
