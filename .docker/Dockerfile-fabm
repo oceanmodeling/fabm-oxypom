@@ -1,4 +1,4 @@
-# Dockerfile for development on Alpine linux with gfortran
+# Multistage Dockerfile for development on Alpine linux with gfortran
 #
 # SPDX-FileContributor: Carsten Lemmen <carsten.lemmen@hereon.de>
 # SPDX-FileCopyrightText: 2024-2025 Helmholtz-Zentrum hereon GmbH
@@ -10,6 +10,8 @@ FROM python:3.11-alpine AS base
 LABEL maintainer="carsten.lemmen@hereon.de"
 LABEL version="0.1a"
 LABEL description="This is a custom Docker image for a development container"
+LABEL license="CC0-1.0"
+LABEL copyright="2024-2025 Helmholtz-Zentrum hereon GmbH"
 
 # Install a development toolchain based on gnu/openmpi, git and  build tools
 RUN apk add --no-cache cmake make bash 
@@ -26,8 +28,8 @@ CMD ["/bin/bash"]
 
 FROM base AS gotm
 
-ENV GOTMDIR /home/gotm
-RUN git clone --depth=1 --recurse-submodules https://github.com/gotm-model/code.git $GOTMDIR
+ENV GOTMDIR=/home/gotm
+RUN git clone --depth=1 --branch=v6.0.7 --recurse-submodules https://github.com/gotm-model/code.git $GOTMDIR
 RUN mkdir -p $GOTMDIR/build
 RUN mkdir -p /opt
 RUN cmake -B $GOTMDIR/build -S $GOTMDIR -DCMAKE_INSTALL_PREFIX=/opt -DGOTM_USE_FABM=OFF
@@ -35,15 +37,19 @@ RUN make -C $GOTMDIR/build
 RUN make -C $GOTMDIR/build install
 CMD ["/bin/bash"]
 
+# Due to missing implementation of the ieee_arithmetic fortran module on alpine/aarch64,
+# we supply the flag -DFABM_USE_IEEE_ARITHMETIC=OFF
 FROM gotm AS gotm-fabm
 ENV GOTM_BASE=$GOTMDIR
-RUN cmake -B $GOTMDIR/build -S $GOTMDIR -DCMAKE_INSTALL_PREFIX=/opt -DGOTM_USE_FABM=ON
+RUN cmake -B $GOTMDIR/build -S $GOTMDIR -DCMAKE_INSTALL_PREFIX=/opt -DGOTM_USE_FABM=ON -DFABM_USE_IEEE_ARITHMETIC=OFF
 RUN make -C $GOTMDIR/build
 RUN make -C $GOTMDIR/build install
 CMD ["/bin/bash"]
 
 FROM gotm-fabm AS fabm
-RUN cmake -B $GOTMDIR/build -S $GOTMDIR -DCMAKE_INSTALL_PREFIX=/opt -DGOTM_USE_FABM=ON -DFABM_DOBGCP_BASE=./src -DFABM_INSTITUTES=dobgcp
+ENV DOBGCP_BASE=/home/dobgcp
+RUN git clone --depth=1 --recurse-submodules https://codebase.helmholtz.cloud/dam-elbextreme/dobgcp.git ${DOBGCP_BASE}
+RUN cmake -B $GOTMDIR/build -S $GOTMDIR -DCMAKE_INSTALL_PREFIX=/opt -DGOTM_USE_FABM=ON -DFABM_USE_IEEE_ARITHMETIC=OFF -DFABM_DOBGCP_BASE=${DOBGCP_BASE}/src -DFABM_INSTITUTES=dobgcp
 RUN make -C $GOTMDIR/build
 RUN make -C $GOTMDIR/build install
 CMD ["/bin/bash"]
@@ -79,7 +85,7 @@ COPY ./testcases/* ${HOME}
 RUN bash ./get_data.sh
 RUN Rscript setup_data.R
 RUN gotm
-#RUN RScript plot_output.R # @todo does not work yet
+#RUN RScript plot_output.R
 # b325f4a25932:~# Rscript plot_output.R
 # Loading required package: ncdf4
 # [1] "vobjtovarid4: error #F: I could not find the requsted var (or dimvar) in the file!"
