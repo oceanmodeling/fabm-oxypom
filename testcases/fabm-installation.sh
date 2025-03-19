@@ -4,11 +4,11 @@
 
 export GOTM_DIR=$HOME/tools/gotm6
 export FABM_DIR=$HOME/tools/fabm/fabm
-export DOBGCP_DIR=$HOME/tools/dobgcp/src
+export OXYPOM_DIR=$HOME/tools/oxypom/src
 
 mkdir -p ./build/fabm-0d
 cd ./build/fabm-0d
-cmake -S $FABM_DIR/src/drivers/0d -DFABM_HOST=0d -DGOTM_BASE=$GOTM_DIR -DFABM_INSTITUTES="examples;gotm;dobgcp" -DFABM_DOBGCP_BASE=$DOBGCP_DIR 
+cmake -S $FABM_DIR/src/drivers/0d -DFABM_HOST=0d -DGOTM_BASE=$GOTM_DIR -DFABM_INSTITUTES="examples;gotm;oxypom" -DFABM_OXYPOM_BASE=$OXYPOM_DIR 
 make
 make install
 

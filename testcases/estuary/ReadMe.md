@@ -6,8 +6,9 @@ SPDX-FileContributor Ovidio Garcia-Oliva <ovidio.garcia@hereon.de>
 
 # Testcase Estuary `./testcases/estuary`
 
-This directory includes a testcase for validation of **DO+BGC** in a station in the Elbe estuary (Cuxhaven).
+This directory includes a testcase for validation of OxyPOM and DiaMO in a station in the Elbe estuary (Cuxhaven).
 It includes:
+
 * configuration files
 * external data acquisition and management
 
@@ -22,7 +23,7 @@ Three configuration files are required to set-up the simulation:
 
 * `gotm.yaml`: physical configuration (coordinates, tidal components, depth, etc.) and location of forcing files.
 
-* `fabm.yaml`: configuration (parameterization and initial conditions) for **DO+BGC** models.
+* `fabm.yaml`: configuration (parameterization and initial conditions) for OxyPOM and DiaMO models.
 
 * `output.yaml`: configuration for model output.
 
@@ -36,7 +37,7 @@ The downloaded files are used under license [DL-DE->Zero-2.0](https://www.govdat
 
 * `setup_data.R`: format the data to be read by `GOTM`. It generates the file `.\data\meteofile.csv`.
 
-Finally, to plot a validation figure the script is: 
+Finally, to plot a validation figure the script is:
 
 * `plot_output.R` analyses the model output.  
 It displays a comparison of simulation and data for temperature and dissolved oxygen values.

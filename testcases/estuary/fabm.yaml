@@ -5,11 +5,11 @@
 instances:
   light:
     use: true
-    model: dobgcp/light
+    model: oxypom/light
   oxypom:
     use: false
     long_name: oxypom
-    model: dobgcp/oxypom
+    model: oxypom/oxypom
     parameters:
       ea: 0.0012  # light attenuation ALG
       ep: 0.0012  # light attenuation POM
@@ -44,7 +44,7 @@ instances:
   diamo:
     use: true
     long_name: diamo
-    model: dobgcp/diamo
+    model: oxypom/diamo
     parameters:
       tempRef: 20.0
       SIM: 47.0

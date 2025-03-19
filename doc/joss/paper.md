@@ -42,7 +42,6 @@ Implementing this model in the Fortran-based Framework for Aquatic Biogeochemica
 OxyPOM uses vertically explicit formulations for re-aeration, primary production, and light attenuation, which are lacking in the @Holzwarth2018 implementation.
 DiaMO is a simplified model for quick assessments for DO dynamics in applications where modelling complete bio-geochemical dynamics is not needed, and a model for light with a second-order correction for attenuation of photosynthetically active radiation in water.
 
-
 ## OxyPOM: Oxygen and Particulate Organic Matter
 The model OxyPOM resolves the dynamics of
 dissolved oxygen (DO),
@@ -89,7 +88,7 @@ We validate both models in the Cuxhaven station in the Elbe estuary, where OxyPO
 
 ![Validation of OxyPOM model with the testcase estuary.](figure1.png){ width=99% }\
 
-## DiaMO: Diagnostic model for Oxygen
+## DiaMO: Diagnostic Model for Oxygen
 
 DiaMO resolves the dynamics of DO, living and non-living organic particulate carbon forms (phytoplankton and detritus, respectively) under the assumption that light, not nutrients, is the limiting factor for primary production.
 DiaMO is thus a carbon-based implementation.
@@ -107,11 +106,11 @@ As in OxyPOM, all rates in DiaMO are temperature-dependent.
 
 ## Light
 <!-- this paragraph needs rewriting as light is its own model -->
-As part of the vertical-explicit formulation, a key feature of DO+BGC is an alternative to the FABM implementation of the light model used by GOTM [@Burchard2002].
-While the default light model assumes that the photosynthetically active radiation (PAR) in a vertical layer $z$ of thickness $\Delta z$ is in the centre of the layer, the light model included in DO+BGC calculates PAR in the representative depth $\bar{z}$, which satisfies the mean value theorem.
+Together with `OxyPOM` and `DiaMO`, this repository includes the model oxypom/light as an alternative model to the FABM implementation of the light model used by GOTM [@Burchard2002].
+While the default light model assumes that the photosynthetically active radiation (PAR) in a vertical layer $z$ of thickness $\Delta z$ is in the centre of the layer, oxypom/light calculates PAR in the representative depth $\bar{z}$, which satisfies the mean value theorem.
 PAR evaluated at $\bar{z}$ is thus the mean PAR intensity on the layer.
 Since this calculation can be computationally expensive to evaluate, first- and second-order approximations are possible.
-The first-order solution is equal to the centre of the layer $z + 0.5 \cdot \Delta z$, and the second-order approximation is
+The first-order solution is equal to the centre of the layer $z +  \frac{1}{2} \Delta z$, and the second-order approximation is
 
 \begin{equation}
  \bar{z} = z + \frac{1}{2} \Delta z - \frac{\alpha}{3} \Delta z ^ 2,

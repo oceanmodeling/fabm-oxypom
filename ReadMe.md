@@ -23,19 +23,20 @@ SPDX-FileContributor Ovidio Garcia-Oliva <ovidio.garcia@hereon.de>
 [![Pipeline](https://codebase.helmholtz.cloud/dam-elbextreme/oxypom/badges/main/pipeline.svg)](https://codebase.helmholtz.cloud/dam-elbextreme/oxypom/-/pipelines)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](./LICENSES/Apache-2.0.txt)
 
-# DO+BGC (Dissolved Oxygen and BioGeoChemistry)
+# OxyPOM and DiaMO: simple models for dissolved oxygen and biogeochemistry
 
-**DO+BGC** is a family of models for Dissolved Oxygen Dynamics plus simple BioGeoChemistry implemented in `FABM`.
+`OxyPOM` (**Oxygen and Particulate Organic Matter**) and `DiaMO` (**Diagnostic Model for Oxygen**) are two models that resolve dissolved oxygen dynamics implemented in FABM.
 
 ## Description
 
-Currently **DO+BGC** includes:
+* `OxyPOM` simulates oxygen consumption and production in river based on [Holzwarth and Wirtz, 2018](https://doi.org/10.1016/j.ecss.2018.01.020), including key biogeochemical processes as photosynthesis, respiration, mineralization, and nitrification.
 
-* `OxyPOM` (**Oxygen + Particulate Organic Matter**): Simulates oxygen consumption and production in river based on [Holzwarth and Wirtz, 2018](https://doi.org/10.1016/j.ecss.2018.01.020).
-* `DiaMo` (**Diagnostic Model**): Simulates oxygen consumption and production using a statistical inspired model.
-* `light`: Second order correction for the calculation of photosynthetically active radiation depth profiles.
+* `DiaMO` is a simplification of `OxyPOM` and calculates oxygen consumption and production using a statistical inspired model.
 
-The code of these models is located in the directory `./src' (e.g., `./src/oxypom` and `./src/diamo`), and future code developed as part of this model should be here included.
+The code of these models is located in the directory `./src` (e.g., `./src/oxypom` and `./src/diamo`), and future code developed as part of this model should be here included.
+
+Together with `OxyPOM` and `DiaMO`, this repository includes the model `oxypom/light`: a second order correction for the calculation of photosynthetically active radiation depth profiles.
+
 
 ## Requirements
 
@@ -60,7 +61,7 @@ The following is not required to build and run the model but it is for running t
 ## Testcases
 
 We provide the model with a testcase in the directory `./testcases`.
-New testcases for **DO+BGC** should be included in a single directory within `./testcases`.
+New testcases for **OxyPOM** and **DiaMO** should be included in a single directory within `./testcases`.
 Currently, we include the testcase "Estuary".
 
 ### Testcase Estuary
@@ -72,14 +73,14 @@ This setup uses the physical driver `GOTM` to simulate the water column dynamics
 The model is build with the script `gotm-installation.sh`, in where these variables must be defined:
     - `GOTM_DIR` base directory of GOTM source code
     - `FABM_DIR` base directory of FABM source code
-    - `DOBGCP_DIR` base directory of dobgcp source code
+    - `OXYPOM_DIR` base directory of OxyPOM source code
 
 By default they are:
 
     ``` bash
     export GOTM_DIR=$HOME/tools/gotm6
     export FABM_DIR=$HOME/tools/fabm/fabm
-    export DOBGCP_DIR=$HOME/tools/dobgcp/src
+    export OXYPOM_DIR=$HOME/tools/oxypom/src
     ```
 
 2. The script `gotm-installation.sh` creates the directory `.\build` with the building files, and a copy of `gotm` executable in the `.\estuary` directory.
@@ -101,7 +102,7 @@ The entire procedure is included in `./testcases/run-estuary-testcase.sh`.
 
 ### Testcase light
 
-This setup uses the physical driver `GOTM` to simulate the water column dynamics in the Elbe estuary in 2005-2024 and compares the default light implementation with the provided by `DO+BGC`.
+This setup uses the physical driver `GOTM` to simulate the water column dynamics in the Elbe estuary in 2005-2024 and compares the default light implementation with the provided by `oxypom/light`.
 
 Follow steps 1-2 of the estuary testcase.
 
@@ -110,7 +111,7 @@ Now move to the directory `.\light`.
 * The script `model_comparison.R` analyses the model output.
 
 If everything is correct, the figure `light_validation.png` should be produced.
-It displays a comparison of simulations using the default light implementation with the provided by `DO+BGC`.
+It displays a comparison of simulations using the default light implementation with the provided by `oxypom/light`.
 
 The entire procedure is included in `./testcases/run-light-testcase.sh`.
 
