@@ -47,15 +47,16 @@ RUN make -C $GOTMDIR/build install
 CMD ["/bin/bash"]
 
 FROM gotm-fabm AS fabm
-ENV oxypom_BASE=/home/dobgcp
-RUN git clone --depth=1 --recurse-submodules https://codebase.helmholtz.cloud/dam-elbextreme/oxypom.git ${DOBGCP_BASE}
-RUN cmake -B $GOTMDIR/build -S $GOTMDIR -DCMAKE_INSTALL_PREFIX=/opt -DGOTM_USE_FABM=ON -DFABM_USE_IEEE_ARITHMETIC=OFF -DFABM_DOBGCP_BASE=${DOBGCP_BASE}/src -DFABM_INSTITUTES=dobgcp
+ENV OXYPOM_BASE=/home/oxypom
+RUN git clone --depth=1 --recurse-submodules https://codebase.helmholtz.cloud/dam-elbextreme/oxypom.git ${OXYPOM_BASE}
+RUN cmake -B $GOTMDIR/build -S $GOTMDIR -DCMAKE_INSTALL_PREFIX=/opt -DGOTM_USE_FABM=ON -DFABM_USE_IEEE_ARITHMETIC=OFF -DFABM_OXYPOM_BASE=${OXYPOM_BASE}/src -DFABM_INSTITUTES="gotm;oxypom"
 RUN make -C $GOTMDIR/build
 RUN make -C $GOTMDIR/build install
 CMD ["/bin/bash"]
 
 FROM alpine:edge AS runtime
-COPY --from=gotm /opt /opt
+COPY --from=fabm /opt /opt
+COPY --from=fabm /home/oxypom/testcases/* /home
 
 LABEL maintainer="carsten.lemmen@hereon.de"
 LABEL version="0.1a"
@@ -64,11 +65,10 @@ LABEL license="CC0-1.0"
 LABEL copyright="2024-2025 Helmholtz-Zentrum hereon GmbH"
 
 # Install a development toolchain based on gnu, git and netcdf dev tools
-#RUN apk add --no-cache \
-RUN apk add git shadow openssh wget sed bash
-RUN apk add make cmake
-RUN apk add netcdf netcdf-fortran netcdf-dev netcdf-fortran-dev netcdf-utils
-RUN apk add R R-dev
+RUN apk add --no-cache git shadow openssh wget sed bash
+RUN apk add --no-cache make cmake
+RUN apk add --no-cache netcdf netcdf-fortran netcdf-dev netcdf-fortran-dev netcdf-utils
+RUN apk add --no-cache R R-dev
 
 RUN R -e 'install.packages("ncdf4", "/usr/lib/R/library", repos="https://cran.uni-muenster.de/")'
 
@@ -81,19 +81,9 @@ RUN chown -R model:model /home
 USER model
 ENV HOME=/home
 WORKDIR ${HOME}
-COPY ./testcases/* ${HOME}
 RUN bash ./get_data.sh
 RUN Rscript setup_data.R
 RUN gotm
-# RUN RScript plot_output.R
-# b325f4a25932:~# Rscript plot_output.R
-# Loading required package: ncdf4
-# [1] "vobjtovarid4: error #F: I could not find the requsted var (or dimvar) in the file!"
-# [1] "var (or dimvar) name: oxypom_DOxy"
-# [1] "file name: output.nc"
-# Error in vobjtovarid4(nc, varid, verbose = verbose, allowdimvar = TRUE) :
-#   Variable not found
-# Calls: t -> ncvar_get -> vobjtovarid4
-# Execution halted
+RUN Rscript plot_output.R
 
 CMD ["/bin/bash"]
