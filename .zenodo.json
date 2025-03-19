@@ -1,0 +1,34 @@
+{
+  "upload_type": "software",
+  "license": "Apache-2.0",
+  "title": "OxyPOM and DiaMO: simple models for dissolved oxygen and biogeochemistry",
+  "access_right": "open",
+  "keywords": [
+    "FABM",
+    "Biogeochemistry",
+    "Oxygen",
+    "ElbeXtreme",
+    "OxyPOM",
+    "DiaMO",
+    "Fortran",
+    "Water quality"
+  ],
+  "creators": [
+    {
+      "orcid": "0000-0001-6060-2001",
+      "name": "García-Oliva, Ovidio",
+      "affiliation": "Helmholtz-Zentrum hereon GmbH"
+    },
+    {
+      "orcid": "0000-0003-3483-6036",
+      "name": "Lemmen, Carsten",
+      "affiliation": "Helmholtz-Zentrum hereon GmbH"
+    }
+  ],
+  "contributors": [],
+  "grants": [
+    {
+      "id": "04pz7b180::03F0954D"
+    }
+  ]
+}
