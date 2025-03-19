@@ -14,6 +14,7 @@ as.POSIXct = function(...) base::as.POSIXct(...,,format="%Y-%m-%d %H:%M:%S")
 ################################################################################
 ## loading the results of gotm
 nc_data = nc_open('output.nc')
+if("diamo_PAR"%in%names(nc_data$var)) is.oxypom_ = F # DiaMo is validated
 
 temp =  t(ncvar_get(nc_data, "temp"))
 

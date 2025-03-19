@@ -4,12 +4,12 @@
 
 #include "fabm_driver.h"
 
-module dobgcp_diamo
+module oxypom_diamo
     use fabm_types
     implicit none
     private
 
-    type, extends(type_base_model), public :: type_dobgcp_diamo
+    type, extends(type_base_model), public :: type_oxypom_diamo
         ! External dependencies
         type (type_dependency_id) :: id_temp
         type (type_dependency_id) :: id_par
@@ -54,7 +54,7 @@ module dobgcp_diamo
 contains
 
     subroutine initialize(self, configunit)
-        class (type_dobgcp_diamo), intent(inout), target :: self
+        class (type_oxypom_diamo), intent(inout), target :: self
         integer, intent(in) :: configunit
         
         real(rk), parameter :: d_per_s = 1.0_rk/86400.0_rk
@@ -109,7 +109,7 @@ contains
     end subroutine initialize
 
     subroutine do(self, _ARGUMENTS_DO_)
-    class (type_dobgcp_diamo), intent(in) :: self
+    class (type_oxypom_diamo), intent(in) :: self
         _DECLARE_ARGUMENTS_DO_
         real(rk), parameter :: d_per_s = 1.0_rk/86400.0_rk
 
@@ -170,7 +170,7 @@ contains
     end subroutine do
 
     subroutine do_surface(self,_ARGUMENTS_DO_SURFACE_)
-      class (type_dobgcp_diamo), intent(in) :: self
+      class (type_oxypom_diamo), intent(in) :: self
         _DECLARE_ARGUMENTS_DO_SURFACE_
         real(rk), parameter :: d_per_s = 1.0_rk/86400.0_rk
         real(rk) :: temp 
@@ -215,4 +215,4 @@ contains
 
       _HORIZONTAL_LOOP_END_
    end subroutine
-end module dobgcp_diamo
+end module oxypom_diamo

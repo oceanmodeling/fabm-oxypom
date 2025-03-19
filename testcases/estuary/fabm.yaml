@@ -5,7 +5,7 @@
 instances:
   light:
     use: true
-    model: oxypom/light
+    model: gotm/light
   oxypom:
     use: false
     long_name: oxypom

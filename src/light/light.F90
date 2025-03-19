@@ -20,7 +20,7 @@
 ! which in FABM is denoted with standard_variables%surface_downwelling_shortwave_flux
 ! This is the radiation left after reflection by the surface [albedo] is accounted for.
 
-module dobgcp_light
+module oxypom_light
 
    use fabm_types
 
@@ -28,7 +28,7 @@ module dobgcp_light
 
    private
 
-   type, extends(type_base_model), public :: type_dobgcp_light
+   type, extends(type_base_model), public :: type_oxypom_light
       ! Identifiers for dependencies [model inputs]
       type (type_surface_dependency_id) :: id_swr0 ! Surface shortwave radiation
       type (type_dependency_id)         :: id_dz   ! Cell thickness
@@ -45,12 +45,12 @@ module dobgcp_light
       ! Model procedures
       procedure :: initialize
       procedure :: do_column
-   end type type_dobgcp_light
+   end type type_oxypom_light
 
 contains
 
    subroutine initialize(self, configunit)
-      class (type_dobgcp_light), intent(inout), target :: self
+      class (type_oxypom_light), intent(inout), target :: self
       integer,                 intent(in)            :: configunit
 
       call self%get_parameter(self%a,  'a',  '-','non-visible fraction of shortwave radiation', default=0.58_rk) 
@@ -72,7 +72,7 @@ contains
    end subroutine
    
    subroutine do_column(self, _ARGUMENTS_DO_COLUMN_)
-      class (type_dobgcp_light), intent(in) :: self
+      class (type_oxypom_light), intent(in) :: self
       _DECLARE_ARGUMENTS_DO_COLUMN_
 
       real(rk) :: swr0, dz, h, one_over_g2, swr, par, z, ext
@@ -109,4 +109,4 @@ contains
       _DOWNWARD_LOOP_END_
    end subroutine do_column
 
-end module dobgcp_light
+end module oxypom_light
