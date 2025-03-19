@@ -36,13 +36,14 @@ This testcase uses the General Ocean Turbulence Model (GOTM) [@Burchard2002] to 
 
 Dissolved oxygen (DO) is a key variable for water quality assessment of the ecological state of running and standing aquatic ecosystems [@EC2006], and an intermediate step between atmospheric extremes and biological impacts [@Tassone2022].
 Models for DO in waters are thus necessary; most existing models, however, describe DO dynamic as a side product of more or less complex biotic and abiotic dynamics. These new models OxyPOM and DiaMO focus on the key processes that produce or consume oxygen while removing the complexity of adjacent processes.
-OxyPOM was implemented by @Holzwarth2018 using DELWAQ [@Blaw2009] and coupled with UnTRIM [@Sehili2014] as the physical driver in an idealization of the Elbe estuary.
+OxyPOM was implemented by @Holzwarth2018 using DELWAQ [@Blauw2009] and coupled with UnTRIM [@Sehili2014] as the physical driver in an idealization of the Elbe estuary.
 This implementation, however, was limited to this specific application and thus lacked portability.
 Implementing this model in the Fortran-based Framework for Aquatic Biogeochemical Models (FABM) [@Bruggeman2014], OxyPOM can be used with many physical drivers; in different geographical domains; and coupled with other biogeochemical models.
 OxyPOM uses vertically explicit formulations for re-aeration, primary production, and light attenuation, which are lacking in the @Holzwarth2018 implementation.
-DiaMO is a simplified model for quick assessments for DO dynamics in applications where modelling complete bio-geochemical dynamics is not needed, and a model for light with a second-order correction for attenuation of photosynthetically active radiation in water.
+DiaMO is a simplified model for quick assessments for DO dynamics in applications where modelling complete bio-geochemical dynamics is not needed.
 
 ## OxyPOM: Oxygen and Particulate Organic Matter
+
 The model OxyPOM resolves the dynamics of
 dissolved oxygen (DO),
 particulate organic matter (POM)--fresh and refractory--,
@@ -104,13 +105,13 @@ The complete system is represented as
 In DiaMO, aggregation rate is a mortality term for phytoplankton [@Maerz2009].
 As in OxyPOM, all rates in DiaMO are temperature-dependent.
 
-## Light
+## Light in OxyPOM and DiaMO
 <!-- this paragraph needs rewriting as light is its own model -->
-Together with `OxyPOM` and `DiaMO`, this repository includes the model oxypom/light as an alternative model to the FABM implementation of the light model used by GOTM [@Burchard2002].
+Together with OxyPOM and DiaMO, this repository includes the model oxypom/light as an alternative model to the FABM implementation of the light model used by GOTM [@Burchard2002].
 While the default light model assumes that the photosynthetically active radiation (PAR) in a vertical layer $z$ of thickness $\Delta z$ is in the centre of the layer, oxypom/light calculates PAR in the representative depth $\bar{z}$, which satisfies the mean value theorem.
 PAR evaluated at $\bar{z}$ is thus the mean PAR intensity on the layer.
 Since this calculation can be computationally expensive to evaluate, first- and second-order approximations are possible.
-The first-order solution is equal to the centre of the layer $z +  \frac{1}{2} \Delta z$, and the second-order approximation is
+The first-order solution is equal to the centre of the layer $z + \frac{1}{2} \Delta z$, and the second-order approximation is
 
 \begin{equation}
  \bar{z} = z + \frac{1}{2} \Delta z - \frac{\alpha}{3} \Delta z ^ 2,
