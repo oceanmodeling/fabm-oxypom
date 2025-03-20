@@ -49,7 +49,7 @@ jobs:
             c_compiler: cl
 
     steps:
-      - name: Checkout external repository dummy1
+      - name: Checkout GOTM repository
         run: |
           GOTMDIR=$(mktemp -d)
           git clone --depth=1 --branch=v6.0.7 --recurse-submodules https://github.com/gotm-model/code.git "$GOTMDIR"
