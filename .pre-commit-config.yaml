@@ -20,13 +20,13 @@ repos:
     rev: "v4.0.0-alpha.8"
     hooks:
       - id: prettier
-  - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.27.3
-    hooks:
-      - id: check-github-actions
-      - id: check-github-workflows
-      - id: check-gitlab-ci
-      - id: check-readthedocs
+  # - repo: https://github.com/python-jsonschema/check-jsonschema
+  #   rev: 0.27.3
+  #   hooks:
+  #     - id: check-github-actions
+  #     - id: check-github-workflows
+  #     - id: check-gitlab-ci
+  #     - id: check-readthedocs
   # For the following, an up-to-date zenode deposit schema is
   # need which is currently broken upstream
   # - repo: https://github.com/python-jsonschema/check-jsonschema
@@ -41,11 +41,8 @@ repos:
   #           "--schemafile",
   #           "https://github.com/zenodraft/metadata-schema-zenodo/blob/main/schema.json",
   #         ]
-  - repo: https://github.com/ambv/black
-    rev: 23.12.1
-    hooks:
-      - id: black
-  # - repo: https://github.com/pre-commit/pre-commit-hooks
-  #   rev: v2.0.0
-  #   hooks:
-  #     - id: flake8
+  # - repo: https://github.com/lorenzwalthert/precommit
+  # rev: v0.4.3
+  # hooks:
+  #   - id: lintr
+  #     types: [r]
