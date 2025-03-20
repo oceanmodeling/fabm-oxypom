@@ -42,7 +42,7 @@ jobs:
           git clone --depth=1 --branch=v6.0.7 --recurse-submodules https://github.com/gotm-model/code.git "$GOTMDIR"
           echo "GOTMDIR=$GOTMDIR" >> $GITHUB_ENV
 
-      - name: Checkout oxypom repository
+      - name: Checkout OxyPOM repository
         uses: actions/checkout@v4
 
       - name: Set reusable strings
@@ -52,7 +52,7 @@ jobs:
         run: |
           echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
 
-      - name: Configure CMake
+      - name: CMake
         # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
         # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
         run: >
@@ -64,8 +64,5 @@ jobs:
           -DGOTM_USE_NetCDF=OFF
           -DGOTM_USE_FABM=ON -DFABM_EXTRA_INSTITUTES=OXYPOM -DFABM_OXYPOM_BASE=${{ github.workspace }}/src
 
-      - name: Build
-        # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
-        run: >
-          cmake -B ${{ steps.strings.outputs.build-output-dir }}
-          -build ${{ steps.strings.outputs.build-output-dir }}
+      - name: Make
+        run: make -C ${{ steps.strings.outputs.build-output-dir }}
