@@ -71,7 +71,8 @@ jobs:
           -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
           -DCMAKE_Fortran_COMPILER=${{ matrix.f_compiler }}
           -DGOTM_USE_NetCDF=OFF
-          -DGOTM_USE_FABM=ON -DFABM_INSTITUTES=OXYPOM -DFABM_OXYPOM_BASE=${{ github.workspace }}/src
+          -DGOTM_USE_FABM=ON -DFABM_USE_IEEE_ARITHMETIC=OFF
+          -DFABM_OXYPOM_BASE=/home/runner/work/fabm-oxypom/fabm-oxypom/src -DFABM_INSTITUTES="gotm;oxypom"
 
       - name: Make
         run: make -C ${{ steps.strings.outputs.build-output-dir }}
