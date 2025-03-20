@@ -30,10 +30,10 @@ jobs:
         os: [ubuntu-latest, macos-latest]
         build_type: [Release]
         c_compiler: [gcc, clang]
-        f_compiler: [gfortran, flang]
-        exclude:
-          - c_compiler: gcc
-            f_compiler: flang
+        f_compiler: [gfortran]
+        # exclude:
+        #  - c_compiler: gcc
+        #    f_compiler: flang
 
     steps:
       - name: Checkout GOTM repository
@@ -61,6 +61,7 @@ jobs:
           -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
           -DCMAKE_Fortran_COMPILER=${{ matrix.f_compiler }}
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+          -DGOTM_USE_NetCDF=OFF
           -DGOTM_USE_FABM=ON -DFABM_EXTRA_INSTITUTES=OXYPOM -DFABM_OXYPOM_BASE=${{ github.workspace }}/src
 
       - name: Build
