@@ -123,3 +123,19 @@ GPL-2.0-only (light)
 ## Project status
 
 This is part of the `DAM-ElbeXtreme` project.
+
+## Contributing and reporting
+
+We recommend to use latest git commit an branch main version of the model.
+We appreciate your feedback, bug reports and improvement suggestions on our [issue tracker](https://codebase.helmholtz.cloud/dam-elbextreme/oxypom/-/issues).
+We also welcome your contributions, subject to our Contributor Covenant [code of conduct](https://codebase.helmholtz.cloud/dam-elbextreme/oxypom/-/blob/main/doc/contributing/code_of_conduct.md) and our [contributor license agreement](https://codebase.helmholtz.cloud/dam-elbextreme/oxypom/-/blob/main/doc/contributing/contributing-license.md).
+
+The best way to contribute is by (1) creating a fork off our repository, (2) committing your changes on your fork and then (3) creating a pull request ("PR") to push your changes back to us.
+
+To file an issue or to contribute, you are asked to (1) authenticate with an existing identity and (2) to register on the HIFIS GitLab instance and sign in. 
+When asked, click "Sign in with Helmholtz AAI".
+On the following page "Login to Helmholtz AAI OAuth2 Authorization Server", search for one of your existing authentication providers (this may be your university, company, ORCID, GitHub, or many others) and provide their login credentials for authorization.
+If you are not already registered on the HIFIS GitLab instance, a confirmation email will be sent to the primary email address registered with your authentication provider. 
+After clicking the confirmation link, you will also be asked to provide a name on this Gitlab instance; this will be your nickname.
+Help on this one-time registration process is available from [https://hifis.net/tutorial/2021/06/23/how-to-helmholtz-aai.html](https://hifis.net/tutorial/2021/06/23/how-to-helmholtz-aai.html).
+
