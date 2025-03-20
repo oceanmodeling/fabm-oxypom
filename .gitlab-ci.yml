@@ -3,10 +3,11 @@
 # SPDX-FileContributor: Carsten Lemmen <carsten.lemmen@hereon.de>
 #
 include:
-#  - ".gitlab/zenodo.yaml" # enable once we have .zenodo.json
+  - ".gitlab/zenodo.yaml" # enable once we have .zenodo.json
   - ".gitlab/license.yaml"
   - ".gitlab/joss.yaml"
-  - ".gitlab/fabm.yaml"  
+  - ".gitlab/fabm.yaml"
+  - ".gitlab/r.yaml"
   - template: Security/SAST.gitlab-ci.yml
   - template: Security/Secret-Detection.gitlab-ci.yml
 stages:
