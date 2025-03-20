@@ -28,7 +28,6 @@ jobs:
       # To add more build types (Release, Debug, RelWithDebInfo, etc.) customize the build_type list.
       matrix:
         os: [ubuntu-latest, macos-latest]
-        build_type: [Release]
         c_compiler: [gcc, clang]
         f_compiler: [gfortran]
         # exclude:
@@ -53,21 +52,24 @@ jobs:
           echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
 
       - name: Install gfortran on macOS
-        if: matrix.os == 'macos-latest' && matrix.f_compiler == 'gfortran' || matrix.os == 'macos-latest' && matrix.c_compiler == 'gcc'
+        if: matrix.os == 'XXXX' && matrix.f_compiler == 'gfortran' || matrix.os == 'macos-latest' && matrix.c_compiler == 'gcc'
         run: |
           brew install gcc
           echo "Using Homebrew-installed gfortran:"
           gfortran --version
+
+      - name: Print compiler versions
+        run: |
+          ${{ matrix.c_compiler }} --version
+          ${{ matrix.f_compiler }} --version
 
       - name: CMake
         # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
         # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
         run: >
           cmake -S ${GOTMDIR} -B ${{ steps.strings.outputs.build-output-dir }}
-          -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
           -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
           -DCMAKE_Fortran_COMPILER=${{ matrix.f_compiler }}
-          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
           -DGOTM_USE_NetCDF=OFF
           -DGOTM_USE_FABM=ON -DFABM_EXTRA_INSTITUTES=OXYPOM -DFABM_OXYPOM_BASE=${{ github.workspace }}/src
 
