@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Release notes for version 0.9.2 - ongoing
 
+-   cleaned git history
+-   completed metadata
+-   homogenized documentation
+
 # Release notes for version 0.9.1
 
 -   Feature-complete version of the OxyPOM, DiaMO, and light FABM models,
