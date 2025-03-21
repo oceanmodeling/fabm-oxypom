@@ -4,10 +4,10 @@
 
 instances:
   light:
-    use: true
+    use: false
     model: gotm/light
   oxypom:
-    use: false
+    use: true
     long_name: oxypom
     model: oxypom/oxypom
     parameters:
@@ -42,7 +42,7 @@ instances:
       OPAL: 100
      # DOxy: 330.0
   diamo:
-    use: true
+    use: false
     long_name: diamo
     model: oxypom/diamo
     parameters:
