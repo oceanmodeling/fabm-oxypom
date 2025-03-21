@@ -26,9 +26,9 @@ SPDX-License-Identifier: CC-BY-4.0
 
 # Summary
 
-OxyPOM (Oxygen and Particulate Organic Matter) and DiaMO (Diagnostic Model for Oxygen) are aquatic biogeochemical models that consider key processes for dissolved oxygen (DO) dynamics, such as re-aeration, mineralization, and primary production, in fresh, transitional and marine waters.
-Both are implemented in the `Fortran`-based Framework for Aquatic Biogeochemical Models [FABM, @Bruggeman2014] for interoperability in a variety of hydrodynamic models in realistic and idealized applications and for coupleability to other aquatic process models.
-With these models, we include an updated light profile implementation and testcases for simulating DO at Cuxhaven Station in the Elbe estuary 2005--2024; for this, we use the General Ocean Turbulence Model (GOTM) [@Burchard2002] for 1D vertical hydrodynamics including tides, and `R` and `bash` scripts for including weather and river data from [kuestendaten.de](https://www.kuestendaten.de).
+OxyPOM (Oxygen and Particulate Organic Matter) and DiaMO (Diagnostic Model for Oxygen) are aquatic biogeochemical models that consider key processes for dissolved oxygen (DO)s, such as re-aeration, mineralization, and primary production, in fresh, transitional and marine waters.
+Both are implemented in the `Fortran`-based Framework for Aquatic Biogeochemical Models [FABM, @Bruggeman2014] for interoperability in a variety of hydrodynamic models, in realistic and idealized applications, and for coupleability to other aquatic process models.
+With these models, we include an updated light profile implementation and testcases for simulating DO at Cuxhaven Station in the Elbe estuary 2005--2024; for this, we use the hydrodynamic General Ocean Turbulence Model (GOTM) [@Burchard2002] including tides, and `R` and `bash` scripts for including weather and river data from [kuestendaten.de](https://www.kuestendaten.de).
 
 # Statement of need
 
@@ -75,18 +75,18 @@ Micro-algae uptake dissolved inorganic nutrients and release dissolved nutrients
 We validate both models in the Cuxhaven station in the Elbe estuary, where OxyPOM shows high skill by reproducing surface DO.
 
 <div>
-![Validation of OxyPOM model with the testcase estuary..\label{fig:validation}](figure1.png){ width=99% }
+![Validation of OxyPOM model with the testcase estuary.\label{fig:validation}](figure1.png){ width=99% }
 </div>
 
 ## DiaMO: Diagnostic Model for Oxygen
 
-DiaMO resolves the dynamics of DO, living and non-living organic particulate carbon forms (Phytoplankton and Detritus, respectively) under the assumption that light, not nutrients, is the limiting factor for photosynthesis; DiaMO is a carbon-only implementation.
+DiaMO resolves the dynamics of DO, living and non-living organic particulate carbon forms (Phytoplankton (Phy) and Detritus (Det), respectively) under the assumption that light, not nutrients, is the limiting factor for photosynthesis; DiaMO is a carbon-only implementation.
 DO is solved with the mass balance equation of OxyPOM (\autoref{eq:do}), setting nitrification to zero.
 The complete system is represented as
 
 \begin{eqnarray}
-\frac{d \textrm{Phytoplankton}}{dt} &=& \textrm{Photosynthesis} - \textrm{Respiration} - \textrm{Aggregation} \\
-\frac{d \textrm{Detritus}}{dt} &=& \textrm{Aggregation} - \textrm{Mineralization} \\
+\frac{d \textrm{Phy}}{dt} &=& \textrm{Photosynthesis} - \textrm{Respiration} - \textrm{Aggregation} \\
+\frac{d \textrm{Det}}{dt} &=& \textrm{Aggregation} - \textrm{Mineralization} \\
 \frac{d \textrm{DO}}{dt} &=& \textrm{Re-aeration} + (\textrm{Photosynthesis} - \textrm{Respiration}) - \textrm{Mineralization}.
 \end{eqnarray}
 
