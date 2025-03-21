@@ -30,9 +30,16 @@ col_ref = "black"
 N = length(rpar[1,])
 
 png(filename = "./light_validation.png",
-    width = 600, height = 600)
+    width = 600, 
+    height = 600
+)
 
-par(mfrow = c(3, 2), mai = 2 * c(0.42, 0.42, 0.21, 0.21), oma = 2 * c(1, 1, 0.5, 0.5), las = 1)
+par(mfrow = c(3, 2), 
+    mai = 2 * c(0.42, 0.42, 0.21, 0.21), 
+    oma = 2 * c(1, 1, 0.5, 0.5), 
+    las = 1
+)
+
 hist(100 * (bpar - rpar) / (rpar + bpar),
      main = "difference in par relatiave to reference (%)",
      xlim = c(-100, 100),
@@ -40,52 +47,50 @@ hist(100 * (bpar - rpar) / (rpar + bpar),
      freq = FALSE,
      border = NA,
      n = 50
-     )
+)
 
-  hist(100 * (bphy - rphy) / (rphy + bphy),
-       xlim = c(-100, 100),
-       xlab = "",
-       main = "difference in ALG1 relatiave to reference (%)",
-       freq = FALSE,
-       border = NA,
-       n = 50
-       )
+hist(100 * (bphy - rphy) / (rphy + bphy),
+     xlim = c(-100, 100),
+     xlab = "",
+     main = "difference in ALG1 relatiave to reference (%)",
+     freq = FALSE,
+     border = NA,
+     n = 50
+)
 
-  plot(rpar, bpar,
-       col = "lightgray",
-       pch = 20,
-       xlab = "reference ALG1",
-       ylab = "dobgc_light ALG1"
-       )
-  abline(a = 0, b = 1)
-  
-  
-  plot(rphy, bphy,
-       col = "lightgray",
-       pch = 20,
-       xlab = "reference ALG1",
-       ylab = "dobgc_light ALG1"
-       )
-  abline(a = 0, b = 1)
+plot(rpar, bpar,
+     col = "lightgray",
+     pch = 20,
+     xlab = "reference ALG1",
+     ylab = "dobgc_light ALG1"
+)
+abline(a = 0, b = 1)
 
-  plot(rowMeans(rpar[,1:(N / 2 + 1)]), 
-       type = "l",
-       col = col_ref,
-       main = "par in the surface",
-       xlab = "",
-       ylab = "W m-2"
-       )
-  lines(rowMeans(bpar[,1:(N / 2 + 1)]), type = "l", col = col_sim)
-  
+plot(rphy, bphy,
+     col = "lightgray",
+     pch = 20,
+     xlab = "reference ALG1",
+     ylab = "dobgc_light ALG1"
+)
+abline(a = 0, b = 1)
 
-  plot(rowMeans(rphy[,1:(N / 2 + 1)]),
-       type = "l",
-       col = col_ref,
-       main = "ALG1 in the surface",
-       xlab = "",
-       ylab = "mmol-C m-3"
-       )
-  lines(rowMeans(bphy[,1:(N / 2 + 1)]),type = "l",col = col_sim)
+plot(rowMeans(rpar[, 1:(N / 2 + 1)]), 
+     type = "l",
+     col = col_ref,
+     main = "par in the surface",
+     xlab = "",
+     ylab = "W m-2"
+)
+lines(rowMeans(bpar[, 1:(N / 2 + 1)]), type = "l", col = col_sim)
+
+plot(rowMeans(rphy[, 1:(N / 2 + 1)]),
+     type = "l",
+     col = col_ref,
+     main = "ALG1 in the surface",
+     xlab = "",
+     ylab = "mmol-C m-3"
+)
+lines(rowMeans(bphy[, 1:(N / 2 + 1)]),type = "l",col = col_sim)
 dev.off()
 
 

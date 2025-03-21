@@ -14,9 +14,18 @@ as.POSIXct = function(...) base::as.POSIXct(..., format = "%Y-%m-%d %H:%M:%S")
 ## loading observed values for temperature (temp) wind velocity (wind) and wind
 ## direction (dirw) to create forcing file
 
-temp = read.delim("Cuxhaven_DWD!Lufttemperatur.txt", header = FALSE, comment.char = "#")
-wind = read.delim("Cuxhaven_DWD!Windgeschwindigkeit.txt", header = FALSE, comment.char = "#")
-dirw = read.delim("Cuxhaven_DWD!Windrichtung.txt", header = FALSE, comment.char = "#")
+temp = read.delim("Cuxhaven_DWD!Lufttemperatur.txt", 
+                  header = FALSE, 
+                  comment.char = "#"
+)
+wind = read.delim("Cuxhaven_DWD!Windgeschwindigkeit.txt", 
+                  header = FALSE, 
+                  comment.char = "#"
+)
+dirw = read.delim("Cuxhaven_DWD!Windrichtung.txt", 
+                  header = FALSE, 
+                  comment.char = "#"
+)
 
 temp$V1 = as.POSIXct(temp$V1)
 wind$V1 = as.POSIXct(wind$V1)
@@ -34,22 +43,22 @@ temp$temp = temp$V2 + (h_model - h_station) * T_gradient + bias
 ## assuming logarithmic profile
 h_station = 9
 h_model = 10
-w.exponent = 0.14
-wind$V3 = wind$V2 * (h_model / h_station)^w.exponent
+w_exponent = 0.14
+wind$V3 = wind$V2 * (h_model / h_station)^w_exponent
 
 ## merging wind files
 wind = merge(wind, dirw, by = "V1", suffixes = c(".vel", ".dir"))
   
 ## calculating wind components
-wind$u10 = wind$V3 * cos(pi*wind$V2.dir / 180)
-wind$v10 = wind$V3 * sin(pi*wind$V2.dir / 180)
+wind$u10 = wind$V3 * cos(pi * wind$V2.dir / 180)
+wind$v10 = wind$V3 * sin(pi * wind$V2.dir / 180)
 
 ## creating the meteofile
 meteofile = merge(temp, wind)
 meteofile = subset(meteofile, 
                    get.year(V1) >= 2004 & !is.na(temp) & !is.na(v10) & !is.na(u10),
                    select=c(V1, temp, u10, v10)
-                   )
+)
 
 meteofile$V1 = meteofile$V1 + 1 # adding 1 sec to avoid a bug with gotm config
 colnames(meteofile) = paste0("#", colnames(meteofile))
