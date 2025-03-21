@@ -1,5 +1,5 @@
 !! SPDX-FileCopyrightText: 2025 Helmholtz-Zentrum hereon GmbH
-!! SPDX-License-Identifier: GPL-2.0-only
+!! SPDX-License-Identifier: CC0-1.0
 !! SPDX-FileContributor Ovidio Garcia-Oliva <ovidio.garcia@hereon.de>
 
 #include "fabm_driver.h"

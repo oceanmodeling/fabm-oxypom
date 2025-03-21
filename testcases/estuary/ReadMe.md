@@ -42,8 +42,11 @@ Finally, to plot a validation figure the script is:
 * `plot_output.R` analyses the model output.  
 It displays a comparison of simulation and data for temperature and dissolved oxygen values.
 
-## License
+## Licenses
+
 Apache-2.0
+CC0-1.0
 
 ## Project status
+
 This is part of the `DAM-ElbeXtreme` project.
