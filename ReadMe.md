@@ -23,7 +23,7 @@ SPDX-FileContributor Carsten Lemmen <carsten.lemmen@hereon.de>
 # OxyPOM and DiaMO: simple models for dissolved oxygen and biogeochemistry
 
 OxyPOM (**Oxygen and Particulate Organic Matter**) and DiaMO (**Diagnostic Model for Oxygen**) are aquatic biogeochemical models that consider key processes for dissolved oxygen (DO), such as re-aeration, mineralization, and primary production, in fresh, transitional and marine waters.
-Both are implemented in the `Fortran`-based Framework for Aquatic Biogeochemical Models ([FABM)](https://github.com/fabm-model/fabm/)) for interoperability in a variety of hydrodynamic models, in realistic and idealized applications, and for coupleability to other aquatic process models.
+Both are implemented in the `Fortran`-based Framework for Aquatic Biogeochemical Models ([FABM](https://github.com/fabm-model/fabm/)) for interoperability in a variety of hydrodynamic models, in realistic and idealized applications, and for coupleability to other aquatic process models.
 
 ## Description
 
