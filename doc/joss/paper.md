@@ -26,7 +26,7 @@ SPDX-License-Identifier: CC-BY-4.0
 
 # Summary
 
-OxyPOM (Oxygen and Particulate Organic Matter) and DiaMO (Diagnostic Model for Oxygen) are aquatic biogeochemical models that consider key processes for dissolved oxygen (DO)s, such as re-aeration, mineralization, and primary production, in fresh, transitional and marine waters.
+OxyPOM (Oxygen and Particulate Organic Matter) and DiaMO (Diagnostic Model for Oxygen) are aquatic biogeochemical models that consider key processes for dissolved oxygen (DO), such as re-aeration, mineralization, and primary production, in fresh, transitional and marine waters.
 Both are implemented in the `Fortran`-based Framework for Aquatic Biogeochemical Models [FABM, @Bruggeman2014] for interoperability in a variety of hydrodynamic models, in realistic and idealized applications, and for coupleability to other aquatic process models.
 With these models, we include an updated light profile implementation and testcases for simulating DO at Cuxhaven Station in the Elbe estuary 2005--2024; for this, we use the hydrodynamic General Ocean Turbulence Model (GOTM) [@Burchard2002] including tides, and `R` and `bash` scripts for including weather and river data from [kuestendaten.de](https://www.kuestendaten.de).
 
@@ -35,10 +35,11 @@ With these models, we include an updated light profile implementation and testca
 Dissolved oxygen (DO) is a key variable for assessing water quality and ecological state of aquatic ecosystems [@EC2006].
 Most existing models describe DO dynamics as a side product of more or less complex (a)biotic dynamics.
 OxyPOM and DiaMO remove  much of this complexity and focus on the key processes that produce or consume oxygen.
-A predecessor 1D long-channel version of **OxyPOM** was initially implemented by @Holzwarth2018 specifically for the closed-source UnTRIM-DELWAQ hydrodynamic and water quality system. 
-This implementation lacked portability, and was neither findable, nor accessible, interoperable or reusable (FAIR).  The reimplementation with the FABM API ensures FAIR principles, foremost the (1) interoperability with many hydrodynamic models; (2) applicability in different topological domains, and (3) coupleability to other aquatic process models.
-We introduced vertically explicit formulations for re-aeration, primary production, and light attenuation.
-Where a complete representation of bio-geochemical dynamics is not needed, **DiaMO** is an even more simplified model for quick assessments of DO dynamics.
+
+A predecessor 1D long-channel version of OxyPOM was initially implemented by @Holzwarth2018 specifically for the closed-source UnTRIM-DELWAQ hydrodynamic and water quality system. 
+This implementation lacked portability, and was neither findable, nor accessible, interoperable or reusable (FAIR).  The reimplementation with the FABM API ensures FAIR principles, foremost the interoperability with (1) many hydrodynamic models, (2) other aquatic process models, and (3) reusability in different topological domains.
+For vertically resolved applications, we added formulations for re-aeration, primary production, and light attenuation.
+Where a complete representation of bio-geochemical dynamics is not needed, DiaMO is an even more simplified model for quick assessments of DO dynamics.
 
 ## OxyPOM: Oxygen and Particulate Organic Matter
 
@@ -61,21 +62,18 @@ Photosynthesis is limited by nutrient concentration and light intensity with an 
 Respiration includes oxygen consumption for micro-algae.
 Mineralization and Nitrification is the oxygen consumed to transform matter from organic to inorganic forms and to oxidize ammonia into nitrate, respectively.
 
-Temperature-dependent rates limit these processes.  Settling velocities are set constant, and vertical redistribution of matter is carried out by diffusion and advection terms provided by the hydrodynamical model.
+POM and DOM have an explicit elemental composition (carbon, nitrogen and phosphorus);
+POM is present in two qualities, which transition in the sequence labile $\rightarrow$ semi-labile $\rightarrow$ dissolved.
+POM and DOM mineralize to inorganic dissolved nitrogen and ortho-phosphate.
+Dissolved inorganic nitrogen is the sum of ammonium and nitrate;  ammonium transitions to nitrate as a function of DO.
+Silicate is present in dissolved --bio-available-- and particulate mineral forms.
+The two micro-algae classes (one with dependence on dissolved silicate, thus representing diatoms) have growth rates that depend on photosynthesis; their growth rates depend on dissolved nitrogen and ortho-phosphate concentrations.
+Micro-algae take up and release dissolved nutrients when they die with a temperature-dependent mortality rate.
 
-In OxyPOM, POM and DOM have an explicit elemental composition (carbon, nitrogen and phosphorus).
-POM is present in two qualities, (semi-)labile, which transition in the sequence labile $\rightarrow$ semi-labile $\rightarrow$ dissolved.
-POM and DOM mineralize to inorganic dissolved inorganic nutrients: nitrogen and ortho-phosphate.
-Dissolved inorganic nitrogen is further subdivided into ammonium and nitrate.
-Ammonia transitions to nitrate as a function of DO.
-Silicate is present in dissolved--bio-available-- and particulate mineral forms.
-The two micro-algae classes (one with dependence on dissolved silicate, thus representing diatoms) have growth rates that depend on photosynthesis; their growth rates depend on dissolved nitrogen and ortho-phosphate concentrations, 
-Micro-algae uptake dissolved inorganic nutrients and release dissolved nutrients when they die with a temperature-dependent mortality rate.
-
-We validate both models in the Cuxhaven station in the Elbe estuary, where OxyPOM shows high skill by reproducing surface DO.
+OxyPOM shows high skill by reproducing surface DO at the Cuxhaven station in the Elbe estuary (\autoref{fig:validation}).
 
 <div>
-![Validation of OxyPOM model with the testcase estuary.\label{fig:validation}](figure1.png){ width=99% }
+![Validation of OxyPOM model with the testcase `estuary` contained in the repository.  Model results for temperature (from GOTM, top, red) and OxyPOM DO (bottom, red) are compared to station data (black and grey dots) available from [kuestendaten.de](https://www.kuestendaten.de)\label{fig:validation}](figure1.png){ width=99% }
 </div>
 
 ## DiaMO: Diagnostic Model for Oxygen
@@ -91,7 +89,7 @@ The complete system is represented as
 \end{eqnarray}
 
 Aggregation rate is a mortality term for phytoplankton [@Maerz2009].
-As in OxyPOM, all rates in DiaMO are temperature-dependent.
+As in OxyPOM, all rates in DiaMO are temperature-dependent. DiaMO was equally validated and shows high skill reproducing surface DO at the Cuxhaven station.
 
 ## Light in OxyPOM and DiaMO
 
