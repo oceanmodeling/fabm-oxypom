@@ -18,10 +18,12 @@ temp = read.delim("Cuxhaven_DWD!Lufttemperatur.txt",
                   header = FALSE, 
                   comment.char = "#"
 )
+
 wind = read.delim("Cuxhaven_DWD!Windgeschwindigkeit.txt", 
                   header = FALSE, 
                   comment.char = "#"
 )
+
 dirw = read.delim("Cuxhaven_DWD!Windrichtung.txt", 
                   header = FALSE, 
                   comment.char = "#"
@@ -32,7 +34,7 @@ wind$V1 = as.POSIXct(wind$V1)
 dirw$V1 = as.POSIXct(dirw$V1)
 
 ## transforming temperatures at 9m above ground to 2 meter values
-## assuming linear profile
+## assuming linear temperature profile
 h_station = 9
 h_model = 2
 T_gradient = -0.0065
@@ -40,7 +42,7 @@ bias = 5
 temp$temp = temp$V2 + (h_model - h_station) * T_gradient + bias
 
 ## transforming wind speed at 9m above ground to 10 meter values
-## assuming logarithmic profile
+## assuming logarithmic wind profile
 h_station = 9
 h_model = 10
 w_exponent = 0.14
