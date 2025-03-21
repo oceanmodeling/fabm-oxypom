@@ -1,0 +1,28 @@
+cff-version: "1.2.0"
+authors:
+    - family-names: García-Oliva
+      given-names: Ovidio
+      orcid: "https://orcid.org/0000-0001-6060-2001"
+    - family-names: Lemmen
+      given-names: Carsten
+      orcid: "https://orcid.org/0000-0003-3483-6036"
+message: If you use this software, please cite our article in the
+    Journal of Open Source Software (submitted).
+preferred-citation:
+    authors:
+        - family-names: García-Oliva
+          given-names: Ovidio
+          orcid: "https://orcid.org/0000-0001-6060-2001"
+        - family-names: Lemmen
+          given-names: Carsten
+          orcid: "https://orcid.org/0000-0003-3483-6036"
+    date-published: 1970-01-01
+    issn: 2475-9066
+    journal: Journal of Open Source Software
+    publisher:
+        name: Open Journals
+    title: "FABM OxyPOM and DiaMO: simple models for dissolved oxygen and
+        biogeochemistry"
+    type: article
+title: "FABM OxyPOM and DiaMO: simple models for dissolved oxygen and
+    biogeochemistry"
