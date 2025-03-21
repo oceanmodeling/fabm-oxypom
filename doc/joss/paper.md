@@ -73,7 +73,7 @@ Micro-algae take up and release dissolved nutrients when they die with a tempera
 OxyPOM shows high skill by reproducing surface DO at the Cuxhaven station in the Elbe estuary (\autoref{fig:validation}).
 
 <div>
-![Validation of OxyPOM model with the testcase `estuary` contained in the repository.  Model results for temperature (from GOTM, top, red) and OxyPOM DO (bottom, red) are compared to station data (black and grey dots) available from [kuestendaten.de](https://www.kuestendaten.de)\label{fig:validation}](figure1.png){ width=99% }
+![Validation of OxyPOM model with the testcase `estuary` contained in the repository.  Model results for temperature (from GOTM, top, red) and OxyPOM DO (bottom, red) are compared to station data (black and grey dots) available from [kuestendaten.de](https://www.kuestendaten.de)\label{fig:validation}](figure1.pdf){ width=99% }
 </div>
 
 ## DiaMO: Diagnostic Model for Oxygen
