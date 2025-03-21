@@ -90,7 +90,7 @@ plot(rowMeans(rphy[, 1:(N / 2 + 1)]),
      xlab = "",
      ylab = "mmol-C m-3"
 )
-lines(rowMeans(bphy[, 1:(N / 2 + 1)]),type = "l",col = col_sim)
+lines(rowMeans(bphy[, 1:(N / 2 + 1)]), type = "l", col = col_sim)
 dev.off()
 
 

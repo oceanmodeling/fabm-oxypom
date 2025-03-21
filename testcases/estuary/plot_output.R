@@ -15,7 +15,7 @@ as.POSIXct = function(...) base::as.POSIXct(..., format = "%Y-%m-%d %H:%M:%S")
 nc_data = nc_open("output.nc")
 
 is_oxypom = TRUE # True if OxyPOM is validated False if DiaMo is validated
-if("diamo_PAR"%in%names(nc_data$var)) is_oxypom = FALSE # DiaMo is validated
+if("diamo_PAR" %in% names(nc_data$var)) is_oxypom = FALSE # DiaMo is validated
 
 temp = t(ncvar_get(nc_data, "temp"))
 
@@ -66,9 +66,10 @@ col_obs3 = "gray50"
 
 
 png(filename = "./estuary_validation.png",
-    width = 800, height = 400)
+    width = 800, height = 400
+)
 
-par(mfrow = c(2,1), mai = c(0.42,0.42,0.21,0.21), oma = 2 * c(1, 1, 0.5, 0.5), las = 1)
+par(mfrow = c(2, 1), mai = c(0.42,0.42,0.21,0.21), oma = 2 * c(1, 1, 0.5, 0.5), las = 1)
 
 plot(x, rowMeans(temp[,bottom:surface]), 
      type = "n",
@@ -78,7 +79,7 @@ plot(x, rowMeans(temp[,bottom:surface]),
      lwd = 0.5,
      ylab = "",
      xlab = "days"
-     )
+)
 
 title("temperature at the surface degC", adj = 0, line = 0.1, cex = 0.5, font.main = 1)
 points(as.Date(temp_obs_2$V1), temp_obs_2$V2, col = col_obs2, pch = 0,cex = .5)
@@ -96,7 +97,7 @@ plot(x, rowMeans(oxy[,1:2]),
      lwd = 0.5,
      ylab = "",
      xlab = "days",
-     )
+)
 
 title("dissolved oxygen concentration mmol-O2 L-1", adj = 0, line = 0.1, cex = 0.5, font.main = 1)
 points(as.Date(DO_obs_2$V1), (1000 / 32) * DO_obs_2$V2, col = col_obs2, pch = 0, cex = .5)
@@ -113,8 +114,8 @@ legend("bottomleft",
        pt.cex = c(.5, 1, NA, NA, NA),
        col=c(col_obs2, col_obs, col_obs3, col_sim, col_sim_bottom),
        pch = c(0, 20, 0, 0,0),
-       pt.lwd=c(1, 1, 1, 1, 1),
-       lwd=c(0, 0, 1, 2, 1)
-       )
+       pt.lwd = c(1, 1, 1, 1, 1),
+       lwd = c(0, 0, 1, 2, 1)
+)
 
 dev.off()
