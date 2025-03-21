@@ -22,13 +22,14 @@ SPDX-FileContributor Carsten Lemmen <carsten.lemmen@hereon.de>
 
 # OxyPOM and DiaMO: simple models for dissolved oxygen and biogeochemistry
 
-`OxyPOM` (**Oxygen and Particulate Organic Matter**) and `DiaMO` (**Diagnostic Model for Oxygen**) are two models that resolve dissolved oxygen dynamics implemented in FABM.
+OxyPOM (**Oxygen and Particulate Organic Matter**) and DiaMO (**Diagnostic Model for Oxygen**) are aquatic biogeochemical models that consider key processes for dissolved oxygen (DO), such as re-aeration, mineralization, and primary production, in fresh, transitional and marine waters.
+Both are implemented in the `Fortran`-based Framework for Aquatic Biogeochemical Models ([FABM)](https://github.com/fabm-model/fabm/)) for interoperability in a variety of hydrodynamic models, in realistic and idealized applications, and for coupleability to other aquatic process models.
 
 ## Description
 
--   `OxyPOM` simulates oxygen consumption and production in river based on [Holzwarth and Wirtz, 2018](https://doi.org/10.1016/j.ecss.2018.01.020), including key biogeochemical processes as photosynthesis, respiration, mineralization, and nitrification.
+-   `OxyPOM` simulates oxygen consumption and production in aquatic ecosystems [(Holzwarth and Wirtz, 2018)](https://doi.org/10.1016/j.ecss.2018.01.020) and resolves key biogeochemical processes as photosynthesis, respiration, mineralization, and nitrification.
 
--   `DiaMO` is a simplification of `OxyPOM` and calculates oxygen consumption and production using a statistical inspired model.
+-   `DiaMO` is a simplification of `OxyPOM` useful when a complete representation of bio-geochemical dynamics is not needed,
 
 The code of these models is located in the directory `./src` (e.g., `./src/oxypom` and `./src/diamo`), and future code developed as part of this model should be here included.
 
@@ -53,7 +54,7 @@ The following is not required to build and run the model but it is for running t
     -   `unzip`
     -   `sed`
 
--   The scripts for generating forcing files setup and plotting routines for model validation require: -`R` (v4.3 or above) available in [r home](https://www.r-project.org/) with the library `ncdf4` installed.
+-   The scripts for generating forcing files setup and plotting routines for model validation require: -`R` (v4.3 or above) available in [r home](https://www.r-project.org/) with the library [`ncdf4`](https://cran.r-project.org/web/packages/ncdf4/index.html) installed.
 
 ## Testcases
 
