@@ -1,0 +1,59 @@
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "license": "https://spdx.org/licenses/Apache-2.0",
+  "codeRepository": "https://codebase.helmholtz.cloud/dam-elbextreme/oxypom.git",
+  "contIntegration": "https://codebase.helmholtz.cloud/dam-elbextreme/oxypom/-/pipelines",
+  "dateCreated": "2025-01-24",
+  "datePublished": "2025-03-13",
+  "dateModified": "2025-03-21",
+  "issueTracker": "https://codebase.helmholtz.cloud/dam-elbextreme/oxypom/-/issues",
+  "name": "FABM OxyPOM and DiaMO: simple models for dissolved oxygen and biogeochemistry",
+  "version": "0.9.1",
+  "description": "OxyPOM (Oxygen and Particulate Organic Matter) and DiaMO (Diagnostic Model for Oxygen) are aquatic biogeochemical models that consider key processes for dissolved oxygen (DO) dynamics, such as re-aeration, mineralization, and primary production. Both models are implemented in the Fortran-based Framework for Aquatic Biogeochemical Models [FABM], which enables their deployment in different physical drivers in realistic and idealized applications. Additional routines for calculating the attenuation of photosynthetically active radiation are included. The processes represented in OxyPOM and DiaMO enable studying DO in fresh, marine, and transitional waters.",
+  "applicationCategory": "Biogeochemical modeling",
+  "funding": "public",
+  "developmentStatus": "active",
+  "isPartOf": "ElbeXtreme",
+  "funder": {
+    "@type": "Organization",
+    "name": "BMBF"
+  },
+  "keywords": [
+    "FABM",
+    "Biogeochemistry",
+    "Oxygen",
+    "ElbeXtreme",
+    "OxyPOM",
+    "DiaMO",
+    "Fortran",
+    "Water quality"
+  ],
+  "programmingLanguage": ["Fortran", "R", "bash"],
+  "runtimePlatform": ["any"],
+  "operatingSystem": ["Linux", "Windows", "macOS"],
+  "author": [
+    {
+      "@type": "Person",
+      "@id": "https://orcid.org/0000-0001-6060-2001",
+      "givenName": "Ovidio",
+      "familyName": "Garcia Oliva",
+      "email": "ovidio.garcia@hereon.de",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "Helmholtz-Zentrum Hereon"
+      }
+    },
+    {
+      "@type": "Person",
+      "@id": "https://orcid.org/0000-0003-3483-6036",
+      "givenName": "Carsten",
+      "familyName": "Lemmen",
+      "email": "carsten.lemmen@hereon.de",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "Helmholtz-Zentrum Hereon"
+      }
+    }
+  ]
+}
