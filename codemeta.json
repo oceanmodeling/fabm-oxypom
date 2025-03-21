@@ -9,7 +9,7 @@
   "dateModified": "2025-03-21",
   "issueTracker": "https://codebase.helmholtz.cloud/dam-elbextreme/oxypom/-/issues",
   "name": "FABM OxyPOM and DiaMO: simple models for dissolved oxygen and biogeochemistry",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "OxyPOM (Oxygen and Particulate Organic Matter) and DiaMO (Diagnostic Model for Oxygen) are aquatic biogeochemical models that consider key processes for dissolved oxygen (DO) dynamics, such as re-aeration, mineralization, and primary production. Both models are implemented in the Fortran-based Framework for Aquatic Biogeochemical Models [FABM], which enables their deployment in different physical drivers in realistic and idealized applications. Additional routines for calculating the attenuation of photosynthetically active radiation are included. The processes represented in OxyPOM and DiaMO enable studying DO in fresh, marine, and transitional waters.",
   "applicationCategory": "Biogeochemical modeling",
   "funding": "public",
