@@ -10,6 +10,6 @@ lint-r:
   before_script:
     - R -e 'install.packages("lintr", repos="http://cran.rstudio.com")'
   script:
-    - Rscript -e 'lintr::lint("./testcases/light/model_comparison.R", linters = with_defaults(object_usage_linter = NULL))'
-    - Rscript -e 'lintr::lint("./testcases/estuary/plot_output.R", linters = with_defaults(object_usage_linter = NULL))'
-    - Rscript -e 'lintr::lint("./testcases/estuary/setup_data.R", linters = with_defaults(object_usage_linter = NULL))'
+    - Rscript -e 'lintr::lint("./testcases/light/model_comparison.R", linters = c(lintr::with_defaults(assignment_linter = NULL)))'
+    - Rscript -e 'lintr::lint("./testcases/estuary/plot_output.R", linters = c(lintr::with_defaults(assignment_linter = NULL)))'
+    - Rscript -e 'lintr::lint("./testcases/estuary/setup_data.R", linters = c(lintr::with_defaults(assignment_linter = NULL)))'
