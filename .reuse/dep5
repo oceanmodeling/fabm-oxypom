@@ -1,12 +1,12 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: Dissolved oxygen and BioGeoChemistry
-Upstream-Contact: Ovidio Garcia-Oliva <ovidoi.garcia@hereon.de>
+Upstream-Name: FABM OxyPOM and DiaMO: simple models for dissolved oxygen and biogeochemistry
+Upstream-Contact: Ovidio Garcia-Oliva <ovidio.garcia@hereon.de>
 Source: https://codebase.helmholtz.cloud/dam-elbextreme/oxypom
 
 # Files: src/*
 # Copyright: $YEAR $NAME <$CONTACT>
 # License: ...
 
-Files: .zenodo.json
+Files: .zenodo.json CITATION.cff codemeta.json
 Copyright: 2025 Helmholtz-Zentrum hereon GmbH
 License: CC0-1.0
