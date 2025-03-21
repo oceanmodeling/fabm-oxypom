@@ -1,21 +1,21 @@
 ---
 title: "FABM OxyPOM and DiaMO: simple models for dissolved oxygen and biogeochemistry"
 tags:
-  - FABM
-  - Biogeochemistry
-  - Oxygen
-  - ElbeXtreme
-  - OxyPOM
-  - DiaMO
-  - Fortran
-  - Water quality
+    - FABM
+    - Biogeochemistry
+    - Oxygen
+    - ElbeXtreme
+    - OxyPOM
+    - DiaMO
+    - Fortran
+    - Water quality
 authors:
-  - name: Ovidio García-Oliva
-    orcid: 0000-0001-6060-2001
-  - name: Carsten Lemmen
-    orcid: 0000-0003-3483-6036
+    - name: Ovidio García-Oliva
+      orcid: 0000-0001-6060-2001
+    - name: Carsten Lemmen
+      orcid: 0000-0003-3483-6036
 affiliations:
-  - name: Helmholtz-Zentrum Hereon, Institute of Coastal Systems - Modeling and Analysis, Germany, ovidio.garcia@hereon.de
+    - name: Helmholtz-Zentrum Hereon, Institute of Coastal Systems - Modeling and Analysis, Germany, ovidio.garcia@hereon.de
 date: 19 March 2025
 year: 2025
 bibliography: paper.bib
@@ -54,8 +54,8 @@ and two micro-algae classes (ALGi).
 DO dynamics is based on a mass balance equation accounting for re-aeration and photosynthesis as oxygen sources, and respiration, mineralization and nitrification as sinks:
 
 \begin{equation}
- \frac{d \textrm{DO}}{dt} = \textrm{re-aeration} + (\textrm{photosynthesis} - \textrm{respiration}) - \textrm{mineralization} + \textrm{nitrification}.
- \label{eq:do}
+\frac{d \textrm{DO}}{dt} = \textrm{re-aeration} + (\textrm{photosynthesis} - \textrm{respiration}) - \textrm{mineralization} + \textrm{nitrification}.
+\label{eq:do}
 \end{equation}
 
 This equation is applied to each water volume considered by the physical driver.
@@ -67,7 +67,7 @@ Nitrification is the oxygen consumed to oxidize ammonia into nitrate.
 Temperature-dependent rates limit these processes.
 
 In OxyPOM, POM and DOM have an explicit elemental composition (carbon, nitrogen and phosphorus).
-POM is present in two qualities, fresh and refractory, which transition in the sequence fresh $\rightarrow$ refractory $\rightarrow$ dissolved. 
+POM is present in two qualities, fresh and refractory, which transition in the sequence fresh $\rightarrow$ refractory $\rightarrow$ dissolved.
 POM and DOM mineralize to inorganic dissolved inorganic nutrients: nitrogen and ortho-phosphate.
 Dissolved inorganic nitrogen is further subdivided into ammonium and nitrate.
 Ammonia transitions to nitrate--nitrification-- as a function of DO.
@@ -78,12 +78,12 @@ Microalgae uptake dissolved inorganic nutrients and release dissolved nutrients 
 
 While the full description of the processes in OxyPOM is available in @Holzwarth2018, some changes were required for a vertically explicit implementation within FABM:
 
-  1. Re-aeration is calculated as surface oxygen transference using saturation concentration as a function of temperature, salinity and wind speed [@Weiss1970].
- This approach is commonly used in other models, such as ERSEM [@Butenschon2016].
+1. Re-aeration is calculated as surface oxygen transference using saturation concentration as a function of temperature, salinity and wind speed [@Weiss1970].
+   This approach is commonly used in other models, such as ERSEM [@Butenschon2016].
 
-  2. Light limitation for photosynthesis is calculated with an exponential saturation [@Platt1980].
+2. Light limitation for photosynthesis is calculated with an exponential saturation [@Platt1980].
 
-  3. Settling velocities are set constant, and vertical redistribution of matter is carried out by the physical driver.
+3. Settling velocities are set constant, and vertical redistribution of matter is carried out by the physical driver.
 
 We validate both models in the Cuxhaven station in the Elbe estuary, where OxyPOM shows high skill by reproducing surface DO.
 
@@ -97,16 +97,18 @@ DO is solved with the mass balance equation of OxyPOM (\autoref{eq:do}), setting
 The complete system is represented as
 
 \begin{eqnarray}
- \frac{d \textrm{Phy}}{dt} &=& \textrm{photosynthesis} - \textrm{respiration} - \textrm{aggregation} \\
- \frac{d \textrm{Det}}{dt} &=& \textrm{aggregation} - \textrm{mineralization} \\
- \frac{d \textrm{DO}}{dt} &=& \textrm{re-aeration} + (\textrm{photosynthesis} - \textrm{respiration}) - \textrm{mineralization}.
+\frac{d \textrm{Phy}}{dt} &=& \textrm{photosynthesis} - \textrm{respiration} - \textrm{aggregation} \\
+\frac{d \textrm{Det}}{dt} &=& \textrm{aggregation} - \textrm{mineralization} \\
+\frac{d \textrm{DO}}{dt} &=& \textrm{re-aeration} + (\textrm{photosynthesis} - \textrm{respiration}) - \textrm{mineralization}.
 \end{eqnarray}
 
 In DiaMO, aggregation rate is a mortality term for phytoplankton [@Maerz2009].
 As in OxyPOM, all rates in DiaMO are temperature-dependent.
 
 ## Light in OxyPOM and DiaMO
+
 <!-- this paragraph needs rewriting as light is its own model -->
+
 Together with OxyPOM and DiaMO, this repository includes the model oxypom/light as an alternative model to the FABM implementation of the light model used by GOTM [@Burchard2002].
 While the default light model assumes that the photosynthetically active radiation (PAR) in a vertical layer $z$ of thickness $\Delta z$ is in the centre of the layer, oxypom/light calculates PAR in the representative depth $\bar{z}$, which satisfies the mean value theorem.
 PAR evaluated at $\bar{z}$ is thus the mean PAR intensity on the layer.
@@ -114,8 +116,8 @@ Since this calculation can be computationally expensive to evaluate, first- and 
 The first-order solution is equal to the centre of the layer $z + \frac{1}{2} \Delta z$, and the second-order approximation is
 
 \begin{equation}
- \bar{z} = z + \frac{1}{2} \Delta z - \frac{\alpha}{3} \Delta z ^ 2,
- \label{eq:secondorder}
+\bar{z} = z + \frac{1}{2} \Delta z - \frac{\alpha}{3} \Delta z ^ 2,
+\label{eq:secondorder}
 \end{equation}
 
 where $\alpha$ is the light extinction coefficient for the layer, accounting for physical and biological light absorption, assuming an exponential light decay.
@@ -124,11 +126,10 @@ where $\alpha$ is the light extinction coefficient for the layer, accounting for
 
 The models are documented in short form in the `ReadMe.md` section of the repository and a complete description of the science behind OxyPOM is in @Holzwarth2018.
 Open access data from third parties are not included with the model, scripts for their download are however included.
-Our own models, scripts and documentations are are released under open source licenses, mostly Apache 2.0, CC0-1.0, and CC-BY-SA-4.0, and where required upstream GPL-2.0-only. A comprehensive documentation of all licenses is provided via REUSE Software.
+Our own models, scripts and documentations are are released under open source licenses, mostly Apache 2.0, CC0-1.0, and CC-BY-SA-4.0; a comprehensive documentation of all licenses is provided via REUSE Software.
 
 # Acknowledgements
 
-The development of this model was made possible by the grant no. 03F0954D of the BMBF as part of the DAM mission ‘mareXtreme’, project ElbeXtreme. 
-<!-- We are grateful for the open source community that facilitated this research, amongst them the developers of and contributors to FABM, GOTM, Python, R, pandoc, and LaTeX. -->
+The development of this model was made possible by the grant no. 03F0954D of the BMBF as part of the DAM mission ‘mareXtreme’, project ElbeXtreme. We are grateful for the open source community that facilitated this research, amongst them the developers of and contributors to FABM, GOTM, R, pandoc, and LaTeX.
 
 # References

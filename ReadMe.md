@@ -2,6 +2,7 @@
 SPDX-FileCopyrightText: 2025 Helmholtz-Zentrum hereon GmbH
 SPDX-License-Identifier: CC0-1.0
 SPDX-FileContributor Ovidio Garcia-Oliva <ovidio.garcia@hereon.de>
+SPDX-FileContributor Carsten Lemmen <carsten.lemmen@hereon.de>
 -->
 
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
@@ -19,7 +20,6 @@ SPDX-FileContributor Ovidio Garcia-Oliva <ovidio.garcia@hereon.de>
 [![JOSS status](https://joss.theoj.org/papers/84a737c77c6d676d0aefbcef8974b138/status.svg)](LINK HERE)
 -->
 
-
 # OxyPOM and DiaMO: simple models for dissolved oxygen and biogeochemistry
 
 `OxyPOM` (**Oxygen and Particulate Organic Matter**) and `DiaMO` (**Diagnostic Model for Oxygen**) are two models that resolve dissolved oxygen dynamics implemented in FABM.
@@ -32,7 +32,7 @@ SPDX-FileContributor Ovidio Garcia-Oliva <ovidio.garcia@hereon.de>
 
 The code of these models is located in the directory `./src` (e.g., `./src/oxypom` and `./src/diamo`), and future code developed as part of this model should be here included.
 
-Together with `OxyPOM` and `DiaMO`, this repository includes the model `oxypom/light`: a second order correction for the calculation of photosynthetically active radiation depth profiles.
+Together with `OxyPOM` and `DiaMO`, this repository includes the model `oxypom/light`: a second-order correction for the calculation of photosynthetically active radiation depth profiles.
 
 ## Requirements
 
@@ -112,7 +112,6 @@ The entire procedure is included in `./testcases/run-light-testcase.sh`.
 ## License
 
 Apache-2.0 (OxyPOM and DiaMo)
-GPL-2.0-only (light)
 
 ## Project status
 
@@ -121,15 +120,14 @@ This is part of the `DAM-ElbeXtreme` project.
 ## Contributing and reporting
 
 We recommend to use latest git commit an branch main version of the model.
-We appreciate your feedback, bug reports and improvement suggestions on our [issue tracker](https://codebase.helmholtz.cloud/dam-elbextreme/oxypom/-/issues).
-We also welcome your contributions, subject to our Contributor Covenant [code of conduct](https://codebase.helmholtz.cloud/dam-elbextreme/oxypom/-/blob/main/doc/contributing/code_of_conduct.md) and our [contributor license agreement](https://codebase.helmholtz.cloud/dam-elbextreme/oxypom/-/blob/main/doc/contributing/contributing-license.md).
+We appreciate your feedback, bug reports and improvement suggestions on our GitLab [issue tracker](https://codebase.helmholtz.cloud/dam-elbextreme/oxypom/-/issues).
+We also welcome your contributions, subject to our Contributor Covenant [code of conduct](https://codebase.helmholtz.cloud/dam-elbextreme/oxypom/-/blob/main/doc/contributing/code_of_conduct.md) and our [Contributor License Agreement](https://codebase.helmholtz.cloud/dam-elbextreme/oxypom/-/blob/main/doc/contributing/contributing-license.md).
 
 The best way to contribute is by (1) creating a fork off our repository, (2) committing your changes on your fork and then (3) creating a pull request ("PR") to push your changes back to us.
 
-To file an issue or to contribute, you are asked to (1) authenticate with an existing identity and (2) to register on the HIFIS GitLab instance and sign in. 
+To file an issue or to contribute, you are asked to (1) authenticate with an existing identity and (2) to register on the HIFIS GitLab instance and sign in.
 When asked, click "Sign in with Helmholtz AAI".
 On the following page "Login to Helmholtz AAI OAuth2 Authorization Server", search for one of your existing authentication providers (this may be your university, company, ORCID, GitHub, or many others) and provide their login credentials for authorization.
-If you are not already registered on the HIFIS GitLab instance, a confirmation email will be sent to the primary email address registered with your authentication provider. 
-After clicking the confirmation link, you will also be asked to provide a name on this Gitlab instance; this will be your nickname.
+If you are not already registered on the HIFIS GitLab instance, a confirmation email will be sent to the primary email address registered with your authentication provider.
+After clicking the confirmation link, you will also be asked to provide a name on this GitLab instance; this will be your nickname.
 Help on this one-time registration process is available from [https://hifis.net/tutorial/2021/06/23/how-to-helmholtz-aai.html](https://hifis.net/tutorial/2021/06/23/how-to-helmholtz-aai.html).
-
