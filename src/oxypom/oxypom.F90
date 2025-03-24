@@ -95,9 +95,9 @@ contains
 
       ! Store parameter values in our own derived type
       ! All rates must be provided in values per day and are converted here to values per second.
-      call self%get_parameter(self%an, 'an', '--', 'stoichiometric ratio N:C phytoplankton', default=6.625_rk)
-      call self%get_parameter(self%ap, 'ap', '--', 'stoichiometric ratio P:C phytoplankton', default=106.0_rk)
-      call self%get_parameter(self%asi, 'asi', '--', 'stoichiometric ratio Si:C diatoms', default=7.06666666666667_rk)
+      call self%get_parameter(self%an, 'an', '--', 'stoichiometric ratio N:C phytoplankton', default=0.151_rk)
+      call self%get_parameter(self%ap, 'ap', '--', 'stoichiometric ratio P:C phytoplankton', default=0.0094_rk)
+      call self%get_parameter(self%asi, 'asi', '--', 'stoichiometric ratio Si:C diatoms', default=0.1413_rk)
       call self%get_parameter(self%amc, 'amc', 'mmol N m-3', 'critical concentration NH4 uptake', default=0.71_rk)
       call self%get_parameter(self%ea, 'ea', 'm2 mmol C-1', 'specific light extinction coeff. Algae', default=0.0012_rk)
       call self%get_parameter(self%ep, 'ep', 'm2 mmol C-1', 'specific light extinction coeff. POC', default=0.0012_rk)
@@ -376,7 +376,7 @@ contains
       kgp2 = frad2*fnut2*fpri_tem*self%kpp         ! gross pp rate of algae
       krsp1 = self%fgr*kgp1 + (1.0_rk - self%fgr)*fres_tem*self%kmr1         ! total respiration rate of algae
       krsp2 = self%fgr*kgp2 + (1.0_rk - self%fgr)*fres_tem*self%kmr2         ! total respiration rate of algae
-      fram = 1.0_rk + 0.5_rk*(1.0_rk + TANH(5.0_rk*(NH4 - self%amc)))*(NH4/(NO3 + NH4) - 1.0_rk)         ! fraction N consumed as NH4
+      fram = 1.0_rk + 0.5_rk*(1.0_rk + TANH(-15.0_rk*(NH4 - self%amc)))*(NH4/(NO3 + NH4) - 1.0_rk)         ! fraction N consumed as NH4
       DISS = self%kdiss*OPAL*(self%sieq - Si)         ! Opal dissolution rate
       nPP1 = (kgp1 - krsp1)*ALG1         ! net primary production rate
       nPP2 = (kgp2 - krsp2)*ALG2         ! net primary production rate
