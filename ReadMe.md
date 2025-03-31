@@ -27,9 +27,9 @@ Both are implemented in the `Fortran`-based Framework for Aquatic Biogeochemical
 
 ## Description
 
--   `OxyPOM` simulates oxygen consumption and production in aquatic ecosystems [(Holzwarth and Wirtz, 2018)](https://doi.org/10.1016/j.ecss.2018.01.020) and resolves key biogeochemical processes as photosynthesis, respiration, mineralization, and nitrification.
+- `OxyPOM` simulates oxygen consumption and production in aquatic ecosystems [(Holzwarth and Wirtz, 2018)](https://doi.org/10.1016/j.ecss.2018.01.020) and resolves key biogeochemical processes as photosynthesis, respiration, mineralization, and nitrification.
 
--   `DiaMO` is a simplification of `OxyPOM` useful when a complete representation of bio-geochemical dynamics is not needed,
+- `DiaMO` is a simplification of `OxyPOM` useful when a complete representation of bio-geochemical dynamics is not needed,
 
 The code of these models is located in the directory `./src` (e.g., `./src/oxypom` and `./src/diamo`), and future code developed as part of this model should be here included.
 
@@ -37,24 +37,20 @@ Together with `OxyPOM` and `DiaMO`, this repository includes the model `oxypom/l
 
 ## Requirements
 
--   This model requires:
+- This model requires:
 
-    -   `FABM` (v1 or above) available in [fabm github](https://github.com/fabm-model/fabm/).
-        It can be cloned using `git clone https://github.com/fabm-model/fabm.git fabm`.
+    - `FABM` (v1 or above) available in [fabm github](https://github.com/fabm-model/fabm/).
+      It can be cloned using `git clone https://github.com/fabm-model/fabm.git fabm`.
 
--   The physical driver:
-    -   `GOTM` (v6.0 latest stable release) available in [gotm github](https://github.com/orgs/gotm-model/repositories).
-        It can be cloned using via `git clone --recursive https://github.com/gotm-model/code.git -b v6.0 gotm6`.
+- The physical driver:
+    - `GOTM` (v6.0 latest stable release) available in [gotm github](https://github.com/orgs/gotm-model/repositories).
+      It can be cloned using via `git clone --recursive https://github.com/gotm-model/code.git -b v6.0 gotm6`.
 
 The following is not required to build and run the model but it is for running the test case:
 
--   The script for downloading forcing and validation data requires the following shell commands:
+- The script for downloading forcing and validation data requires the shell commands `wget`, `unzip`, and `sed`.
 
-    -   `wget`
-    -   `unzip`
-    -   `sed`
-
--   The scripts for generating forcing files setup and plotting routines for model validation require: -`R` (v4.3 or above) available in [r home](https://www.r-project.org/) with the library [`ncdf4`](https://cran.r-project.org/web/packages/ncdf4/index.html) installed.
+- The scripts for generating forcing files setup and plotting routines for model validation require `R` (v4.3 or above) available in [r home](https://www.r-project.org/) with the library [`ncdf4`](https://cran.r-project.org/web/packages/ncdf4/index.html) installed.
 
 ## Testcases
 
@@ -66,7 +62,7 @@ Currently, we include the testcase "Estuary".
 
 This setup uses the physical driver `GOTM` to simulate the water column dynamics in the Elbe estuary in 2005-2024.
 
-1. To run the testcase go to the directory `.\testcases`.
+1. To run the testcase go to the directory `./testcases`.
 
 The model is build with the script `gotm-installation.sh`, in where these variables must be defined: - `GOTM_DIR` base directory of GOTM source code - `FABM_DIR` base directory of FABM source code - `OXYPOM_DIR` base directory of OxyPOM source code
 
@@ -78,10 +74,10 @@ By default they are:
     export OXYPOM_DIR=$HOME/tools/oxypom/src
     ```
 
-2. The script `gotm-installation.sh` creates the directory `.\build` with the building files, and a copy of `gotm` executable in the `.\estuary` directory.
-   Now move to the directory `.\estuary`.
+2. The script `gotm-installation.sh` creates the directory `./build` with the building files, and a copy of `gotm` executable in the `./estuary` directory.
+   Now move to the directory `./estuary`.
 
-3. The script `get_data.sh` download and unzip the forcing and validation data from [kuestendaten.de](https://www.kuestendaten.de) in a newly created directory `.\data`.
+3. The script `get_data.sh` download and unzip the forcing and validation data from [kuestendaten.de](https://www.kuestendaten.de) in a newly created directory `./data`.
    The downloaded files are used under license [DL-DE->Zero-2.0](https://www.govdata.de/dl-de/zero-2-0).
 
 4. The script `setup_data.R` formatted the data to be read by `GOTM`. It generates the file `meteofile.csv`.
@@ -101,9 +97,9 @@ This setup uses the physical driver `GOTM` to simulate the water column dynamics
 
 Follow steps 1-2 of the estuary testcase.
 
-Now move to the directory `.\light`.
+Now move to the directory `./light`.
 
--   The script `model_comparison.R` analyses the model output.
+- The script `model_comparison.R` analyses the model output.
 
 If everything is correct, the figure `light_validation.png` should be produced.
 It displays a comparison of simulations using the default light implementation with the provided by `oxypom/light`.
@@ -124,7 +120,7 @@ We recommend to use latest git commit an branch main version of the model.
 We appreciate your feedback, bug reports and improvement suggestions on our GitLab [issue tracker](https://codebase.helmholtz.cloud/dam-elbextreme/oxypom/-/issues).
 We also welcome your contributions, subject to our Contributor Covenant [code of conduct](https://codebase.helmholtz.cloud/dam-elbextreme/oxypom/-/blob/main/doc/contributing/code_of_conduct.md) and our [Contributor License Agreement](https://codebase.helmholtz.cloud/dam-elbextreme/oxypom/-/blob/main/doc/contributing/contributing-license.md).
 
-The best way to contribute is by (1) creating a fork off our repository, (2) committing your changes on your fork and then (3) creating a pull request ("PR") to push your changes back to us.
+The **best way to contribute** is by (1) creating a fork off our repository, (2) committing your changes on your fork and then (3) creating a pull request ("PR") to push your changes back to us.
 
 To file an issue or to contribute, you are asked to (1) authenticate with an existing identity and (2) to register on the HIFIS GitLab instance and sign in.
 When asked, click "Sign in with Helmholtz AAI".
