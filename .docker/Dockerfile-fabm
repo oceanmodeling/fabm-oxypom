@@ -8,13 +8,13 @@
 FROM python:3.11-alpine AS base
 
 LABEL maintainer="carsten.lemmen@hereon.de"
-LABEL version="0.1a"
+LABEL version="0.1.1"
 LABEL description="This is a custom Docker image for a development container"
 LABEL license="CC0-1.0"
 LABEL copyright="2024-2025 Helmholtz-Zentrum hereon GmbH"
 
 # Install a development toolchain based on gnu/openmpi, git and  build tools
-RUN apk add --no-cache cmake make bash 
+RUN apk add --no-cache cmake make bash
 RUN apk add --no-cache gcc
 RUN apk add --no-cache gfortran
 RUN apk add --no-cache g++
@@ -59,7 +59,7 @@ COPY --from=fabm /opt /opt
 COPY --from=fabm /home/oxypom/testcases/* /home
 
 LABEL maintainer="carsten.lemmen@hereon.de"
-LABEL version="0.1a"
+LABEL version="0.1.1"
 LABEL description="This is a custom Docker image for a deployment container"
 LABEL license="CC0-1.0"
 LABEL copyright="2024-2025 Helmholtz-Zentrum hereon GmbH"
@@ -85,5 +85,13 @@ RUN bash ./get_data.sh
 RUN Rscript setup_data.R
 RUN gotm
 RUN Rscript plot_output.R
+
+CMD ["/bin/bash"]
+
+FROM alpine:edge AS slim
+RUN apk add --no-cache netcdf
+COPY --from=fabm /opt /opt
+COPY --from=fabm /home /home
+RUN rm -f output.nc restart.nc
 
 CMD ["/bin/bash"]
