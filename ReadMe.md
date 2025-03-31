@@ -12,11 +12,11 @@ SPDX-FileContributor Carsten Lemmen <carsten.lemmen@hereon.de>
 [![Prettier style](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 [![Pipeline](https://codebase.helmholtz.cloud/dam-elbextreme/oxypom/badges/main/pipeline.svg)](https://codebase.helmholtz.cloud/dam-elbextreme/oxypom/-/pipelines)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](./LICENSES/Apache-2.0.txt)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15111433.svg)](https://zenodo.org/records/15111433)
 
 <!--
 [![CodeFactor](https://www.codefactor.io/repository/github/platipodium/vinos/badge)](https://www.codefactor.io/repository/github/platipodium/vinos
 [![Open Code](https://img.shields.io/badge/_%3C%2F%3E-open_code-92c02e?logo=gnometerminal&logoColor=lightblue&link=https://www.comses.net/resources/open-code-badge/)](LINK HERE)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8430014.svg)](LINK HERE)
 [![JOSS status](https://joss.theoj.org/papers/84a737c77c6d676d0aefbcef8974b138/status.svg)](LINK HERE)
 -->
 

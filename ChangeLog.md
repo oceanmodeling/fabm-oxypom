@@ -13,10 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Cleanup of git history
 - Simulation results available as artifacts
+- Deposition on Zenodo
 
 # Release notes for version 1.0.0
 
-- More omplete metadata
+- More complete metadata
 - Homogenized documentation
 - Submission to the Journal of Open Source Software (JOSS)
 - Docker available at https://registry.hzdr.de/dam-elbextreme/oxypom/fabm:latest

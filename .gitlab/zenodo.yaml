@@ -15,7 +15,19 @@ send-snapshot:
   script:
     - pip install gitlab2zenodo
     - git archive --format zip --output ${CI_COMMIT_TAG#v}.zip ${CI_COMMIT_TAG}
-    - g2z-send -i $zenodo_record -t $zenodo_token -s -m .zenodo.json ${CI_COMMIT_TAG#v}.zip
+    - g2z-send -i 15111433 -t ${ZENODO_APIKEY}} -m .zenodo.json ${CI_COMMIT_TAG#v}.zip
   needs: []
-  allow_failure: false
+  allow_failure: true
+  interruptible: true
+
+send-sandbox-snapshot:
+  stage: deploy
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^v?[0-9]+\.[0-9]+/
+  script:
+    - pip install gitlab2zenodo
+    - git archive --format zip --output ${CI_COMMIT_TAG#v}.zip ${CI_COMMIT_TAG}
+    - g2z-send -i 192628 -t ${ZENODO_SANDBOX} -s -m .zenodo.json ${CI_COMMIT_TAG#v}.zip
+  needs: []
+  allow_failure: true
   interruptible: true
