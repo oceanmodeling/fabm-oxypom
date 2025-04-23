@@ -13,11 +13,15 @@ tags:
 authors:
     - name: Ovidio García-Oliva
       orcid: 0000-0001-6060-2001
+      affiliation: 1
     - name: Carsten Lemmen
       orcid: 0000-0003-3483-6036
+      affiliation: 1
 affiliations:
     - name: Helmholtz-Zentrum Hereon, Institute of Coastal Systems - Modeling and Analysis, Germany, ovidio.garcia@hereon.de
-date: 21 March 2025
+      index: 1
+      ror: 03qjp1d79
+date: 23 April 2025
 year: 2025
 bibliography: paper.bib
 SPDX-FileCopyrightText: 2025 Helmholtz-Zentrum hereon GmbH
