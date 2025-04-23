@@ -13,6 +13,11 @@ default:
 	@echo Valid Makefile targets are: '"version"'
 	@echo To build this package, follow the instructions in the Readme.md file.
 
+LICENSE.md: python/reuse2txt.py
+	reuse spdx | python python/reuse2txt.py > ./LICENSE.md
+
+license: LICENSE.md
+
 # This target updates all files that control the versioning
 # of the software package
 version:
