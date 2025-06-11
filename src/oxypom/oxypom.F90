@@ -428,7 +428,7 @@ contains
       UNI1 = (1.0_rk - fram)*self%an*nPP1         ! nitrate uptake rate
       UNI2 = (1.0_rk - fram)*self%an*nPP2         ! nitrate uptake rate
       USI = self%asi*nPP1         ! Si uptake rate
-      DOxy_sinks = MINoxy1 + MINoxy2 + MINoxy3 + 2.0_rk*NIT + krsp1*ALG1 + krsp2*ALG2 + MORT1 + MORT2 ! total oxygen sinks
+      DOxy_sinks = MINoxy1 + MINoxy2 + MINoxy3 + 2.0_rk*NIT + krsp1*ALG1 + krsp2*ALG2 + self%rCon*(MORT1 + MORT2) ! total oxygen sinks
 
       ! Starting state variable derivation calculations
       d_ALG1 = nPP1 - MORT1   ! diatom
