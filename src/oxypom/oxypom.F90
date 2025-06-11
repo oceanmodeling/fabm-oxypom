@@ -18,9 +18,14 @@ module oxypom_oxypom
       type(type_dependency_id) :: id_par
       type(type_bottom_dependency_id) :: id_depth
       type(type_dependency_id) :: id_salinity
+      type(type_global_dependency_id) :: id_doy
       type(type_surface_dependency_id) :: id_wind
       type(type_surface_dependency_id) :: id_I0
       type(type_diagnostic_variable_id) :: id_dPAR
+      type(type_diagnostic_variable_id) :: id_x_min
+      type(type_diagnostic_variable_id) :: id_x_nit
+      type(type_diagnostic_variable_id) :: id_x_res
+
 
       ! Variable identifiers
       type(type_state_variable_id) :: id_ALG1
@@ -78,6 +83,12 @@ module oxypom_oxypom
       real(rk) :: SPMI
       real(rk) :: sv
       real(rk) :: svALG
+      real(rk) :: rCon
+      real(rk) :: Q10_min
+      real(rk) :: Q10_res
+      real(rk) :: Q10_pri
+      real(rk) :: Q10_Ioi
+      real(rk) :: Q10_mno
 
    contains
       procedure :: initialize
@@ -131,10 +142,16 @@ contains
       call self%get_parameter(self%SPMI, 'SPMI', 'g m-3', 'inorganic suspended particular matter concentration', default=47.0_rk)
       call self%get_parameter(self%sv, 'sv', 'm d-1', 'settling velocity POC', default=-0.5_rk)
       call self%get_parameter(self%svALG, 'svALG', 'm d-1', 'settling velocity phytoplankton', default=-0.5_rk)
+      call self%get_parameter(self%rCon, 'rCon', 'mmol O2 mmol C-1', 'respiration rate of phytoplankton consumer', default=1.0_rk)
+      call self%get_parameter(self%Q10_min, 'Q10_min', '--', 'Q10 for mineralization', default=1.20_rk)
+      call self%get_parameter(self%Q10_res, 'Q10_res', '--', 'Q10 for respiration', default=1.07_rk)
+      call self%get_parameter(self%Q10_pri, 'Q10_pri', '--', 'Q10 for primary production', default=1.40_rk)      
+      call self%get_parameter(self%Q10_Ioi, 'Q10_Ioi', '--', 'Q10 for optimal light intensity', default=1.04_rk)    
+      call self%get_parameter(self%Q10_mno, 'Q10_mno', '--', 'Q10 for optimal mineralization of nitrate', default=1.12_rk)   
 
       ! Register state variables
-      call self%register_state_variable(self%id_ALG1, 'ALG1', 'mmol C m-3', 'diatom', 1.0_rk, minimum=0.0_rk, maximum=1000.0_rk, vertical_movement=self%svALG*d_per_s)
-      call self%register_state_variable(self%id_ALG2, 'ALG2', 'mmol C m-3', 'non-diatom', 0.20_rk, minimum=0.0_rk, maximum=1000.0_rk, vertical_movement=self%svALG*d_per_s)
+      call self%register_state_variable(self%id_ALG1, 'ALG1', 'mmol C m-3', 'diatom', 1.0_rk, minimum=0.1_rk, maximum=1000.0_rk, vertical_movement=self%svALG*d_per_s)
+      call self%register_state_variable(self%id_ALG2, 'ALG2', 'mmol C m-3', 'non-diatom', 0.20_rk, minimum=0.1_rk, maximum=1000.0_rk, vertical_movement=self%svALG*d_per_s)
       call self%register_state_variable(self%id_POC1, 'POC1', 'mmol C m-3', 'POC1 ', 2.0_rk, minimum=0.0_rk, maximum=1000.0_rk, vertical_movement=self%sv*d_per_s)
       call self%register_state_variable(self%id_POC2, 'POC2', 'mmol C m-3', 'POC2 ', 3.0_rk, minimum=0.0_rk, maximum=1000.0_rk, vertical_movement=self%sv*d_per_s)
       call self%register_state_variable(self%id_DOC, 'DOC', 'mmol C m-3', 'DOC', 500.0_rk, minimum=0.0_rk, maximum=1000.0_rk, vertical_movement=0.0_rk*d_per_s)
@@ -149,13 +166,24 @@ contains
       call self%register_state_variable(self%id_DOP, 'DOP', 'mmol P m-3', 'DOP', 0.5_rk, minimum=0.0_rk, maximum=50.0_rk, vertical_movement=0.0_rk*d_per_s)
       call self%register_state_variable(self%id_Si, 'Si', 'mmol Si m-3', 'Silicate', 200.0_rk, minimum=0.0_rk, maximum=1000.0_rk, vertical_movement=0.0_rk*d_per_s)
       call self%register_state_variable(self%id_OPAL, 'OPAL', 'mmol Si m-3', 'opal', 10.0_rk, minimum=0.0_rk, maximum=2000.0_rk, vertical_movement=self%sv*d_per_s)
-      call self%register_state_variable(self%id_DOxy, 'DOxy', 'mmol O2 m-3', 'dissolved oxygen', 300.0_rk, minimum=0.0_rk, maximum=600.0_rk, vertical_movement=0.0_rk*d_per_s)
+      call self%register_state_variable(self%id_DOxy, 'DOxy', 'mmol O2 m-3', 'dissolved oxygen', 300.0_rk, minimum=0.001_rk, maximum=600.0_rk, vertical_movement=0.0_rk*d_per_s)
 
       ! Register contribution of state to global aggregate variables.
-      !call self%add_to_aggregate_variable(standard_variables%total_nitrogen, self%id_m)
+      call self%add_to_aggregate_variable(standard_variables%total_nitrogen, self%id_NH4)
+      call self%add_to_aggregate_variable(standard_variables%total_nitrogen, self%id_NO3)
+      call self%add_to_aggregate_variable(standard_variables%total_nitrogen, self%id_PON1)
+      call self%add_to_aggregate_variable(standard_variables%total_nitrogen, self%id_PON2)
+      call self%add_to_aggregate_variable(standard_variables%total_nitrogen, self%id_DON)
+      call self%add_to_aggregate_variable(standard_variables%total_nitrogen, self%id_ALG1, scale_factor=self%an)
+      call self%add_to_aggregate_variable(standard_variables%total_nitrogen, self%id_ALG2, scale_factor=self%an)
 
+      call self%add_to_aggregate_variable(standard_variables%total_phosphorus, self%id_PO4)
+ 
       ! Register diagnostic variables
       call self%register_diagnostic_variable(self%id_dPAR, 'PAR', 'W m-2', 'photosynthetically active radiation')
+      call self%register_diagnostic_variable(self%id_x_min, 'x_min', '--', 'fraction of oxygen sinks by mineralization')
+      call self%register_diagnostic_variable(self%id_x_nit, 'x_nit', '--', 'fraction of oxygen sinks by nitrtification')
+      call self%register_diagnostic_variable(self%id_x_res, 'x_res', '--', 'fraction of oxygen sinks by respiration')
 
       ! Register environmental dependencies
       call self%register_dependency(self%id_temp, standard_variables%temperature)
@@ -164,6 +192,7 @@ contains
       call self%register_dependency(self%id_salinity, standard_variables%practical_salinity)
       call self%register_dependency(self%id_wind, standard_variables%wind_speed)
       call self%register_dependency(self%id_I0, standard_variables%surface_downwelling_shortwave_flux)
+      call self%register_global_dependency(self%id_doy,standard_variables%number_of_days_since_start_of_the_year)
 
       ! Contribute to light attenuation
       !call self%add_to_aggregate_variable(standard_variables%attenuation_coefficient_of_photosynthetic_radiative_flux, self%etb + self%es*self%SPMI)
@@ -188,6 +217,7 @@ contains
       real(rk) :: salinity
       real(rk) :: I0
       real(rk) :: wind
+      real(rk) :: doy
 
       ! Starting state variables
       real(rk) :: ALG1
@@ -209,6 +239,7 @@ contains
       real(rk) :: DOxy
 
       ! Starting auxiliary variables
+      real(rk) :: temp_exp
       real(rk) :: fmin_tem
       real(rk) :: fres_tem
       real(rk) :: fpri_tem
@@ -272,6 +303,10 @@ contains
       real(rk) :: UNI1
       real(rk) :: UNI2
       real(rk) :: USI
+      real(rk) :: xMIN
+      real(rk) :: xNIT
+      real(rk) :: xRES
+      real(rk) :: DOxy_sinks
 
       ! Starting derivatives state variables
       real(rk) :: d_ALG1
@@ -302,6 +337,7 @@ contains
       _GET_(self%id_salinity, salinity)
       _GET_SURFACE_(self%id_I0, I0)
       _GET_SURFACE_(self%id_wind, wind)
+      _GET_GLOBAL_(self%id_doy, doy)
 
       ! Retrieve current (local) state variable values.
       _GET_(self%id_ALG1, ALG1)
@@ -322,12 +358,14 @@ contains
       _GET_(self%id_OPAL, OPAL)
       _GET_(self%id_DOxy, DOxy)
 
+      ! print *, self%rdt__
       ! Starting auxiliary calculations
-      fmin_tem = 1.20_rk**(temp - 20.0_rk) ! temperature dependence of mineralization
-      fres_tem = 1.07_rk**(temp - 20.0_rk) ! temperature dependence of respiration
-      fpri_tem = 1.40_rk**(temp - 20.0_rk) ! temperature dependence of primary production
-      fIoi_tem = 1.04_rk**(temp - 20.0_rk) ! temperature dependence of optimal light intensity
-      fmno_tem = 1.12_rk**(temp - 20.0_rk) ! temperature dependence of demineralization of mineral nitrates
+      temp_exp = 0.1_rk*(temp - 20.0_rk)! reference value for Q10 formulation
+      fmin_tem = self%Q10_min**temp_exp ! temperature dependence of mineralization
+      fres_tem = self%Q10_res**temp_exp ! temperature dependence of respiration
+      fpri_tem = self%Q10_pri**temp_exp ! temperature dependence of primary production
+      fIoi_tem = self%Q10_Ioi**temp_exp ! temperature dependence of optimal light intensity
+      fmno_tem = self%Q10_mno**temp_exp ! temperature dependence of demineralization of mineral nitrates
 
       MIN11 = self%kmin1*fmin_tem*POC1         ! mineralization rate
       MIN12 = self%kmin2*fmin_tem*POC2         ! mineralization rate
@@ -356,8 +394,8 @@ contains
       fn = (NH4 + NO3)/(NH4 + NO3 + self%Ksn)         ! nitrogen limitation
       fp = PO4/(PO4 + self%Ksp)         ! phosphorus limitation
       fsi = Si/(Si + self%Kssi)         ! si limitation function
-      fnut1 = MIN(fn, fp, fsi)         ! nutrient limitation function
-      fnut2 = MIN(fn, fp)         ! nutrient limitation function
+      fnut1 = MIN(fn, fp, fsi)         ! nutrient limitation function for ALG1
+      fnut2 = MIN(fn, fp)         ! nutrient limitation function for ALG2
 
       MINoxy1 = frmo*(MIN11 + MIN12 + MIN13)         ! mineral oxygen consumption
       MINoxy2 = frmo*(MIN21 + MIN22 + MIN23)         ! mineral oxygen consumption
@@ -390,10 +428,11 @@ contains
       UNI1 = (1.0_rk - fram)*self%an*nPP1         ! nitrate uptake rate
       UNI2 = (1.0_rk - fram)*self%an*nPP2         ! nitrate uptake rate
       USI = self%asi*nPP1         ! Si uptake rate
+      DOxy_sinks = MINoxy1 + MINoxy2 + MINoxy3 + 2.0_rk*NIT + krsp1*ALG1 + krsp2*ALG2 + MORT1 + MORT2 ! total oxygen sinks
 
       ! Starting state variable derivation calculations
-      d_ALG1 = nPP1 - MORT1         ! diatom
-      d_ALG2 = nPP2 - MORT2         ! non-diatom
+      d_ALG1 = nPP1 - MORT1   ! diatom
+      d_ALG2 = nPP2 - MORT2   ! non-diatom
       d_POC1 = (1.0_rk - self%fra)*(MORT1 + MORT2) - DEC112 - DEC113 - MIN11         ! POC1
       d_POC2 = DEC112 - DEC123 - MIN12         ! POC2
       d_DOC = DEC113 + DEC123 - MIN13         ! DOC
@@ -408,7 +447,7 @@ contains
       d_DOP = DEC313 + DEC323 - MIN33         ! DOP
       d_Si = RAS + DISS - USI         ! Silicate
       d_OPAL = (1.0_rk - self%fra)*self%asi*MORT1 - DISS         ! opal
-      d_DOxy = nPP1 + nPP2 - MINoxy1 - MINoxy2 - MINoxy3 - 2.0_rk*NIT         ! dissolved oxygen
+      d_DOxy = nPP1 + nPP2 - MINoxy1 - MINoxy2 - MINoxy3 - 2.0_rk*NIT - self%rCon*(MORT1 + MORT2)       ! dissolved oxygen
 
       ! Add sources
       _ADD_SOURCE_(self%id_ALG1, d_ALG1*d_per_s)
@@ -430,6 +469,9 @@ contains
       _ADD_SOURCE_(self%id_DOxy, d_DOxy*d_per_s)
 
       _SET_DIAGNOSTIC_(self%id_dPAR, par)
+      _SET_DIAGNOSTIC_(self%id_x_min, (MINoxy1 + MINoxy2 + MINoxy3)/DOxy_sinks)
+      _SET_DIAGNOSTIC_(self%id_x_nit, (2.0_rk*NIT)/DOxy_sinks)
+      _SET_DIAGNOSTIC_(self%id_x_res, (krsp1*ALG1 + krsp2*ALG2 + self%rCon*(MORT1 + MORT2))/DOxy_sinks)
 
       ! Leave spatial loops (if any)
       _LOOP_END_
