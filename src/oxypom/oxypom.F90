@@ -21,11 +21,18 @@ module oxypom_oxypom
       type(type_global_dependency_id) :: id_doy
       type(type_surface_dependency_id) :: id_wind
       type(type_surface_dependency_id) :: id_I0
+      
+      ! Diagnostic variables
       type(type_diagnostic_variable_id) :: id_dPAR
       type(type_diagnostic_variable_id) :: id_x_min
       type(type_diagnostic_variable_id) :: id_x_nit
       type(type_diagnostic_variable_id) :: id_x_res
-
+      type(type_diagnostic_variable_id) :: id_x_npp
+      type(type_diagnostic_variable_id) :: id_ALG
+      type(type_diagnostic_variable_id) :: id_POC
+      type(type_diagnostic_variable_id) :: id_PON
+      type(type_diagnostic_variable_id) :: id_POP
+      type(type_surface_diagnostic_variable_id) ::  id_AIR
 
       ! Variable identifiers
       type(type_state_variable_id) :: id_ALG1
@@ -89,6 +96,7 @@ module oxypom_oxypom
       real(rk) :: Q10_pri
       real(rk) :: Q10_Ioi
       real(rk) :: Q10_mno
+      real(rk) :: alpha
 
    contains
       procedure :: initialize
@@ -148,6 +156,7 @@ contains
       call self%get_parameter(self%Q10_pri, 'Q10_pri', '--', 'Q10 for primary production', default=1.40_rk)      
       call self%get_parameter(self%Q10_Ioi, 'Q10_Ioi', '--', 'Q10 for optimal light intensity', default=1.04_rk)    
       call self%get_parameter(self%Q10_mno, 'Q10_mno', '--', 'Q10 for optimal mineralization of nitrate', default=1.12_rk)   
+      call self%get_parameter(self%alpha, 'alpha', '--', 'increased rearation factor due to geometry idealizations', default=2.0_rk)   
 
       ! Register state variables
       call self%register_state_variable(self%id_ALG1, 'ALG1', 'mmol C m-3', 'diatom', 1.0_rk, minimum=0.1_rk, maximum=1000.0_rk, vertical_movement=self%svALG*d_per_s)
@@ -178,12 +187,23 @@ contains
       call self%add_to_aggregate_variable(standard_variables%total_nitrogen, self%id_ALG2, scale_factor=self%an)
 
       call self%add_to_aggregate_variable(standard_variables%total_phosphorus, self%id_PO4)
- 
+      call self%add_to_aggregate_variable(standard_variables%total_phosphorus, self%id_POP1)
+      call self%add_to_aggregate_variable(standard_variables%total_phosphorus, self%id_POP2)
+      call self%add_to_aggregate_variable(standard_variables%total_phosphorus, self%id_DOP)
+      call self%add_to_aggregate_variable(standard_variables%total_phosphorus, self%id_ALG1, scale_factor=self%ap)
+      call self%add_to_aggregate_variable(standard_variables%total_phosphorus, self%id_ALG2, scale_factor=self%ap)
+
       ! Register diagnostic variables
       call self%register_diagnostic_variable(self%id_dPAR, 'PAR', 'W m-2', 'photosynthetically active radiation')
-      call self%register_diagnostic_variable(self%id_x_min, 'x_min', '--', 'fraction of oxygen sinks by mineralization')
-      call self%register_diagnostic_variable(self%id_x_nit, 'x_nit', '--', 'fraction of oxygen sinks by nitrtification')
-      call self%register_diagnostic_variable(self%id_x_res, 'x_res', '--', 'fraction of oxygen sinks by respiration')
+      call self%register_diagnostic_variable(self%id_x_min, 'x_min', 'mmol O2 m3 d-1', 'oxygen consumed by mineralization')
+      call self%register_diagnostic_variable(self%id_x_nit, 'x_nit', 'mmol O2 m3 d-1', 'oxygen consumed by nitrtification')
+      call self%register_diagnostic_variable(self%id_x_res, 'x_res', 'mmol O2 m3 d-1', 'oxygen consumed by respiration')
+      call self%register_diagnostic_variable(self%id_x_npp, 'x_npp', 'mmol O2 m3 d-1', 'oxygen produced by phytoplankton')
+      call self%register_diagnostic_variable(self%id_ALG, 'ALG', 'mmol C m-3', 'total phytoplankton')
+      call self%register_diagnostic_variable(self%id_POC, 'POC', 'mmol C m-3', 'total POC')
+      call self%register_diagnostic_variable(self%id_PON, 'PON', 'mmol N m-3', 'total PON')
+      call self%register_diagnostic_variable(self%id_POP, 'POP', 'mmol P m-3', 'total POP')
+      call self%register_surface_diagnostic_variable(self%id_AIR,'AIR','mmol O2 m2 d-1','air-sea flux', source=source_do_surface)
 
       ! Register environmental dependencies
       call self%register_dependency(self%id_temp, standard_variables%temperature)
@@ -195,7 +215,7 @@ contains
       call self%register_global_dependency(self%id_doy,standard_variables%number_of_days_since_start_of_the_year)
 
       ! Contribute to light attenuation
-      !call self%add_to_aggregate_variable(standard_variables%attenuation_coefficient_of_photosynthetic_radiative_flux, self%etb + self%es*self%SPMI)
+      call self%add_to_aggregate_variable(standard_variables%attenuation_coefficient_of_photosynthetic_radiative_flux, self%etb + self%es*self%SPMI)
       call self%add_to_aggregate_variable(standard_variables%attenuation_coefficient_of_photosynthetic_radiative_flux, self%id_ALG1, scale_factor=self%ea)
       call self%add_to_aggregate_variable(standard_variables%attenuation_coefficient_of_photosynthetic_radiative_flux, self%id_ALG2, scale_factor=self%ea)
       call self%add_to_aggregate_variable(standard_variables%attenuation_coefficient_of_photosynthetic_radiative_flux, self%id_POC1, scale_factor=self%ep)
@@ -367,27 +387,27 @@ contains
       fIoi_tem = self%Q10_Ioi**temp_exp ! temperature dependence of optimal light intensity
       fmno_tem = self%Q10_mno**temp_exp ! temperature dependence of demineralization of mineral nitrates
 
-      MIN11 = self%kmin1*fmin_tem*POC1         ! mineralization rate
-      MIN12 = self%kmin2*fmin_tem*POC2         ! mineralization rate
-      MIN13 = self%kmin3*fmin_tem*DOC         ! mineralization rate
-      MIN21 = self%kmin1*fmin_tem*PON1         ! mineralization rate
-      MIN22 = self%kmin2*fmin_tem*PON2         ! mineralization rate
-      MIN23 = self%kmin3*fmin_tem*DON         ! mineralization rate
-      MIN31 = self%kmin1*fmin_tem*POP1         ! mineralization rate
-      MIN32 = self%kmin2*fmin_tem*POP2         ! mineralization rate
-      MIN33 = self%kmin3*fmin_tem*DOP         ! mineralization rate
+      MIN11 = self%kmin1*fmin_tem*POC1         ! mineralization rate POC1
+      MIN12 = self%kmin2*fmin_tem*POC2         ! mineralization rate POC2
+      MIN13 = self%kmin3*fmin_tem*DOC         ! mineralization rate DOC
+      MIN21 = self%kmin1*fmin_tem*PON1         ! mineralization rate PON1
+      MIN22 = self%kmin2*fmin_tem*PON2         ! mineralization rate PON2
+      MIN23 = self%kmin3*fmin_tem*DON         ! mineralization rate DON
+      MIN31 = self%kmin1*fmin_tem*POP1         ! mineralization rate POP1
+      MIN32 = self%kmin2*fmin_tem*POP2         ! mineralization rate POP2
+      MIN33 = self%kmin3*fmin_tem*DOP         ! mineralization rate DOP
 
-      DEC112 = self%fdec12*MIN11         ! decomposition rate fast to slow
-      DEC113 = self%fdec13*MIN12         ! decomposition rate fast to slow
-      DEC123 = self%fdec23*MIN13         ! decomposition rate fast to slow
-      DEC212 = self%fdec12*MIN21         ! decomposition rate fast to slow
-      DEC213 = self%fdec13*MIN22         ! decomposition rate fast to slow
-      DEC223 = self%fdec23*MIN23         ! decomposition rate fast to slow
-      DEC312 = self%fdec12*MIN31         ! decomposition rate fast to slow
-      DEC313 = self%fdec13*MIN32         ! decomposition rate fast to slow
-      DEC323 = self%fdec23*MIN33         ! decomposition rate fast to slow
+      DEC112 = self%fdec12*MIN11         ! decomposition rate fast to slow POC1 to POC2
+      DEC113 = self%fdec13*MIN11         ! decomposition rate fast to slow POC1 to DOC
+      DEC123 = self%fdec23*MIN12         ! decomposition rate fast to slow POC2 to DOC
+      DEC212 = self%fdec12*MIN21         ! decomposition rate fast to slow PON1 to PON2
+      DEC213 = self%fdec13*MIN21         ! decomposition rate fast to slow PON1 to DON
+      DEC223 = self%fdec23*MIN22         ! decomposition rate fast to slow PON2 to DON
+      DEC312 = self%fdec12*MIN31         ! decomposition rate fast to slow POP1 to POP2
+      DEC313 = self%fdec13*MIN31         ! decomposition rate fast to slow POP1 to DOP
+      DEC323 = self%fdec23*MIN32         ! decomposition rate fast to slow POP2 to DOP
 
-      fmn = NO3/(self%Ksni + NO3)*(1 - DOxy/(self%Ksoxi + DOxy))*fmno_tem         ! contribution nitrate in mineral
+      fmn = NO3/(self%Ksni + NO3)*(1.0_rk - DOxy/(self%Ksoxi + DOxy))*fmno_tem         ! contribution nitrate in mineral
       fmo = DOxy/(self%Ksoxc + DOxy)*fres_tem         ! contribution oxygen in mineral
       frmn = fmn/(fmo + fmn)         ! rel. frac. Nitrate in mineral
       frmo = 1.0_rk - frmn         ! rel. frac. oxygen in mineral
@@ -397,24 +417,28 @@ contains
       fnut1 = MIN(fn, fp, fsi)         ! nutrient limitation function for ALG1
       fnut2 = MIN(fn, fp)         ! nutrient limitation function for ALG2
 
-      MINoxy1 = frmo*(MIN11 + MIN12 + MIN13)         ! mineral oxygen consumption
-      MINoxy2 = frmo*(MIN21 + MIN22 + MIN23)         ! mineral oxygen consumption
-      MINoxy3 = frmo*(MIN31 + MIN32 + MIN33)         ! mineral oxygen consumption
+      MINoxy1 = frmo*(MIN11 + MIN12 + MIN13)         ! mineral oxygen consumption by C
+      MINoxy2 = 0.0_rk !frmo*(MIN21 + MIN22 + MIN23)         ! mineral oxygen consumption by N
+      MINoxy3 = 0.0_rk !frmo*(MIN31 + MIN32 + MIN33)         ! mineral oxygen consumption by P
       MINnit1 = frmn*(MIN11 + MIN12 + MIN13)         ! mineral denitrification
-      MINnit2 = frmn*(MIN21 + MIN22 + MIN23)         ! mineral denitrification
-      MINnit3 = frmn*(MIN31 + MIN32 + MIN33)         ! mineral denitrification
+      MINnit2 = 0.0_rk !frmn*(MIN21 + MIN22 + MIN23)         ! mineral denitrification
+      MINnit3 = 0.0_rk !frmn*(MIN31 + MIN32 + MIN33)         ! mineral denitrification
       MORT1 = fres_tem*self%kmrt*ALG1         ! mortality rate algae
       MORT2 = fres_tem*self%kmrt*ALG2         ! mortality rate algae
       NIT = self%knit*fres_tem*(NH4/(self%Ksam + NH4))*(DOxy/(self%Ksox + DOxy))         ! nitrification rate
       Io1 = fIoi_tem*self%Io201         ! optimal light intensity
       Io2 = fIoi_tem*self%Io202         ! optimal light intensity
-      frad1 = (1.0_rk - exp(-par/Io1))         ! light limitation
-      frad2 = (1.0_rk - exp(-par/Io2))         ! light limitation
+      frad1 = 1.0_rk - exp(-par/Io1)         ! light limitation
+      frad2 = 1.0_rk - exp(-par/Io2)         ! light limitation
       kgp1 = frad1*fnut1*fpri_tem*self%kpp         ! gross pp rate of algae
       kgp2 = frad2*fnut2*fpri_tem*self%kpp         ! gross pp rate of algae
       krsp1 = self%fgr*kgp1 + (1.0_rk - self%fgr)*fres_tem*self%kmr1         ! total respiration rate of algae
       krsp2 = self%fgr*kgp2 + (1.0_rk - self%fgr)*fres_tem*self%kmr2         ! total respiration rate of algae
-      fram = 1.0_rk + 0.5_rk*(1.0_rk + TANH(-15.0_rk*(NH4 - self%amc)))*(NH4/(NO3 + NH4) - 1.0_rk)         ! fraction N consumed as NH4
+      !fram = 1.0_rk + 0.5_rk*(1.0_rk + TANH(-15.0_rk*(NH4 - self%amc)))*(NH4/(NO3 + NH4) - 1.0_rk)         ! fraction N consumed as NH4
+      fram = 1.0_rk  ! fraction N consumed as NH4
+      if (NH4 .lt. self%amc) then  
+         fram = NH4/(NO3 + NH4)  ! fraction N consumed as NH4  
+      end if
       DISS = self%kdiss*OPAL*(self%sieq - Si)         ! Opal dissolution rate
       nPP1 = (kgp1 - krsp1)*ALG1         ! net primary production rate
       nPP2 = (kgp2 - krsp2)*ALG2         ! net primary production rate
@@ -431,7 +455,7 @@ contains
       DOxy_sinks = MINoxy1 + MINoxy2 + MINoxy3 + 2.0_rk*NIT + krsp1*ALG1 + krsp2*ALG2 + self%rCon*(MORT1 + MORT2) ! total oxygen sinks
 
       ! Starting state variable derivation calculations
-      d_ALG1 = nPP1 - MORT1   ! diatom
+      d_ALG1 = nPP1 - MORT1   ! diatomres
       d_ALG2 = nPP2 - MORT2   ! non-diatom
       d_POC1 = (1.0_rk - self%fra)*(MORT1 + MORT2) - DEC112 - DEC113 - MIN11         ! POC1
       d_POC2 = DEC112 - DEC123 - MIN12         ! POC2
@@ -469,9 +493,14 @@ contains
       _ADD_SOURCE_(self%id_DOxy, d_DOxy*d_per_s)
 
       _SET_DIAGNOSTIC_(self%id_dPAR, par)
-      _SET_DIAGNOSTIC_(self%id_x_min, (MINoxy1 + MINoxy2 + MINoxy3)/DOxy_sinks)
-      _SET_DIAGNOSTIC_(self%id_x_nit, (2.0_rk*NIT)/DOxy_sinks)
-      _SET_DIAGNOSTIC_(self%id_x_res, (krsp1*ALG1 + krsp2*ALG2 + self%rCon*(MORT1 + MORT2))/DOxy_sinks)
+      _SET_DIAGNOSTIC_(self%id_x_min, (MINoxy1 + MINoxy2 + MINoxy3))
+      _SET_DIAGNOSTIC_(self%id_x_nit, (2.0_rk*NIT))
+      _SET_DIAGNOSTIC_(self%id_x_res, (krsp1*ALG1 + krsp2*ALG2 + self%rCon*(MORT1 + MORT2)))
+      _SET_DIAGNOSTIC_(self%id_x_npp,  kgp1*ALG1 + kgp2*ALG2)
+      _SET_DIAGNOSTIC_(self%id_ALG, ALG1 + ALG2)
+      _SET_DIAGNOSTIC_(self%id_POC, POC1 + POC2)
+      _SET_DIAGNOSTIC_(self%id_PON, PON1 + PON2)
+      _SET_DIAGNOSTIC_(self%id_POP, POP1 + POP2)
 
       ! Leave spatial loops (if any)
       _LOOP_END_
@@ -489,6 +518,8 @@ contains
       real(rk) :: DOxy
       real(rk) :: OSAT
       real(rk) :: SOXY
+      real(rk) :: Sc
+      real(rk) :: Sc_fw
 
       _HORIZONTAL_LOOP_BEGIN_
       _GET_(self%id_DOxy, DOxy)
@@ -496,31 +527,41 @@ contains
       _GET_(self%id_salinity, salinity)
       _GET_SURFACE_(self%id_wind, wind)
 
-      ! As in ERSEM, taken from WEISS 1970 DEEP SEA RES 17, 721-735.
-      abs_temp = temp + 273.15_rk         ! absolute temperature in Kelvin
+       ! Schmidt number according to Wanninkhof 2014 for seawater, salinity 35 ppt
+      Sc = 1920.4_rk - 135.6_rk*temp + 5.2122_rk*temp**2._rk - 0.10939_rk*temp**3 + 0.00093777_rk*temp**4._rk
+ 
+      ! Schmidt number according to Wanninkhof 2014 for freshwater, salinity 0 ppt
+      Sc_fw = 1745.1_rk - 124.34_rk*temp + 4.8055_rk*temp**2._rk - 0.10115_rk*temp**3 + 0.00086842_rk*temp**4._rk
 
-      ! oxigen saturation in accordingly to Weiss 1970
+      ! linear interpolation between both values
+      Sc = Sc_fw + salinity*(Sc-Sc_fw)/35.0_rk
+      
+      ! absolute temperature in Kelvin
+      abs_temp = temp + 273.15_rk         
+
+      ! oxigen saturation in accordingly to Weiss 1970, in mL/L
       OSAT = -173.4292_rk + 249.6339_rk*(100._rk/abs_temp) + 143.3483_rk*log(abs_temp/100._rk) &
              - 21.8492_rk*(abs_temp/100._rk) &
-             + salinity*(-0.033096_rk + 0.014259_rk*(abs_temp/100._rk) - 0.0017_rk*((abs_temp/100._rk)**2))
-
-      SOXY = EXP(OSAT)*1000._rk/((8.3145_rk*298.15_rk/101325_rk)*1000._rk)         ! oxygen saturation
+             + salinity*(-0.033096_rk + 0.014259_rk*(abs_temp/100._rk) - 0.0017_rk*(abs_temp/100._rk)**2)
+      
+      ! oxygen saturation in mmol O2 m-3
+      SOXY = EXP(OSAT)/(8.3145_rk*273.15_rk/101325.0_rk)         
 
       if (wind .lt. 0._rk) wind = 0._rk
-
+      ! rearation coeficients
       if (wind .gt. 11._rk) then
-         klrear = SQRT((1953.4_rk - 128._rk*temp + 3.9918_rk*temp**2 - &
-                        0.050091_rk*temp**3)/660._rk)*(0.02383_rk*wind**3)
+         ! high windspeed cubic regression according to Wanninkhof 1992
+         klrear = (0.0283_rk*wind**3.0_rk)*(Sc/660._rk)**(-0.5_rk)
       else
-         klrear = SQRT((1953.4_rk - 128._rk*temp + 3.9918_rk*temp**2 - &
-                        0.050091_rk*temp**3)/660._rk)*(0.31_rk*wind**2)
+         ! lower windspeed quadradic regression according to  Wanninkhof 1992 
+         klrear = (0.312_rk*wind**2.0_rk)*(Sc/660._rk)**(-0.5_rk)
       end if
 
-      ! units of ko2 converted from cm/hr to m/day
-      klrear = klrear*(24._rk/100._rk)
+      ! units of klrear converted from cm/hr to m/day
+      klrear = self%alpha*klrear*(24._rk/100._rk)
 
       _SET_SURFACE_EXCHANGE_(self%id_DOxy, klrear*(SOXY - DOxy)*d_per_s)
-
+      _SET_SURFACE_DIAGNOSTIC_(self%id_AIR,klrear*(SOXY - DOxy))
       _HORIZONTAL_LOOP_END_
    end subroutine
 end module oxypom_oxypom
