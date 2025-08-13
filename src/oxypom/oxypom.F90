@@ -95,11 +95,20 @@ module oxypom_oxypom
       real(rk) :: rCon
       real(rk) :: Q10_min
       real(rk) :: Q10_res
+      real(rk) :: Q10_het
       real(rk) :: Q10_pri
       real(rk) :: Q10_Ioi
       real(rk) :: Q10_mno
+      real(rk) :: HetWI
       real(rk) :: alpha
-
+      real(rk) :: Svir
+      real(rk) :: Rvir
+      real(rk) :: Ivir
+      real(rk) :: Hvir
+      real(rk) :: Cvir
+      real(rk) :: VIRmax
+      real(rk) :: VIRmin
+      
    contains
       procedure :: initialize
       procedure :: do
@@ -155,10 +164,19 @@ contains
       call self%get_parameter(self%rCon, 'rCon', 'mmol O2 mmol C-1', 'respiration rate of phytoplankton consumer', default=1.0_rk)
       call self%get_parameter(self%Q10_min, 'Q10_min', '--', 'Q10 for mineralization', default=1.20_rk)
       call self%get_parameter(self%Q10_res, 'Q10_res', '--', 'Q10 for respiration', default=1.07_rk)
+      call self%get_parameter(self%Q10_het, 'Q10_het', '--', 'Q10 for heterotrophy related mortality', default=4.40_rk)   
       call self%get_parameter(self%Q10_pri, 'Q10_pri', '--', 'Q10 for primary production', default=1.40_rk)      
       call self%get_parameter(self%Q10_Ioi, 'Q10_Ioi', '--', 'Q10 for optimal light intensity', default=1.04_rk)    
       call self%get_parameter(self%Q10_mno, 'Q10_mno', '--', 'Q10 for optimal mineralization of nitrate', default=1.12_rk)   
+      call self%get_parameter(self%HetWI, 'HetWI', '--', 'Heterotrophic winter inhibition', default=0.33_rk)   
       call self%get_parameter(self%alpha, 'alpha', '--', 'increased rearation factor due to geometry idealizations', default=2.0_rk)   
+      call self%get_parameter(self%Svir, 'Svir', '--', 'virus stepness parameter', default=2.0_rk)   
+      call self%get_parameter(self%Rvir, 'Rvir', 'd-1', 'virus replication parameter', default=0.30_rk)   
+      call self%get_parameter(self%Ivir, 'Ivir', 'd-1', 'virus inactivation parameter', default=0.15_rk)   
+      call self%get_parameter(self%Hvir, 'Hvir', 'd-1', 'virus host defense', default=0.2_rk)   
+      call self%get_parameter(self%Cvir, 'Cvir', 'mmol C m-3', 'Concentration of algae for host defense', default=1.0_rk)   
+      call self%get_parameter(self%VIRmax, 'VIRmax', '--', 'virus maximum concentration', default=2.0_rk)   
+      call self%get_parameter(self%VIRmin, 'VIRmin', '--', 'virus minumum concentration', default=0.01_rk)   
 
       ! Register state variables
       call self%register_state_variable(self%id_ALG1, 'ALG1', 'mmol C m-3', 'diatom', 1.0_rk, minimum=0.1_rk, maximum=1000.0_rk, vertical_movement=self%svALG*d_per_s)
@@ -269,6 +287,7 @@ contains
       real(rk) :: temp_ref
       real(rk) :: fmin_tem
       real(rk) :: fres_tem
+      real(rk) :: fhet_tem
       real(rk) :: fpri_tem
       real(rk) :: fIoi_tem
       real(rk) :: fmno_tem
@@ -299,12 +318,8 @@ contains
       real(rk) :: fsi
       real(rk) :: fnut1
       real(rk) :: fnut2
-      real(rk) :: MINoxy1
-      real(rk) :: MINoxy2
-      real(rk) :: MINoxy3
-      real(rk) :: MINnit1
-      real(rk) :: MINnit2
-      real(rk) :: MINnit3
+      real(rk) :: MINoxy
+      real(rk) :: MINnit
       real(rk) :: MORT1
       real(rk) :: MORT2
       real(rk) :: LYS1
@@ -395,6 +410,7 @@ contains
       ! Starting auxiliary calculations
       temp_ref = 0.1_rk*(temp - 20.0_rk)! reference value for Q10 formulation
       fmin_tem = self%Q10_min**temp_ref ! temperature dependence of mineralization
+      fhet_tem = self%Q10_het**temp_ref
       fres_tem = self%Q10_res**temp_ref ! temperature dependence of respiration
       fpri_tem = self%Q10_pri**temp_ref ! temperature dependence of primary production
       fIoi_tem = self%Q10_Ioi**temp_ref ! temperature dependence of optimal light intensity
@@ -430,26 +446,24 @@ contains
       fnut1 = MIN(fn, fp, fsi)         ! nutrient limitation function for ALG1
       fnut2 = MIN(fn, fp)         ! nutrient limitation function for ALG2
 
-      MINoxy1 = frmo*(MIN11 + MIN12 + MIN13)         ! mineral oxygen consumption by C
-      MINoxy2 = 0.0_rk !frmo*(MIN21 + MIN22 + MIN23)         ! mineral oxygen consumption by N
-      MINoxy3 = 0.0_rk !frmo*(MIN31 + MIN32 + MIN33)         ! mineral oxygen consumption by P
-      MINnit1 = frmn*(MIN11 + MIN12 + MIN13)         ! mineral denitrification
-      MINnit2 = 0.0_rk !frmn*(MIN21 + MIN22 + MIN23)         ! mineral denitrification
-      MINnit3 = 0.0_rk !frmn*(MIN31 + MIN32 + MIN33)         ! mineral denitrification
-      !!!
+      MINoxy = frmo*(MIN11 + MIN12 + MIN13)         ! mineral oxygen consumption by C
+      MINnit = frmn*(MIN11 + MIN12 + MIN13)         ! mineral denitrification
+
+      ! temperature dependent heterotrophic mortality
       MORT1 = self%kmrt*ALG1
       MORT2 = self%kmrt*ALG2
       if (temp .lt. 5.0_rk) then ! reduced mortality in winter
-         MORT1 = 0.33_rk*self%kmrt*ALG1
-         MORT2 = 0.33_rk*self%kmrt*ALG2
+         MORT1 = self%HetWI*self%kmrt*ALG1
+         MORT2 = self%HetWI*self%kmrt*ALG2
       end if
       if (temp .gt. 20.0_rk) then ! see Scharfe 2009
-         MORT1 = self%kmrt* 4.04_rk**temp_ref * ALG1
-         MORT2 = self%kmrt* 4.04_rk**temp_ref * ALG2
+         MORT1 = self%kmrt*fhet_tem*ALG1
+         MORT2 = self%kmrt*fhet_tem*ALG2
       end if
-      LYS1 = ALG1 * 1.0_rk/(1.0_rk+EXP(2.0_rk*(1.0_rk-VIR1)))
-      LYS2 = ALG2 * 1.0_rk/(1.0_rk+EXP(2.0_rk*(1.0_rk-VIR2)))
-      !!!
+
+      LYS1 = ALG1 * 1.0_rk/(1.0_rk+EXP(self%Svir*(1.0_rk-VIR1)))
+      LYS2 = ALG2 * 1.0_rk/(1.0_rk+EXP(self%Svir*(1.0_rk-VIR2)))
+      
       NIT = self%knit*fres_tem*(NH4/(self%Ksam + NH4))*(DOxy/(self%Ksox + DOxy))         ! nitrification rate
       Io1 = fIoi_tem*self%Io201         ! optimal light intensity
       Io2 = fIoi_tem*self%Io202         ! optimal light intensity
@@ -477,7 +491,7 @@ contains
       UNI1 = (1.0_rk - fram)*self%an*nPP1         ! nitrate uptake rate
       UNI2 = (1.0_rk - fram)*self%an*nPP2         ! nitrate uptake rate
       USI = self%asi*nPP1         ! Si uptake rate
-      DOxy_sinks = MINoxy1 + MINoxy2 + MINoxy3 + 2.0_rk*NIT + krsp1*ALG1 + krsp2*ALG2 + self%rCon*(MORT1 + MORT2) ! total oxygen sinks
+      DOxy_sinks = MINoxy + 2.0_rk*NIT + krsp1*ALG1 + krsp2*ALG2 + self%rCon*(MORT1 + MORT2) ! total oxygen sinks
 
       ! Starting state variable derivation calculations
       d_ALG1 = nPP1 - MORT1 - LYS1 ! diatomes
@@ -486,7 +500,7 @@ contains
       d_POC2 = DEC112 - DEC123 - MIN12        ! POC2
       d_DOC = DEC113 + DEC123 - MIN13         ! DOC
       d_NH4 = RAM + MIN21 + MIN22 + MIN23 - UAM1 - UAM2 - NIT         ! ammonia
-      d_NO3 = NIT - UNI1 - UNI2 - MINnit1 - MINnit2 - MINnit3         ! nitrate
+      d_NO3 = NIT - UNI1 - UNI2 - MINnit        ! nitrate
       d_PON1 = (1.0_rk - self%fra)*self%an*(MORT1 + MORT2 + LYS1 + LYS2) - DEC212 - DEC213 - MIN21         ! PON1
       d_PON2 = DEC212 - DEC223 - MIN22         ! PON2
       d_DON = DEC213 + DEC223 - MIN23         ! DON
@@ -496,9 +510,9 @@ contains
       d_DOP = DEC313 + DEC323 - MIN33         ! DOP
       d_Si = RAS + DISS - USI         ! Silicate
       d_OPAL = (1.0_rk - self%fra)*self%asi*(MORT1 + LYS1) - DISS         ! opal
-      d_DOxy = nPP1 + nPP2 - MINoxy1 - MINoxy2 - MINoxy3 - 2.0_rk*NIT - self%rCon*(MORT1 + MORT2)       ! dissolved oxygen
-      d_VIR1 = 0.30_rk*VIR1*ALG1**2.0_rk/(POC1+POC2) * fmno_tem*1.0_rk/(1.0_rk+EXP(2.0_rk*(2.0_rk-VIR1))) - 0.2_rk*VIR1*(2.0_rk - VIR1)*EXP(-ALG1/1.0_rk)*VIR1/(VIR1+0.01_rk)*1.0_rk/(1.0_rk+EXP(4.0_rk*(1.0_rk-VIR1)))**2_rk*2.0_rk*EXP(2.0_rk*(1.0_rk-VIR1)) - 0.15_rk*fIoi_tem*VIR1**2.0_rk/(VIR1+0.01_rk)
-      d_VIR2 = 0.30_rk*VIR2*ALG2**2.0_rk/(POC1+POC2) * fmno_tem*1.0_rk/(1.0_rk+EXP(2.0_rk*(2.0_rk-VIR2))) - 0.2_rk*VIR2*(2.0_rk - VIR2)*EXP(-ALG2/1.0_rk)*VIR2/(VIR2+0.01_rk)*1.0_rk/(1.0_rk+EXP(4.0_rk*(1.0_rk-VIR2)))**2_rk*2.0_rk*EXP(2.0_rk*(1.0_rk-VIR2)) - 0.15_rk*fIoi_tem*VIR2**2.0_rk/(VIR2+0.01_rk)
+      d_DOxy = nPP1 + nPP2 - MINoxy - 2.0_rk*NIT - self%rCon*(MORT1 + MORT2)       ! dissolved oxygen
+      d_VIR1 = self%Rvir*fhet_tem*VIR1*ALG1**2.0_rk/(POC1+POC2+ALG2)*1.0_rk/(1.0_rk+EXP(self%Svir*(self%VIRmax-VIR1))) - self%Hvir*VIR1*(self%VIRmax-VIR1)*EXP(-ALG1/self%Cvir)*VIR1/(VIR1+self%VIRmin)*1.0_rk/(1.0_rk+EXP(self%Svir*(1.0_rk-VIR1)))**2_rk*self%Svir*EXP(self%Svir*(1.0_rk-VIR1)) - self%Ivir*fIoi_tem*VIR1**2.0_rk/(VIR1+self%VIRmin)
+      d_VIR2 = self%Rvir*fhet_tem*VIR2*ALG2**2.0_rk/(POC1+POC2+ALG1)*1.0_rk/(1.0_rk+EXP(self%Svir*(self%VIRmax-VIR2))) - self%Hvir*VIR2*(self%VIRmax-VIR2)*EXP(-ALG2/self%Cvir)*VIR2/(VIR2+self%VIRmin)*1.0_rk/(1.0_rk+EXP(self%Svir*(1.0_rk-VIR2)))**2_rk*self%Svir*EXP(self%Svir*(1.0_rk-VIR2)) - self%Ivir*fIoi_tem*VIR2**2.0_rk/(VIR2+self%VIRmin)
 
       ! Add sources
       _ADD_SOURCE_(self%id_ALG1, d_ALG1*d_per_s)
@@ -522,7 +536,7 @@ contains
       _ADD_SOURCE_(self%id_VIR2, d_VIR2*d_per_s)
 
       _SET_DIAGNOSTIC_(self%id_dPAR, par)
-      _SET_DIAGNOSTIC_(self%id_x_min, (MINoxy1 + MINoxy2 + MINoxy3))
+      _SET_DIAGNOSTIC_(self%id_x_min, (MINoxy))
       _SET_DIAGNOSTIC_(self%id_x_nit, (2.0_rk*NIT))
       _SET_DIAGNOSTIC_(self%id_x_res, (krsp1*ALG1 + krsp2*ALG2 + self%rCon*(MORT1 + MORT2)))
       _SET_DIAGNOSTIC_(self%id_x_npp,  kgp1*ALG1 + kgp2*ALG2)
