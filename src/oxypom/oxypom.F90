@@ -225,7 +225,7 @@ contains
       call self%register_diagnostic_variable(self%id_POC, 'POC', 'mmol C m-3', 'total POC')
       call self%register_diagnostic_variable(self%id_PON, 'PON', 'mmol N m-3', 'total PON')
       call self%register_diagnostic_variable(self%id_POP, 'POP', 'mmol P m-3', 'total POP')
-      call self%register_surface_diagnostic_variable(self%id_AIR,'AIR','mmol O2 m2 d-1','air-sea flux', source=source_do_surface)
+      call self%register_surface_diagnostic_variable(self%id_AIR,'AIR','mmol O2 m-2 d-1','air-sea flux', source=source_do_surface)
 
       ! Register environmental dependencies
       call self%register_dependency(self%id_temp, standard_variables%temperature)
