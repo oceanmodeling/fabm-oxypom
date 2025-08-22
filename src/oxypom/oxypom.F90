@@ -169,7 +169,7 @@ contains
       call self%get_parameter(self%Q10_Ioi, 'Q10_Ioi', '--', 'Q10 for optimal light intensity', default=1.04_rk)    
       call self%get_parameter(self%Q10_mno, 'Q10_mno', '--', 'Q10 for optimal mineralization of nitrate', default=1.12_rk)   
       call self%get_parameter(self%HetWI, 'HetWI', '--', 'Heterotrophic winter inhibition', default=0.33_rk)   
-      call self%get_parameter(self%alpha, 'alpha', '--', 'increased rearation factor due to geometry idealizations', default=2.0_rk)   
+      call self%get_parameter(self%alpha, 'alpha', '--', 'increased rearation factor due to geometry idealizations', default=1.0_rk)   
       call self%get_parameter(self%Svir, 'Svir', '--', 'virus stepness parameter', default=2.0_rk)   
       call self%get_parameter(self%Rvir, 'Rvir', 'd-1', 'virus replication parameter', default=0.30_rk)   
       call self%get_parameter(self%Ivir, 'Ivir', 'd-1', 'virus inactivation parameter', default=0.15_rk)   

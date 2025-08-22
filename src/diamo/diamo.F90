@@ -44,6 +44,7 @@ module oxypom_diamo
       real(rk) :: mineralizationRef
       real(rk) :: mineralizationQ10
       real(rk) :: kOXY
+      real(rk) :: alpha
 
    contains
       procedure :: initialize
@@ -80,6 +81,7 @@ contains
       call self%get_parameter(self%mineralizationRef, 'mineralizationRef', 'd-1', 'reference mineralization rate', default=1.0_rk)
       call self%get_parameter(self%mineralizationQ10, 'mineralizationQ10', '--', 'temperature sensitivity of mineralization', default=1.7_rk)
       call self%get_parameter(self%kOXY, 'kOXY', 'mmol O2 mmol C-1', 'equivalence of carbon to oxygen', default=2.667_rk)
+      call self%get_parameter(self%alpha, 'alpha', '--', 'increased rearation factor due to geometry idealizations', default=2.0_rk)   
 
       ! Register state variables
       call self%register_state_variable(self%id_PHY, 'PHY', 'mmol C m-3', 'phytoplankton concentration', 1.80_rk, &
@@ -189,6 +191,9 @@ contains
       real(rk) :: OXY
       real(rk) :: OSAT
       real(rk) :: SOXY
+      real(rk) :: Sc
+      real(rk) :: Sc_fw
+      real(rk) :: Sc_sw
 
       _HORIZONTAL_LOOP_BEGIN_
       _GET_(self%id_OXY, OXY)
@@ -196,31 +201,43 @@ contains
       _GET_(self%id_salinity, salinity)
       _GET_SURFACE_(self%id_wind, wind)
 
-      ! As in ERSEM, taken from WEISS 1970 DEEP SEA RES 17, 721-735.
-      abs_temp = temp + 273.15_rk     ! absolute temperature in Kelvin
+      ! Schmidt number according to Wanninkhof 2014 for seawater, salinity 35 ppt
+      Sc_sw = 1920.4_rk - 135.6_rk*temp + 5.2122_rk*temp**2.0_rk - 0.10939_rk*temp**3.0_rk + 0.00093777_rk*temp**4.0_rk
+ 
+      ! Schmidt number according to Wanninkhof 2014 for freshwater, salinity 0 ppt
+      Sc_fw = 1745.1_rk - 124.34_rk*temp + 4.8055_rk*temp**2.0_rk - 0.10115_rk*temp**3.0_rk + 0.00086842_rk*temp**4.0_rk
 
-      ! oxigen saturation in accordingly to Weiss 1970
-      OSAT = -173.4292_rk + 249.6339_rk*(100._rk/abs_temp) + 143.3483_rk*log(abs_temp/100._rk) &
-             - 21.8492_rk*(abs_temp/100._rk) &
-             + salinity*(-0.033096_rk + 0.014259_rk*(abs_temp/100._rk) - 0.0017_rk*((abs_temp/100._rk)**2))
+      ! linear interpolation between both values
+      Sc = Sc_fw + salinity*(Sc_sw-Sc_fw)/35.0_rk
+      
+      ! absolute temperature in Kelvin
+      abs_temp = temp + 273.15_rk         
 
-      SOXY = EXP(OSAT)*1000._rk/((8.3145_rk*298.15_rk/101325_rk)*1000._rk)  ! oxygen saturation
+      ! oxigen saturation in accordingly to Weiss 1970, in mL/L
+      OSAT = -173.4292_rk + 249.6339_rk*(100._rk/abs_temp) &
+             + 143.3483_rk*log(abs_temp/100._rk) - 21.8492_rk*(abs_temp/100._rk) &
+             + salinity*(-0.033096_rk + 0.014259_rk*(abs_temp/100._rk) - 0.0017_rk*(abs_temp/100._rk)**2)
+      
+      ! oxygen saturation in mmol O2 m-3
+      SOXY = EXP(OSAT)/(8.3145_rk*273.15_rk/101325.0_rk)         
 
       if (wind .lt. 0._rk) wind = 0._rk
-
+      ! rearation coeficients, by definition in cm/hr 
       if (wind .gt. 11._rk) then
-         klrear = SQRT((1953.4_rk - 128._rk*temp + 3.9918_rk*temp**2 - &
-                        0.050091_rk*temp**3)/660._rk)*(0.02383_rk*wind**3)
+         ! high windspeed cubic regression according to Wanninkhof 1992
+         klrear = (0.0283_rk*wind**3.0_rk)*(Sc/660._rk)**(-0.5_rk)
+      else if (wind .gt. 3._rk) then
+         ! lower windspeed quadradic regression according to Wanninkhof 1992 
+         klrear = (0.312_rk*wind**2.0_rk)*(Sc/660._rk)**(-0.5_rk)
       else
-         klrear = SQRT((1953.4_rk - 128._rk*temp + 3.9918_rk*temp**2 - &
-                        0.050091_rk*temp**3)/660._rk)*(0.31_rk*wind**2)
+         ! lowest windspeed exponential regression according to Raymond and Cole 2001  
+         klrear = 0.9826_rk*exp(0.35_rk*wind)*(Sc/660._rk)**(-0.5_rk)
       end if
 
-      ! units of ko2 converted from cm/hr to m/day
-      klrear = klrear*(24._rk/100._rk)
+      ! units of klrear converted from cm/hr to m/day
+      klrear = self%alpha*klrear*(24._rk/100._rk)
 
       _SET_SURFACE_EXCHANGE_(self%id_OXY, klrear*(SOXY - OXY)*d_per_s)
-
       _HORIZONTAL_LOOP_END_
    end subroutine
 end module oxypom_diamo

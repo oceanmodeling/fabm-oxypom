@@ -21,7 +21,7 @@ affiliations:
     - name: Helmholtz-Zentrum Hereon, Institute of Coastal Systems - Modeling and Analysis, Germany, ovidio.garcia@hereon.de
       index: 1
       ror: 03qjp1d79
-date: 23 April 2025
+date: 22 August 2025
 year: 2025
 bibliography: paper.bib
 SPDX-FileCopyrightText: 2025 Helmholtz-Zentrum hereon GmbH
@@ -42,7 +42,9 @@ OxyPOM and DiaMO remove  much of this complexity and focus on the key processes 
 
 A predecessor 1D long-channel version of OxyPOM was initially implemented by @Holzwarth2018 specifically for the closed-source UnTRIM-DELWAQ hydrodynamic and water quality system. 
 This implementation lacked portability, and was neither findable, nor accessible, interoperable or reusable (FAIR).  The reimplementation with the FABM API ensures FAIR principles, foremost the interoperability with (1) many hydrodynamic models, (2) other aquatic process models, and (3) reusability in different topological domains.
-For vertically resolved applications, we added formulations for re-aeration, primary production, and light attenuation.
+When porting OxyPOM to FABM, we introduced new features:
+For vertically resolved applications, we added vertically-explicit formulations for re-aeration in rivers and estuaries [@Raymond2001], primary production, and light attenuation.  We included additional mortality terms related to micro-algae viral infections [@Wirtz2019], and a step-wise temperature-sensitive micro-algae loss rate [@Scharfe2009].
+
 Where a complete representation of bio-geochemical dynamics is not needed, DiaMO is an even more simplified model for quick assessments of DO dynamics.
 
 ## OxyPOM: Oxygen and Particulate Organic Matter
