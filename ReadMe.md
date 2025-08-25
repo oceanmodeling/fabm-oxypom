@@ -39,10 +39,10 @@ Together with `OxyPOM` and `DiaMO`, this repository includes the model `oxypom/l
 
 - This model requires:
 
-    - `FABM` (v1 or above) available in [fabm github](https://github.com/fabm-model/fabm/).
-      It can be cloned using `git clone https://github.com/fabm-model/fabm.git fabm`.
+  - `FABM` (v1 or above) available in [fabm github](https://github.com/fabm-model/fabm/).
+    It can be cloned using `git clone https://github.com/fabm-model/fabm.git fabm`.
 
-- The physical driver:
+  - The physical driver:
     - `GOTM` (v6.0 latest stable release) available in [gotm github](https://github.com/orgs/gotm-model/repositories).
       It can be cloned using via `git clone --recursive https://github.com/gotm-model/code.git -b v6.0 gotm6`.
 
