@@ -88,7 +88,7 @@ points(as.Date(temp_obs_1$V1), temp_obs_1$V2, col = col_obs, pch = 20,cex = 1)
 lines(x, temp[,bottom], lty = 1, col = col_sim_bottom)
 lines(x, temp[,surface], lty = 1, col = col_sim, lwd=2)
 
-cf = 1000/32 # conversion factor of mg L-1 to mmol-O2 L
+cf = 1000/32 # conversion factor of mg L-1 to mmol-O2 m-3
 
 plot(x, rowMeans(oxy[,1:2]),
      type = "n",
@@ -99,7 +99,7 @@ plot(x, rowMeans(oxy[,1:2]),
      xlab = "days",
 )
 
-title("dissolved oxygen concentration mmol-O2 L-1", adj = 0, line = 0.1, cex = 0.5, font.main = 1)
+title("dissolved oxygen concentration mmol-O2 m-3", adj = 0, line = 0.1, cex = 0.5, font.main = 1)
 points(as.Date(DO_obs_2$V1), (1000 / 32) * DO_obs_2$V2, col = col_obs2, pch = 0, cex = .5)
 points(as.Date(DO_obs_1$V1), cf * DO_obs_1$V2, col = col_obs, pch = 20, cex = 1)
 lines(x, oxy[,bottom], lty = 1, col = col_sim_bottom)
