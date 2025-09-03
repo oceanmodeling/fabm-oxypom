@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: CC0-1.0
 # SPDX-FileContributor: Carsten Lemmen <carsten.lemmen@hereon.de>
 
-VERSION=1.0.0
+VERSION=2.0.0
 DATE=$(shell  date +%Y-%m-%d)
 IP=$(shell ifconfig en0 | grep inet\  | cut -d " " -f2)
 PWD=$(shell pwd)
