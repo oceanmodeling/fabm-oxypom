@@ -34,7 +34,7 @@ jobs:
 
       - name: Build gotm with fabm and oxypom
         run: |
-          cmake -B gotm/build -S gotm/src -DCMAKE_Fortran_COMPILER=${{ matrix.f_compiler }}  -DGOTM_USE_FABM=ON -DGOTM_USE_NetCDF=OFF ${{ matrix.cmake_args }}
+          cmake -B gotm/build -S gotm -DCMAKE_Fortran_COMPILER=${{ matrix.f_compiler }}  -DGOTM_USE_FABM=ON -DGOTM_USE_NetCDF=OFF ${{ matrix.cmake_args }}
   conda-forge:
     strategy:
       fail-fast: false
