@@ -9,7 +9,15 @@ SPDX-FileContributor: Carsten Lemmen <carsten.lemmen@hereon.de>
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-# Release notes for version 1.0.1 (ongoing)
+# Release notes for version 2.0.0 (ongoing)
+
+- Virus infection as a mortality for micro-algae
+- Clean up unused variables
+- Revised re-aeration routine
+- Revised temperature-dependent mortality
+- Revised stoichiometry for micro-algae
+
+# Release notes for version 1.0.1
 
 - Cleanup of git history
 - Simulation results available as artifacts

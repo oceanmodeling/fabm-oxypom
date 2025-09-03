@@ -112,7 +112,7 @@ Apache-2.0 (OxyPOM and DiaMo)
 
 ## Project status
 
-This is part of the `DAM-ElbeXtreme` project.
+This is part of the `DAM-ElbeXtgreme` project.
 
 ## Contributing and reporting
 
@@ -128,3 +128,13 @@ On the following page "Login to Helmholtz AAI OAuth2 Authorization Server", sear
 If you are not already registered on the HIFIS GitLab instance, a confirmation email will be sent to the primary email address registered with your authentication provider.
 After clicking the confirmation link, you will also be asked to provide a name on this GitLab instance; this will be your nickname.
 Help on this one-time registration process is available from [https://hifis.net/tutorial/2021/06/23/how-to-helmholtz-aai.html](https://hifis.net/tutorial/2021/06/23/how-to-helmholtz-aai.html).
+
+## Building the package
+
+To build a new package, after committing the changes:
+
+  1. describe new, deprecated and changed features in `ChangeLog.md`.
+  2. change the version value `VERSION=NEW_VERSION` in `Makefile`
+  3. make the package, i.e. run `make version`
+  4. create a new version tag with `git tag vNEW_VERSION`
+  5. push your changes
