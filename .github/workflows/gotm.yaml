@@ -21,14 +21,14 @@ jobs:
           sudo apt-get update
           sudo apt-get install gfortran-${{ matrix.version }}
       - name: Clone gotm (including fabm)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: gotm-model/code
           path: gotm
           submodules: recursive
 
       - name: Clone fabm-oxypom
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           path: fabm-oxypom
 
@@ -49,7 +49,7 @@ jobs:
         with:
           auto-update-conda: true
       - name: Clone gotm
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           submodules: recursive
           repository: gotm-model/code
