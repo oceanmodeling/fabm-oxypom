@@ -4,11 +4,11 @@
 #
 # This starter workflow is for a CMake project running on multiple platforms. There is a different starter workflow if you just want a single platform.
 # See: https://github.com/actions/starter-workflows/blob/main/ci/cmake-single-platform.yml
-name: CMake on multiple platforms
+name: Linux C/Fortran compiler combinations build
 
 on:
   push:
-    branches: ["gmp"]
+    branches: ["main"]
   pull_request:
     branches: ["main"]
 
@@ -29,7 +29,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         c_compiler: [gcc, clang]
-        f_compiler: [gfortran]
+        f_compiler: [gfortran, flang]
         # exclude:
         #  - c_compiler: gcc
         #    f_compiler: flang
@@ -42,7 +42,7 @@ jobs:
           echo "GOTMDIR=$GOTMDIR" >> $GITHUB_ENV
 
       - name: Checkout OxyPOM repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set reusable strings
         # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
@@ -63,7 +63,7 @@ jobs:
           ${{ matrix.c_compiler }} --version
           ${{ matrix.f_compiler }} --version
 
-      - name: CMake
+      - name: "CMake configure"
         # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
         # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
         run: >
@@ -74,5 +74,5 @@ jobs:
           -DGOTM_USE_FABM=ON -DFABM_USE_IEEE_ARITHMETIC=OFF
           -DFABM_OXYPOM_BASE=/home/runner/work/fabm-oxypom/fabm-oxypom/src -DFABM_INSTITUTES="gotm;oxypom"
 
-      - name: Make
-        run: make -C ${{ steps.strings.outputs.build-output-dir }}
+      - name: "CMake build"
+        run: cmake --build ${{ steps.strings.outputs.build-output-dir }}
