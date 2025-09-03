@@ -137,4 +137,6 @@ To build a new package, after committing the changes:
   2. change the version value `VERSION=NEW_VERSION` in `Makefile`
   3. make the package, i.e. run `make version`
   4. create a new version tag with `git tag vNEW_VERSION`
-  5. push your changes
+  5. push your changes using `--tags`, i.e., `git push --tag origin`.  
+
+  To remove a wrong tag **before** pushing use `git tag -d vNEW_VERSION`.
