@@ -7,6 +7,6 @@ Source: https://codebase.helmholtz.cloud/dam-elbextreme/oxypom
 # Copyright: $YEAR $NAME <$CONTACT>
 # License: ...
 
-Files: .zenodo.json CITATION.cff codemeta.json
+Files: .zenodo.json CITATION.cff codemeta.json doc/joss/paper.bib
 Copyright: 2025 Helmholtz-Zentrum hereon GmbH
 License: CC0-1.0

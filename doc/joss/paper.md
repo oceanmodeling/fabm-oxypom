@@ -21,7 +21,7 @@ affiliations:
     - name: Helmholtz-Zentrum Hereon, Institute of Coastal Systems - Modeling and Analysis, Germany, ovidio.garcia@hereon.de
       index: 1
       ror: 03qjp1d79
-date: 22 August 2025
+date: 15 September 2025
 year: 2025
 bibliography: paper.bib
 SPDX-FileCopyrightText: 2025 Helmholtz-Zentrum hereon GmbH
@@ -31,21 +31,19 @@ SPDX-License-Identifier: CC-BY-4.0
 # Summary
 
 OxyPOM (Oxygen and Particulate Organic Matter) and DiaMO (Diagnostic Model for Oxygen) are aquatic biogeochemical models that consider key processes for dissolved oxygen (DO), such as re-aeration, mineralization, and primary production, in fresh, transitional and marine waters.
-Both are implemented in the `Fortran`-based Framework for Aquatic Biogeochemical Models [FABM, @Bruggeman2014] for interoperability in a variety of hydrodynamic models, in realistic and idealized applications, and for coupleability to other aquatic process models.
-With these models, we include an updated light profile implementation and testcases for simulating DO at Cuxhaven Station in the Elbe estuary 2005--2024; for this, we use the hydrodynamic General Ocean Turbulence Model (GOTM) [@Burchard2002] including tides, and `R` and `bash` scripts for including weather and river data from [kuestendaten.de](https://www.kuestendaten.de).
+Both are implemented in the `Fortran`-based Framework for Aquatic Biogeochemical Models [FABM, @Bruggeman2014] for reusability in a variety of hydrodynamic models, in realistic and idealized applications, and for interoperability with other aquatic process models.
+With these models, we include an updated light profile implementation and testcases for simulating DO at Cuxhaven Station in the Elbe estuary 2005--2024; for this, we use the hydrodynamic General Ocean Turbulence Model [GOTM, @Burchard2002] including tides, and `R` and `bash` scripts for including weather and river data from [kuestendaten.de](https://www.kuestendaten.de).
 
 # Statement of need
 
-Dissolved oxygen (DO) is a key variable for assessing water quality and ecological state of aquatic ecosystems [@EC2006].
+Dissolved oxygen is a key variable for assessing water quality and ecological state of aquatic ecosystems [@EC2006].
 Most existing models describe DO dynamics as a side product of more or less complex (a)biotic dynamics.
-OxyPOM and DiaMO remove  much of this complexity and focus on the key processes that produce or consume oxygen.
+OxyPOM and DiaMO remove  much of this complexity and focus on the key processes that produce or consume oxygen. 
 
-A predecessor 1D long-channel version of OxyPOM was initially implemented by @Holzwarth2018 specifically for the closed-source UnTRIM-DELWAQ hydrodynamic and water quality system. 
-This implementation lacked portability, and was neither findable, nor accessible, interoperable or reusable (FAIR).  The reimplementation with the FABM API ensures FAIR principles, foremost the interoperability with (1) many hydrodynamic models, (2) other aquatic process models, and (3) reusability in different topological domains.
-When porting OxyPOM to FABM, we introduced new features:
-For vertically resolved applications, we added vertically-explicit formulations for re-aeration in rivers and estuaries [@Raymond2001], primary production, and light attenuation.  We included additional mortality terms related to micro-algae viral infections [@Wirtz2019], and a step-wise temperature-sensitive micro-algae loss rate [@Scharfe2009].
+A predecessor simplified 1D long-channel version of OxyPOM was initially implemented by @Holzwarth2018 for the closed-source UnTRIM-DELWAQ hydrodynamic and water quality system.  We elaborated on this earlier work by adding vertically explicit process formulation for re-aeration in rivers and estuaries [@Raymond2001], primary production, and light attenuation.  We included additional mortality terms related to micro-algae viral infections [@Wirtz2019], and a step-wise temperature-sensitive micro-algae loss rate [@Scharfe2009].   With OxyPOM, we can now demonstrate unprecedented skill in representing oxygen dynamics including hypoxia events in the Elbe river.
 
 Where a complete representation of bio-geochemical dynamics is not needed, DiaMO is an even more simplified model for quick assessments of DO dynamics.
+All of this is implemented as an open source, findable,  accessible, interoperable and reusable (FAIR) modeling system. 
 
 ## OxyPOM: Oxygen and Particulate Organic Matter
 
@@ -56,7 +54,7 @@ silicate particles,
 dissolved organic matter (DOM),
 inorganic dissolved nutrients,
 and two micro-algae classes.
-DO dynamics is based on a mass balance equation:
+Oxygen dynamics is based on a mass balance equation:
 
 \begin{equation}
 \frac{d \textrm{DO}}{dt} = \textrm{Re-aeration} + (\textrm{Photosynthesis} - \textrm{Respiration}) - \textrm{Mineralization} + \textrm{Nitrification}.
@@ -99,7 +97,7 @@ As in OxyPOM, all rates in DiaMO are temperature-dependent. DiaMO was equally va
 
 ## Light in OxyPOM and DiaMO
 
-Together with OxyPOM and DiaMO, this repository includes the model `oxypom/light` as an alternative model to the FABM implementation of the light model used by GOTM.
+Together with OxyPOM and DiaMO, this repository includes the model `oxypom/light` as an alternative model to the standard GOTM light model.
 While the default light model assumes that the photosynthetically active radiation (PAR) in a vertical layer $z$ of thickness $\Delta z$ is in the centre of the layer, `oxypom/light` calculates PAR in the representative depth $\bar{z}$, which satisfies the mean value theorem, such that 
 PAR evaluated at $\bar{z}$ is the mean PAR intensity in the layer.
 Since this calculation can be computationally expensive to evaluate, first- and second-order approximations are implemented.
