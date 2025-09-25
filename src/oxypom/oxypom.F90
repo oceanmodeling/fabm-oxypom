@@ -26,6 +26,7 @@ module oxypom_oxypom
       type(type_diagnostic_variable_id) :: id_dPAR
       type(type_diagnostic_variable_id) :: id_x_min
       type(type_diagnostic_variable_id) :: id_x_nit
+      type(type_diagnostic_variable_id) :: id_x_denit
       type(type_diagnostic_variable_id) :: id_x_res
       type(type_diagnostic_variable_id) :: id_x_npp
       type(type_diagnostic_variable_id) :: id_ALG
@@ -218,7 +219,8 @@ contains
       ! Register diagnostic variables
       call self%register_diagnostic_variable(self%id_dPAR, 'PAR', 'W m-2', 'photosynthetically active radiation')
       call self%register_diagnostic_variable(self%id_x_min, 'x_min', 'mmol O2 m-3 d-1', 'oxygen consumed by mineralization')
-      call self%register_diagnostic_variable(self%id_x_nit, 'x_nit', 'mmol O2 m-3 d-1', 'oxygen consumed by nitrtification')
+      call self%register_diagnostic_variable(self%id_x_nit, 'x_nit', 'mmol O2 m-3 d-1', 'oxygen consumed by nitrification')
+      call self%register_diagnostic_variable(self%id_x_denit, 'x_denit', 'mmol O2 m-3 d-1', 'oxygen consumed by denitrification')
       call self%register_diagnostic_variable(self%id_x_res, 'x_res', 'mmol O2 m-3 d-1', 'oxygen consumed by respiration')
       call self%register_diagnostic_variable(self%id_x_npp, 'x_npp', 'mmol O2 m-3 d-1', 'oxygen produced by phytoplankton')
       call self%register_diagnostic_variable(self%id_ALG, 'ALG', 'mmol C m-3', 'total phytoplankton')
@@ -537,6 +539,7 @@ contains
 
       _SET_DIAGNOSTIC_(self%id_dPAR, par)
       _SET_DIAGNOSTIC_(self%id_x_min, (MINoxy))
+      _SET_DIAGNOSTIC_(self%id_x_denit, (1.5_rk*MINnit)) ! mmol O2, from mmol N from NO3 to O2 as N2, scale by 1.5 for O2
       _SET_DIAGNOSTIC_(self%id_x_nit, (2.0_rk*NIT))
       _SET_DIAGNOSTIC_(self%id_x_res, (krsp1*ALG1 + krsp2*ALG2 + self%rCon*(MORT1 + MORT2)))
       _SET_DIAGNOSTIC_(self%id_x_npp,  kgp1*ALG1 + kgp2*ALG2)
