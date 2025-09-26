@@ -49,7 +49,7 @@ jobs:
         with:
           auto-update-conda: true
       - name: Clone gotm
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           submodules: recursive
           repository: gotm-model/code
