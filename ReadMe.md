@@ -6,6 +6,7 @@ SPDX-FileContributor Carsten Lemmen <carsten.lemmen@hereon.de>
 -->
 
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![JOSS software paper](https://joss.theoj.org/papers/b72ea8938167213e6e86051f93d3032e/status.svg)](https://joss.theoj.org/papers/b72ea8938167213e6e86051f93d3032e)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/10196/badge)](https://www.bestpractices.dev/projects/10196)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](./doc/contributing/code_of_conduct.md)
 [![REUSE status](https://api.reuse.software/badge/github.com/fsfe/reuse-tool)](https://api.reuse.software/info/codebase.helmholtz.cloud/dam-elbextreme/oxypom)
@@ -112,7 +113,7 @@ Apache-2.0 (OxyPOM and DiaMo)
 
 ## Project status
 
-This is part of the `DAM-ElbeXtgreme` project.
+This is part of the DAM `mareXtreme` mission's `ElbeXtreme` project funded by BMFTR 2024-2026.
 
 ## Contributing and reporting
 
@@ -122,12 +123,12 @@ We also welcome your contributions, subject to our Contributor Covenant [code of
 
 The **best way to contribute** is by (1) creating a fork off our repository, (2) committing your changes on your fork and then (3) creating a pull request ("PR") to push your changes back to us.
 
-To file an issue or to contribute, you are asked to (1) authenticate with an existing identity and (2) to register on the HIFIS GitLab instance and sign in.
-When asked, click "Sign in with Helmholtz AAI".
+To file an issue or to contribute, you are asked to (1) authenticate with an existing authentication provider and (2) to (one-time) register on the Helmholtz Cloud GitLab instance and (3) sign in.
+When asked, click "Sign in with Helmholtz ID".
 On the following page "Login to Helmholtz AAI OAuth2 Authorization Server", search for one of your existing authentication providers (this may be your university, company, ORCID, GitHub, or many others) and provide their login credentials for authorization.
-If you are not already registered on the HIFIS GitLab instance, a confirmation email will be sent to the primary email address registered with your authentication provider.
+If you are not already registered with a Helmholtz ID, a confirmation email will be sent to the primary email address registered with your authentication provider.
 After clicking the confirmation link, you will also be asked to provide a name on this GitLab instance; this will be your nickname.
-Help on this one-time registration process is available from [https://hifis.net/tutorial/2021/06/23/how-to-helmholtz-aai.html](https://hifis.net/tutorial/2021/06/23/how-to-helmholtz-aai.html).
+Help on this one-time registration process is available from [https://hifis.net/doc/helmholtz-cloud/users/getting-started/](https://hifis.net/doc/helmholtz-cloud/users/getting-started/).
 
 ## Building the package
 
