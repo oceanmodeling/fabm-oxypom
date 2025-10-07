@@ -21,7 +21,7 @@ affiliations:
     - name: Helmholtz-Zentrum Hereon, Institute of Coastal Systems - Modeling and Analysis, Germany, ovidio.garcia@hereon.de
       index: 1
       ror: 03qjp1d79
-date: 15 September 2025
+date: 7 October 2025
 year: 2025
 bibliography: paper.bib
 SPDX-FileCopyrightText: 2025 Helmholtz-Zentrum hereon GmbH
@@ -30,9 +30,9 @@ SPDX-License-Identifier: CC-BY-4.0
 
 # Summary
 
-OxyPOM (Oxygen and Particulate Organic Matter) and DiaMO (Diagnostic Model for Oxygen) are aquatic biogeochemical models that consider key processes for dissolved oxygen (DO), such as re-aeration, mineralization, and primary production, in fresh, transitional and marine waters.
-Both are implemented in the `Fortran`-based Framework for Aquatic Biogeochemical Models [FABM, @Bruggeman2014] for reusability in a variety of hydrodynamic models, in realistic and idealized applications, and for interoperability with other aquatic process models.
-With these models, we include an updated light profile implementation and testcases for simulating DO at Cuxhaven Station in the Elbe estuary 2005--2024; for this, we use the hydrodynamic General Ocean Turbulence Model [GOTM, @Burchard2002] including tides, and `R` and `bash` scripts for including weather and river data from [kuestendaten.de](https://www.kuestendaten.de).
+OxyPOM (Oxygen and Particulate Organic Matter) and DiaMO (Diagnostic Model for Oxygen) are aquatic biogeochemical models that consider key processes for dissolved oxygen (DO), such as re-aeration, mineralization, and primary production in fresh, transitional and marine waters.
+OxyPOM, DiaMO, and an additional light penetration model are implemented in the `Fortran`-based Framework for Aquatic Biogeochemical Models [FABM, @Bruggeman2014] for reusability in a variety of hydrodynamic models, in realistic and idealized applications, and for interoperability with other aquatic process models.
+A demonstration and validation test case for simulating multi-decadal DO near Cuxhaven in the Elbe tidal estuary is provided, including `R` and `bash` scripts for including weather and river data from [kuestendaten.de](https://www.kuestendaten.de).
 
 # Statement of need
 
@@ -77,7 +77,7 @@ Micro-algae take up and release dissolved nutrients when they die with a tempera
 OxyPOM shows high skill by reproducing surface DO at the Cuxhaven station in the Elbe estuary (\autoref{fig:validation}).
 
 <div>
-![Validation of OxyPOM model with the testcase `estuary` contained in the repository.  Model results for temperature (from GOTM, top, red) and OxyPOM DO (bottom, red) are compared to station data (black and grey dots) available from [kuestendaten.de](https://www.kuestendaten.de)\label{fig:validation}](figure1.pdf){ width=99% }
+![Validation of OxyPOM with the test case `estuary` contained in the repository.  Simulation,  results for temperature (from the General Ocean Turbulence Model [GOTM, @Burchard2002, top, red] and OxyPOM DO (bottom, red) are compared to observations (black and grey dots) available from [kuestendaten.de](https://www.kuestendaten.de)\label{fig:validation}](figure1.pdf){ width=99% }
 </div>
 
 ## DiaMO: Diagnostic Model for Oxygen
@@ -93,11 +93,11 @@ The complete system is represented as
 \end{eqnarray}
 
 Aggregation rate is a mortality term for phytoplankton [@Maerz2009].
-As in OxyPOM, all rates in DiaMO are temperature-dependent. DiaMO was equally validated and shows high skill reproducing surface DO at the Cuxhaven station.
+As in OxyPOM, all rates in DiaMO are temperature-dependent. DiaMO was equally validated and shows high skill reproducing surface DO at Cuxhaven.
 
 ## Light in OxyPOM and DiaMO
 
-Together with OxyPOM and DiaMO, this repository includes the model `oxypom/light` as an alternative model to the standard GOTM light model.
+Together with OxyPOM and DiaMO, this repository includes a light penetration model as an alternative to the standard GOTM light model.
 While the default light model assumes that the photosynthetically active radiation (PAR) in a vertical layer $z$ of thickness $\Delta z$ is in the centre of the layer, `oxypom/light` calculates PAR in the representative depth $\bar{z}$, which satisfies the mean value theorem, such that 
 PAR evaluated at $\bar{z}$ is the mean PAR intensity in the layer.
 Since this calculation can be computationally expensive to evaluate, first- and second-order approximations are implemented.
@@ -112,12 +112,12 @@ where $\alpha$ is the light extinction coefficient for the layer, accounting for
 
 # Model documentation and license
 
-The models are documented in short form in the `ReadMe.md` section of the repository and a complete description of the science behind OxyPOM is in @Holzwarth2018.
+The models are documented in short form in the `ReadMe.md` section of the repository; @Holzwarth2018 provide a complete description of the science behind OxyPOM.
 Open access data from third parties are not included with the model, and scripts for their download are included.
-Our own models, scripts and documentations are are released under open source licenses, foremost Apache 2.0, CC0-1.0, and CC-BY-SA-4.0; a comprehensive documentation of all licenses is provided via REUSE Software.
+Our own models, scripts and documentation are are released under open source licenses, foremost Apache 2.0, CC0-1.0, and CC-BY-SA-4.0; a comprehensive documentation of all licenses is provided via REUSE Software.
 
 # Acknowledgements
 
-The development of this model was made possible by the grant no. 03F0954D of the BMBF as part of the DAM mission ‘mareXtreme’, project ElbeXtreme. We are grateful for the open source community that facilitated this research, amongst them the developers of and contributors to FABM, GOTM, R, pandoc, and LaTeX.
+The development of this model was made possible by the grant no. 03F0954D of the BMBF as part of the DAM mission ‘mareXtreme’, project ElbeXtreme. We are grateful to the open source community that facilitated this research, amongst them the developers of and contributors to FABM, GOTM, R, pandoc, and LaTeX.
 
 # References
