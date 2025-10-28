@@ -6,6 +6,7 @@
 **/build
 **/*.nc
 **/gotm
+**/fabm0d
 **/.RData
 **/.Rhistory
 **/*_validation.png
