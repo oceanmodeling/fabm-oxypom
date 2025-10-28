@@ -4,5 +4,6 @@
 
 bash gotm-installation.sh
 cd light
+Rscript -e 'options(repos=c(CRAN="https://cloud.r-project.org")); if(!requireNamespace("ncdf4",quietly=TRUE)) install.packages("ncdf4"); library(ncdf4)'
 Rscript model_comparison.R
 cd ..

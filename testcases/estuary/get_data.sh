@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: CC0-1.0
 # SPDX-FileContributor Ovidio Garcia-Oliva <ovidio.garcia@hereon.de>
 
-mkdir ./data
+mkdir -p ./data
 cd ./data
 
 NAMES=( "Cuxhaven_DWD!Lufttemperatur" 
@@ -16,6 +16,7 @@ NAMES=( "Cuxhaven_DWD!Lufttemperatur"
         "FGG_Elbe_009!Wassertemperatur")  
 
 for NAME in "${NAMES[@]}"; do
+    test -f "${NAME}.txt" && continue
     FILENAME="$NAME.zip"
     URL="https://www.kuestendaten.de/DE/dynamisch/appl/data/daten_prod/prodNeuProd/direct_download/$FILENAME"
     wget $URL -O $FILENAME
