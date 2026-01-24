@@ -1,0 +1,76 @@
+# SPDX-FileCopyrightText: 2025-2026 Helmholtz-Zentrum hereon GmbH
+# SPDX-License-Identifier: CC0-1.0
+# SPDX-FileContributor Ovidio Garcia-Oliva <ovidio.garcia@hereon.de>
+# python create_estuary_dim.py --np=90 --kmax=3
+instances:
+  light:
+    use: ftrue # turn on to better light management when the layers are to thick
+    model: oxypom/light
+  oxypom:
+    use: true
+    long_name: bgc
+    model: oxypom/oxypom
+    parameters:
+      #amc: 1.71 # critical concentration NH4 uptake # it was commented
+      ea: 0.0012  # light attenuation ALG
+      ep: 0.0012  # light attenuation POM
+      es: 0.03    # light attenuation SPM
+      etb: 0.0    # light attenuation background (Should be 0)
+      # fdec12: 0.5 # factor decomposition POC1 to POC2
+      # fdec13: 0.5 # factor decomposition POC1 to DOC
+      # fdec23: 0.150 # factor decomposition POC2 to DOC
+      # fgr: 0.075 # fraction of respiration of ALG growing
+      fra: 0.5 # fraction of chemicals realeased by autolysis
+      Io201: 25 #50 # optimal light intensity or ALG1 at 20deg
+      Io202: 30 # 65 # optimal light intensity or ALG1 at 20deg
+      # kdiss: 3.1e-6 # OPAL dissolution reaction rate constant
+      kmin1: 0.1 #0.04 # mineralization rate fast ## I just make it larger to reduce oxygen in the city
+      kmin2: 0.01 #0.005 # mineralization rate slow
+      kmin3: 0.03 # 0.015 mineralization rate dissolved
+      # kmr1: 0.0 # ALG1 maintainance respiration rate      
+      # kmr2: 0.0 # ALG2 maintainance respiration rate      
+      kmrt: 0.3 # ALG mortality rate at 20deg ## I move this when virus was implemented, original value is 0.6 ! 0.3 WORKS WELL
+      #knit: 28.6 # nitrification rate constant
+      kpp: 2.0 # maximum growth rate ALG !I changed from 2.0
+      # Ksam: 36.0 # half saturation NH4 limitation in nitrification
+      # Ksni: 30.0 # half saturation NO3 in denitrification
+      # Ksn: 30.36 # half-saturation constant for nitrogen
+      # Ksox: 31.3 # half saturation DO in nitrification
+      # Ksoxi: 94.0 # half saturation DO inhibition in denitrification
+      # Ksoxc: 120.0 #63.0 # half saturation DO consumption in minerals
+      # Ksp: 0.03 # half-saturation constant for phosphorus
+      # Kssi: 1.0 # half-saturation constant for silica
+      # sieq: 357.0 # equilibrium concentration Si
+      SPMI: 1.0 # inorganic suspended particular matter concentration
+      sv: -1.5    # sinking velocity POM !1.5 WORKS WELL
+      svALG: -0.10 # sinking velocity ALG
+      rCon: .070 # respiration rate of phytoplankton consumer
+      Q10_min: 5.19 #6.19 # Q10 for mineralization
+      Q10_res: 2.00 # Q10 for respiration
+      Q10_het: 4.40 # Q10 for respiration
+      Q10_pri: 1.20 # Q10 for primary production
+      Q10_Ioi: 1.48 # Q10 for optimal light intensity
+      Q10_mno: 3.11 # Q10 for optimal mineralization of nitrate
+      Q10_vbs: 4.4 # Q10 for optimal light intensity
+      Q10_vin: 1.4 # Q10 for optimal mineralization of nitrate
+      alpha: 1.0 # reaeration factor it was 2
+      Cvir: 2.0
+    initialization:
+      ALG1: 2.0
+      ALG2: 2.0
+      POC1: .001
+      POC2: .01
+      DOC: 1
+      NH4: 1.1
+      NO3: 10.0
+      PON1: .1
+      PON2: .1
+      DON: .01
+      PO4: 1.253
+      POP1: 0.051
+      POP2: 0.051
+      DOP: 0.051
+      Si: 10
+      OPAL: 1.
+      DOxy: 350.0
+ 

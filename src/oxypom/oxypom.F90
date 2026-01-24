@@ -100,6 +100,8 @@ module oxypom_oxypom
       real(rk) :: Q10_pri
       real(rk) :: Q10_Ioi
       real(rk) :: Q10_mno
+      real(rk) :: Q10_vbs
+      real(rk) :: Q10_vin
       real(rk) :: HetWI
       real(rk) :: alpha
       real(rk) :: Svir
@@ -137,7 +139,7 @@ contains
       call self%get_parameter(self%fdec12, 'fdec12', '--', 'factor decomposition POC1 to POC2', default=0.5_rk)
       call self%get_parameter(self%fdec13, 'fdec13', '--', 'factor decomposition POC1 to DOC', default=0.5_rk)
       call self%get_parameter(self%fdec23, 'fdec23', '--', 'factor decomposition POC2 to DOC', default=1.0_rk)
-      call self%get_parameter(self%fgr, 'fgr', '--', 'growht respiration factor algae', default=0.065_rk)
+      call self%get_parameter(self%fgr, 'fgr', '--', 'growth respiration factor algae', default=0.065_rk)
       call self%get_parameter(self%fra, 'fra', '--', 'fraction released by autolysis', default=0.5_rk)
       call self%get_parameter(self%Io201, 'Io201', 'W m-2', 'optimal light intensity for ALG1', default=20.0_rk)
       call self%get_parameter(self%Io202, 'Io202', 'W m-2', 'optimal light intensity for ALG2', default=30.0_rk)
@@ -168,7 +170,9 @@ contains
       call self%get_parameter(self%Q10_het, 'Q10_het', '--', 'Q10 for heterotrophy related mortality', default=4.40_rk)   
       call self%get_parameter(self%Q10_pri, 'Q10_pri', '--', 'Q10 for primary production', default=1.40_rk)      
       call self%get_parameter(self%Q10_Ioi, 'Q10_Ioi', '--', 'Q10 for optimal light intensity', default=1.04_rk)    
-      call self%get_parameter(self%Q10_mno, 'Q10_mno', '--', 'Q10 for optimal mineralization of nitrate', default=1.12_rk)   
+      call self%get_parameter(self%Q10_mno, 'Q10_mno', '--', 'Q10 for optimal mineralization of nitrate', default=1.12_rk)
+      call self%get_parameter(self%Q10_vbs, 'Q10_vbs', '--', 'Q10 for virus burst size', default=4.40_rk)
+      call self%get_parameter(self%Q10_vin, 'Q10_vin', '--', 'Q10 for virus inactivation', default=1.04_rk)        
       call self%get_parameter(self%HetWI, 'HetWI', '--', 'Heterotrophic winter inhibition', default=0.33_rk)   
       call self%get_parameter(self%alpha, 'alpha', '--', 'increased rearation factor due to geometry idealizations', default=1.0_rk)   
       call self%get_parameter(self%Svir, 'Svir', '--', 'virus stepness parameter', default=2.0_rk)   
@@ -180,25 +184,25 @@ contains
       call self%get_parameter(self%VIRmin, 'VIRmin', '--', 'virus minumum concentration', default=0.01_rk)   
 
       ! Register state variables
-      call self%register_state_variable(self%id_ALG1, 'ALG1', 'mmol C m-3', 'diatom', 1.0_rk, minimum=0.1_rk, maximum=1000.0_rk, vertical_movement=self%svALG*d_per_s)
-      call self%register_state_variable(self%id_ALG2, 'ALG2', 'mmol C m-3', 'non-diatom', 0.20_rk, minimum=0.1_rk, maximum=1000.0_rk, vertical_movement=self%svALG*d_per_s)
-      call self%register_state_variable(self%id_POC1, 'POC1', 'mmol C m-3', 'POC1 ', 2.0_rk, minimum=0.0_rk, maximum=1000.0_rk, vertical_movement=self%sv*d_per_s)
-      call self%register_state_variable(self%id_POC2, 'POC2', 'mmol C m-3', 'POC2 ', 3.0_rk, minimum=0.0_rk, maximum=1000.0_rk, vertical_movement=self%sv*d_per_s)
+      call self%register_state_variable(self%id_ALG1, 'ALG1', 'mmol C m-3', 'Diatom', 1.0_rk, minimum=0.1_rk, maximum=1000.0_rk, vertical_movement=self%svALG*d_per_s)
+      call self%register_state_variable(self%id_ALG2, 'ALG2', 'mmol C m-3', 'Non-diatom', 0.20_rk, minimum=0.1_rk, maximum=1000.0_rk, vertical_movement=self%svALG*d_per_s)
+      call self%register_state_variable(self%id_POC1, 'POC1', 'mmol C m-3', 'POC Labile ', 2.0_rk, minimum=0.0_rk, maximum=1000.0_rk, vertical_movement=self%sv*d_per_s)
+      call self%register_state_variable(self%id_POC2, 'POC2', 'mmol C m-3', 'POC Semilabile ', 3.0_rk, minimum=0.0_rk, maximum=1000.0_rk, vertical_movement=self%sv*d_per_s)
       call self%register_state_variable(self%id_DOC, 'DOC', 'mmol C m-3', 'DOC', 500.0_rk, minimum=0.0_rk, maximum=1000.0_rk, vertical_movement=0.0_rk*d_per_s)
-      call self%register_state_variable(self%id_NH4, 'NH4', 'mmol N m-3', 'ammonia', 2.0_rk, minimum=0.0_rk, maximum=1000.0_rk, vertical_movement=0.0_rk*d_per_s)
-      call self%register_state_variable(self%id_NO3, 'NO3', 'mmol N m-3', 'nitrate', 400.0_rk, minimum=0.0_rk, maximum=1000.0_rk, vertical_movement=0.0_rk*d_per_s)
-      call self%register_state_variable(self%id_PON1, 'PON1', 'mmol N m-3', 'PON1', 20.0_rk, minimum=0.0_rk, maximum=1000.0_rk, vertical_movement=self%sv*d_per_s)
-      call self%register_state_variable(self%id_PON2, 'PON2', 'mmol N m-3', 'PON2 ', 20.0_rk, minimum=0.0_rk, maximum=1000.0_rk, vertical_movement=self%sv*d_per_s)
+      call self%register_state_variable(self%id_NH4, 'NH4', 'mmol N m-3', 'Ammonia', 2.0_rk, minimum=0.0_rk, maximum=1000.0_rk, vertical_movement=0.0_rk*d_per_s)
+      call self%register_state_variable(self%id_NO3, 'NO3', 'mmol N m-3', 'Nitrate', 400.0_rk, minimum=0.0_rk, maximum=1000.0_rk, vertical_movement=0.0_rk*d_per_s)
+      call self%register_state_variable(self%id_PON1, 'PON1', 'mmol N m-3', 'PON Labile', 20.0_rk, minimum=0.0_rk, maximum=1000.0_rk, vertical_movement=self%sv*d_per_s)
+      call self%register_state_variable(self%id_PON2, 'PON2', 'mmol N m-3', 'PON Semilabile', 20.0_rk, minimum=0.0_rk, maximum=1000.0_rk, vertical_movement=self%sv*d_per_s)
       call self%register_state_variable(self%id_DON, 'DON', 'mmol N m-3', 'DON', 20.0_rk, minimum=0.0_rk, maximum=1000.0_rk, vertical_movement=0.0_rk*d_per_s)
-      call self%register_state_variable(self%id_PO4, 'PO4', 'mmol P m-3', 'phosphate', 1.0_rk, minimum=0.0_rk, maximum=50.0_rk, vertical_movement=0.0_rk*d_per_s)
-      call self%register_state_variable(self%id_POP1, 'POP1', 'mmol P m-3', 'POP1 ', 0.5_rk, minimum=0.0_rk, maximum=50.0_rk, vertical_movement=self%sv*d_per_s)
-      call self%register_state_variable(self%id_POP2, 'POP2', 'mmol P m-3', 'POP2 ', 0.5_rk, minimum=0.0_rk, maximum=50.0_rk, vertical_movement=self%sv*d_per_s)
+      call self%register_state_variable(self%id_PO4, 'PO4', 'mmol P m-3', 'Phosphate', 1.0_rk, minimum=0.0_rk, maximum=50.0_rk, vertical_movement=0.0_rk*d_per_s)
+      call self%register_state_variable(self%id_POP1, 'POP1', 'mmol P m-3', 'POP Labile ', 0.5_rk, minimum=0.0_rk, maximum=50.0_rk, vertical_movement=self%sv*d_per_s)
+      call self%register_state_variable(self%id_POP2, 'POP2', 'mmol P m-3', 'POP Semilabile ', 0.5_rk, minimum=0.0_rk, maximum=50.0_rk, vertical_movement=self%sv*d_per_s)
       call self%register_state_variable(self%id_DOP, 'DOP', 'mmol P m-3', 'DOP', 0.5_rk, minimum=0.0_rk, maximum=50.0_rk, vertical_movement=0.0_rk*d_per_s)
       call self%register_state_variable(self%id_Si, 'Si', 'mmol Si m-3', 'Silicate', 200.0_rk, minimum=0.0_rk, maximum=1000.0_rk, vertical_movement=0.0_rk*d_per_s)
-      call self%register_state_variable(self%id_OPAL, 'OPAL', 'mmol Si m-3', 'opal', 10.0_rk, minimum=0.0_rk, maximum=2000.0_rk, vertical_movement=self%sv*d_per_s)
-      call self%register_state_variable(self%id_DOxy, 'DOxy', 'mmol O2 m-3', 'dissolved oxygen', 300.0_rk, minimum=0.001_rk, maximum=600.0_rk, vertical_movement=0.0_rk*d_per_s)
-      call self%register_state_variable(self%id_VIR1, 'VIR1', '--', 'virus for diatom', 0.005_rk, minimum=0.005_rk, maximum=2.0_rk, vertical_movement=self%svALG*d_per_s)
-      call self%register_state_variable(self%id_VIR2, 'VIR2', '--', 'virus for non-diatom', 0.005_rk, minimum=0.005_rk, maximum=2.0_rk, vertical_movement=self%svALG*d_per_s)
+      call self%register_state_variable(self%id_OPAL, 'OPAL', 'mmol Si m-3', 'Opal', 10.0_rk, minimum=0.0_rk, maximum=2000.0_rk, vertical_movement=self%sv*d_per_s)
+      call self%register_state_variable(self%id_DOxy, 'DOxy', 'mmol O2 m-3', 'Dissolved oxygen', 300.0_rk, minimum=0.001_rk, maximum=600.0_rk, vertical_movement=0.0_rk*d_per_s)
+      call self%register_state_variable(self%id_VIR1, 'VIR1', '--', 'Virus for diatom', 0.05_rk, minimum=0.01_rk, maximum=2.0_rk, vertical_movement=self%svALG*d_per_s)
+      call self%register_state_variable(self%id_VIR2, 'VIR2', '--', 'Virus for non-diatom', 0.05_rk, minimum=0.01_rk, maximum=2.0_rk, vertical_movement=self%svALG*d_per_s)
 
       ! Register contribution of state to global aggregate variables.
       call self%add_to_aggregate_variable(standard_variables%total_nitrogen, self%id_NH4)
@@ -217,17 +221,17 @@ contains
       call self%add_to_aggregate_variable(standard_variables%total_phosphorus, self%id_ALG2, scale_factor=self%ap)
 
       ! Register diagnostic variables
-      call self%register_diagnostic_variable(self%id_dPAR, 'PAR', 'W m-2', 'photosynthetically active radiation')
-      call self%register_diagnostic_variable(self%id_x_min, 'x_min', 'mmol O2 m-3 d-1', 'oxygen consumed by mineralization')
-      call self%register_diagnostic_variable(self%id_x_nit, 'x_nit', 'mmol O2 m-3 d-1', 'oxygen consumed by nitrification')
-      call self%register_diagnostic_variable(self%id_x_denit, 'x_denit', 'mmol O2 m-3 d-1', 'oxygen consumed by denitrification')
-      call self%register_diagnostic_variable(self%id_x_res, 'x_res', 'mmol O2 m-3 d-1', 'oxygen consumed by respiration')
-      call self%register_diagnostic_variable(self%id_x_npp, 'x_npp', 'mmol O2 m-3 d-1', 'oxygen produced by phytoplankton')
-      call self%register_diagnostic_variable(self%id_ALG, 'ALG', 'mmol C m-3', 'total phytoplankton')
-      call self%register_diagnostic_variable(self%id_POC, 'POC', 'mmol C m-3', 'total POC')
-      call self%register_diagnostic_variable(self%id_PON, 'PON', 'mmol N m-3', 'total PON')
-      call self%register_diagnostic_variable(self%id_POP, 'POP', 'mmol P m-3', 'total POP')
-      call self%register_surface_diagnostic_variable(self%id_AIR,'AIR','mmol O2 m-2 d-1','air-sea flux', source=source_do_surface)
+      call self%register_diagnostic_variable(self%id_dPAR, 'PAR', 'W m-2', 'Photosynthetically active radiation')
+      call self%register_diagnostic_variable(self%id_x_min, 'x_min', 'mmol O2 m-3 d-1', 'Oxygen consumed by mineralization')
+      call self%register_diagnostic_variable(self%id_x_nit, 'x_nit', 'mmol O2 m-3 d-1', 'Oxygen consumed by nitrification')
+      call self%register_diagnostic_variable(self%id_x_denit, 'x_denit', 'mmol O2 m-3 d-1', 'Oxygen-equivalent denitrification rate')
+      call self%register_diagnostic_variable(self%id_x_res, 'x_res', 'mmol O2 m-3 d-1', 'Oxygen consumed by respiration')
+      call self%register_diagnostic_variable(self%id_x_npp, 'x_npp', 'mmol O2 m-3 d-1', 'Oxygen produced by phytoplankton')
+      call self%register_diagnostic_variable(self%id_ALG, 'ALG', 'mmol C m-3', 'Total phytoplankton')
+      call self%register_diagnostic_variable(self%id_POC, 'POC', 'mmol C m-3', 'Total POC')
+      call self%register_diagnostic_variable(self%id_PON, 'PON', 'mmol N m-3', 'Total PON')
+      call self%register_diagnostic_variable(self%id_POP, 'POP', 'mmol P m-3', 'Total POP')
+      call self%register_surface_diagnostic_variable(self%id_AIR,'AIR','mmol O2 m-2 d-1','Air-sea flux', source=source_do_surface)
 
       ! Register environmental dependencies
       call self%register_dependency(self%id_temp, standard_variables%temperature)
@@ -293,6 +297,8 @@ contains
       real(rk) :: fpri_tem
       real(rk) :: fIoi_tem
       real(rk) :: fmno_tem
+      real(rk) :: fvbs_tem
+      real(rk) :: fvin_tem
       real(rk) :: MIN11
       real(rk) :: MIN12
       real(rk) :: MIN13
@@ -412,11 +418,13 @@ contains
       ! Starting auxiliary calculations
       temp_ref = 0.1_rk*(temp - 20.0_rk)! reference value for Q10 formulation
       fmin_tem = self%Q10_min**temp_ref ! temperature dependence of mineralization
-      fhet_tem = self%Q10_het**temp_ref
+      fhet_tem = self%Q10_het**temp_ref ! temperature dependence of grazing
       fres_tem = self%Q10_res**temp_ref ! temperature dependence of respiration
       fpri_tem = self%Q10_pri**temp_ref ! temperature dependence of primary production
       fIoi_tem = self%Q10_Ioi**temp_ref ! temperature dependence of optimal light intensity
       fmno_tem = self%Q10_mno**temp_ref ! temperature dependence of demineralization of mineral nitrates
+      fvbs_tem = self%Q10_vbs**temp_ref ! temperature dependence of virus burst size
+      fvin_tem = self%Q10_vin**temp_ref ! temperature dependence of virus inactivation
 
       MIN11 = self%kmin1*fmin_tem*POC1         ! mineralization rate POC1
       MIN12 = self%kmin2*fmin_tem*POC2         ! mineralization rate POC2
@@ -513,8 +521,8 @@ contains
       d_Si = RAS + DISS - USI         ! Silicate
       d_OPAL = (1.0_rk - self%fra)*self%asi*(MORT1 + LYS1) - DISS         ! opal
       d_DOxy = nPP1 + nPP2 - MINoxy - 2.0_rk*NIT - self%rCon*(MORT1 + MORT2)       ! dissolved oxygen
-      d_VIR1 = self%Rvir*fhet_tem*VIR1*ALG1**2.0_rk/(POC1+POC2+ALG2)*1.0_rk/(1.0_rk+EXP(self%Svir*(self%VIRmax-VIR1))) - self%Hvir*VIR1*(self%VIRmax-VIR1)*EXP(-ALG1/self%Cvir)*VIR1/(VIR1+self%VIRmin)*1.0_rk/(1.0_rk+EXP(self%Svir*(1.0_rk-VIR1)))**2_rk*self%Svir*EXP(self%Svir*(1.0_rk-VIR1)) - self%Ivir*fIoi_tem*VIR1**2.0_rk/(VIR1+self%VIRmin)
-      d_VIR2 = self%Rvir*fhet_tem*VIR2*ALG2**2.0_rk/(POC1+POC2+ALG1)*1.0_rk/(1.0_rk+EXP(self%Svir*(self%VIRmax-VIR2))) - self%Hvir*VIR2*(self%VIRmax-VIR2)*EXP(-ALG2/self%Cvir)*VIR2/(VIR2+self%VIRmin)*1.0_rk/(1.0_rk+EXP(self%Svir*(1.0_rk-VIR2)))**2_rk*self%Svir*EXP(self%Svir*(1.0_rk-VIR2)) - self%Ivir*fIoi_tem*VIR2**2.0_rk/(VIR2+self%VIRmin)
+      d_VIR1 = self%Rvir*fvbs_tem*VIR1*ALG1**2.0_rk/(POC1+POC2+ALG2)*1.0_rk/(1.0_rk+EXP(self%Svir*(self%VIRmax-VIR1))) - self%Hvir*VIR1*(self%VIRmax-VIR1)*EXP(-ALG1/self%Cvir)*VIR1/(VIR1+self%VIRmin)*1.0_rk/(1.0_rk+EXP(self%Svir*(1.0_rk-VIR1)))**2_rk*self%Svir*EXP(self%Svir*(1.0_rk-VIR1)) - self%Ivir*fvin_tem*VIR1**2.0_rk/(VIR1+self%VIRmin)
+      d_VIR2 = self%Rvir*fvbs_tem*VIR2*ALG2**2.0_rk/(POC1+POC2+ALG1)*1.0_rk/(1.0_rk+EXP(self%Svir*(self%VIRmax-VIR2))) - self%Hvir*VIR2*(self%VIRmax-VIR2)*EXP(-ALG2/self%Cvir)*VIR2/(VIR2+self%VIRmin)*1.0_rk/(1.0_rk+EXP(self%Svir*(1.0_rk-VIR2)))**2_rk*self%Svir*EXP(self%Svir*(1.0_rk-VIR2)) - self%Ivir*fvin_tem*VIR2**2.0_rk/(VIR2+self%VIRmin)
 
       ! Add sources
       _ADD_SOURCE_(self%id_ALG1, d_ALG1*d_per_s)
