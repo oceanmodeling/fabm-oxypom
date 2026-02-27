@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: 2025 Helmholtz-Zentrum hereon GmbH
+SPDX-FileCopyrightText: 2025-2026 Helmholtz-Zentrum hereon GmbH
 SPDX-License-Identifier: CC0-1.0
 SPDX-FileContributor: Carsten Lemmen <carsten.lemmen@hereon.de>
 -->
@@ -9,7 +9,18 @@ SPDX-FileContributor: Carsten Lemmen <carsten.lemmen@hereon.de>
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-# Release notes for version 2.0.0 (ongoing)
+# Release notes for ongoing development
+
+- Addition of alkalinity diagnostic
+
+# Release notes for version 2.0.1 (2026-02-27)
+
+- Added alkalinity as a new diagnostic variable
+- Included a new testcase for temperature sensitivity (EcoMod)
+- Improved installation scripts for portability
+- Updated documentation and fixed minor issues
+
+# Release notes for version 2.0.0 (2025-09-03)
 
 - Virus infection as a mortality for micro-algae
 - Clean up unused variables
@@ -17,20 +28,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Revised temperature-dependent mortality
 - Revised stoichiometry for micro-algae
 
-# Release notes for version 1.0.1
+# Release notes for version 1.0.1 (2025-03-31)
 
 - Cleanup of git history
 - Simulation results available as artifacts
 - Deposition on Zenodo
 
-# Release notes for version 1.0.0
+# Release notes for version 1.0.0 (2025-03-21)
 
 - More complete metadata
 - Homogenized documentation
 - Submission to the Journal of Open Source Software (JOSS)
 - Docker available at https://registry.hzdr.de/dam-elbextreme/oxypom/fabm:latest
 
-# Release notes for version 0.9.1
+# Release notes for version 0.9.1 (2025-03-21)
 
 - Feature-complete version of the OxyPOM, DiaMO, and light FABM models,
 - Test case for the Elbe estuary,
