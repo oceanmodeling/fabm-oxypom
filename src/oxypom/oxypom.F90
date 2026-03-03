@@ -414,6 +414,9 @@ contains
       _GET_(self%id_VIR1, VIR1)
       _GET_(self%id_VIR2, VIR2)
 
+      if (par < 0.0_rk) par = 0.0_rk
+      if (I0 < 0.0_rk) I0 = 0.0_rk
+
       ! print *, self%rdt__
       ! Starting auxiliary calculations
       temp_ref = 0.1_rk*(temp - 20.0_rk)! reference value for Q10 formulation
