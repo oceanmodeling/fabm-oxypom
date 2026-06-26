@@ -1,10 +1,9 @@
 # SPDX-FileCopyrightText: 2025-2026 Helmholtz-Zentrum hereon GmbH
 # SPDX-License-Identifier: CC0-1.0
 # SPDX-FileContributor Ovidio Garcia-Oliva <ovidio.garcia@hereon.de>
-# python create_estuary_dim.py --np=90 --kmax=3
 instances:
   light:
-    use: ftrue # turn on to better light management when the layers are to thick
+    use: false # turn on to better light management when the layers are to thick
     model: oxypom/light
   oxypom:
     use: true

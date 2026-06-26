@@ -4,7 +4,7 @@
 
 export GOTMDIR=$HOME/tools/gotm6
 export FABMDIR=$HOME/tools/fabm/fabm
-export OXYPOMDIR=$HOME/tools/oxypom/src    
+export OXYPOMDIR=$HOME/tools/dobgcp/src    
 
 mkdir -p ./build
 cd ./build

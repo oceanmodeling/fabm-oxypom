@@ -123,7 +123,7 @@ surface:
 bottom:
    h0b: 0.05                             # physical bottom roughness [m; min=0.0; default=0.05]
 light_extinction:
-   method: custom                     # water type [jerlov-i=Jerlov type I, jerlov-1-50m=Jerlov type 1 (upper 50 m), jerlov-ia=Jerlov type IA, jerlov-ib=Jerlov type IB, jerlov-ii=Jerlov type II, jerlov-iii=Jerlov type III, custom; default=jerlov-i]
+   method: custom                 # water type [jerlov-i=Jerlov type I, jerlov-1-50m=Jerlov type 1 (upper 50 m), jerlov-ia=Jerlov type IA, jerlov-ib=Jerlov type IB, jerlov-ii=Jerlov type II, jerlov-iii=Jerlov type III, custom; default=jerlov-i]
    A:                                    # non-visible fraction of shortwave radiation [1]
       method: constant                   # method [constant, file=from file; default=constant]
       constant_value: 0.8                # value to use throughout the simulation [fraction; min=0.0; max=1.0; default=0.7]
