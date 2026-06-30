@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: 2025 Helmholtz-Zentrum hereon GmbH
+SPDX-FileCopyrightText: 2025-2026 Helmholtz-Zentrum hereon GmbH
 SPDX-License-Identifier: CC0-1.0
 SPDX-FileContributor Ovidio Garcia-Oliva <ovidio.garcia@hereon.de>
 SPDX-FileContributor Carsten Lemmen <carsten.lemmen@hereon.de>

@@ -11,12 +11,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Release notes for ongoing development
 
-- Addition of alkalinity diagnostic
+- no changes yet
+
+# Release notes for version 2.0.2 (2026-06-30)
+
+- Maintenance for CMake, directory names
+- submission of revised version to Ecological Modelling
+- Enforce par/I0 ≥ 0 when obtaining environment to prevent blowup with negative (missing_value) passed from SCHISM
+
+### Changed
+- Updated temperature sensitivity testcase
+- Added -DCMAKE_POLICY_VERSION_MINIMUM=3.5 to Docker configuration
+
+
 
 # Release notes for version 2.0.1 (2026-02-27)
 
 - Added alkalinity as a new diagnostic variable
-- Included a new testcase for temperature sensitivity (EcoMod)
+- Included a new testcase for temperature sensitivity
 - Improved installation scripts for portability
 - Updated documentation and fixed minor issues
 
